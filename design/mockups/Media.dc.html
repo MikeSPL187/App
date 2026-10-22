@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Фото</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300..800&amp;family=Roboto+Mono:wght@400;500&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;display:flex;flex-direction:column;background:{{t.bg}};color:{{t.on}};font-family:'Roboto Flex',Roboto,system-ui,sans-serif">
+
+  <header style="display:flex;align-items:center;gap:2px;height:64px;padding:8px 4px 0 4px;box-sizing:border-box;flex:none">
+    <a href="Main.dc.html" aria-label="Назад" style="width:48px;height:48px;border-radius:24px;display:flex;align-items:center;justify-content:center;flex:none">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.on}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.back}}"></path></svg>
+    </a>
+    <div style="flex:1;padding-left:4px">
+      <h1 style="margin:0;font-size:22px;line-height:28px;font-weight:650">Фото</h1>
+      <div style="font-size:13px;line-height:18px;color:{{t.onVar}}">2 418 файлов · 21,8 ГБ</div>
+    </div>
+    <a href="Search.dc.html" aria-label="Поиск фото" style="width:48px;height:48px;border-radius:24px;display:flex;align-items:center;justify-content:center;flex:none">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.search}}"></path></svg>
+    </a>
+    <button aria-label="Ещё" style="width:48px;height:48px;border:0;border-radius:24px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;flex:none">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="{{ic.more}}"></path></svg>
+    </button>
+  </header>
+
+  <div style="display:flex;gap:8px;padding:6px 16px 10px;overflow:hidden;flex:none">
+    <sc-for list="{{chips}}" as="c" hint-placeholder-count="5">
+      <button aria-pressed="{{c.pressed}}" style="flex:none;height:32px;padding:0 14px;border-radius:8px;border:1px solid {{c.border}};background:{{c.bg}};color:{{c.fg}};font:inherit;font-size:13px;font-weight:{{c.weight}}">{{c.label}}</button>
+    </sc-for>
+  </div>
+
+  <div style="flex:1;min-height:0;overflow:hidden">
+    <sc-for list="{{sections}}" as="s" hint-placeholder-count="3">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;padding:12px 16px 8px">
+        <h2 style="margin:0;font-size:15px;line-height:20px;font-weight:650">{{s.title}}</h2>
+        <span style="font-size:12.5px;color:{{t.onVar}}">{{s.count}}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px;padding:0 3px">
+        <sc-for list="{{s.tiles}}" as="p" hint-placeholder-count="6">
+          <div role="img" aria-label="{{p.alt}}" style="position:relative;aspect-ratio:1 / 1;border-radius:{{p.radius}};overflow:hidden;background:{{p.sky}}">
+            <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" style="display:block">
+              <circle cx="{{p.cx}}" cy="{{p.cy}}" r="11" fill="{{p.sun}}"></circle>
+              <path d="{{p.hill}}" fill="{{p.land}}"></path>
+            </svg>
+            <sc-if value="{{p.video}}" hint-placeholder-val="{{ false }}">
+              <span style="position:absolute;right:6px;bottom:6px;display:flex;align-items:center;gap:3px;height:20px;padding:0 6px 0 4px;border-radius:10px;background:rgba(0,0,0,0.55);color:#FFFFFF;font-size:11px;font-weight:600;font-variant-numeric:tabular-nums">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"></path></svg>
+                {{p.dur}}
+              </span>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+  </div>
+
+  <nav aria-label="Основная навигация" style="height:80px;flex:none;display:flex;background:{{t.cont}};padding:12px 0 16px;box-sizing:border-box">
+    <sc-for list="{{nav}}" as="n" hint-placeholder-count="4">
+      <a href="{{n.href}}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none">
+        <span style="width:64px;height:32px;border-radius:16px;background:{{n.pill}};display:flex;align-items:center;justify-content:center">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{n.color}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+        </span>
+        <span style="font-size:12px;line-height:16px;font-weight:{{n.weight}};color:{{n.color}}">{{n.label}}</span>
+      </a>
+    </sc-for>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false,"section":"Тема"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const d = !!this.props.dark;
+    const t = d ? {
+      bg:'#0E1514', cont:'#1A2120', on:'#DDE4E2', onVar:'#BEC9C7', outlineVar:'#3F4948', secC:'#324B48', onSecC:'#CCE8E4'
+    } : {
+      bg:'#F5F9F8', cont:'#E9EFEE', on:'#161D1C', onVar:'#3F4948', outlineVar:'#BEC9C7', secC:'#CCE8E4', onSecC:'#051F1D'
+    };
+    const ic = {
+      back:'M19 12H5 M11 6l-6 6 6 6',
+      search:'M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14z M20 20l-4.3-4.3',
+      more:'M12 5.5h.01 M12 12h.01 M12 18.5h.01'
+    };
+    const P = {
+      home:'M4 10.5L12 4l8 6.5 M6 9v10.5h4.5V14h3v5.5H18V9',
+      folder:'M3.5 7.5a2 2 0 0 1 2-2h3.8l2 2h7.2a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z',
+      cloud:'M7.5 18.5a4.5 4.5 0 0 1-.4-9A6 6 0 0 1 18.3 10a4.3 4.3 0 0 1-.8 8.5z',
+      tools:'M14.5 5.5a4 4 0 0 0-5 5L4.5 15.5a2.1 2.1 0 0 0 3 3l5-5a4 4 0 0 0 5-5l-2.4 2.4-2.6-.4-.4-2.6z'
+    };
+    const chips = ['Все', 'Камера', 'Скриншоты', 'Telegram', 'WhatsApp'].map((label, i) => ({
+      label, pressed: i === 0 ? 'true' : 'false',
+      bg: i === 0 ? t.secC : 'transparent', fg: i === 0 ? t.onSecC : t.on,
+      border: i === 0 ? t.secC : t.outlineVar, weight: i === 0 ? 650 : 550
+    }));
+    const pal = d ? [
+      ['#24384A','#E0A93A','#3E6A8F'], ['#2E2648','#E8956A','#6A58A8'], ['#1E3A2C','#E8C25A','#3F7D5A'],
+      ['#43291F','#E8A04E','#A0644C'], ['#2A3231','#DDE4E2','#5E706C']
+    ] : [
+      ['#CFE3F2','#F5C26B','#7FA7C9'], ['#E3D9F5','#F2A97E','#9C87D6'], ['#D6EBDD','#F7D27A','#6FAE86'],
+      ['#F6DCD2','#F4B66A','#D08A6E'], ['#DDE4E2','#FFFFFF','#93A5A1']
+    ];
+    const hills = [
+      'M0 78 L28 52 L46 68 L64 48 L100 80 L100 100 L0 100z',
+      'M0 70 Q30 50 55 66 T100 60 L100 100 L0 100z',
+      'M0 84 L40 58 L70 76 L100 62 L100 100 L0 100z'
+    ];
+    const mk = (n, seed, vids) => Array.from({ length: n }, (_, i) => {
+      const k = (i * 3 + seed) % pal.length;
+      const v = vids[i];
+      return {
+        sky: pal[k][0], sun: pal[k][1], land: pal[k][2], hill: hills[(i + seed) % hills.length],
+        cx: 22 + ((i * 17 + seed * 7) % 56), cy: 22 + ((i * 11 + seed * 5) % 18),
+        video: !!v, dur: v || '', radius: '2px', alt: v ? 'Видео, ' + v : 'Фото'
+      };
+    });
+    const sections = [
+      { title:'Сегодня', count:'6', tiles: mk(6, 1, { 2: '0:42' }) },
+      { title:'Вчера', count:'9', tiles: mk(9, 2, { 0: '1:15', 7: '0:08' }) },
+      { title:'18 октября', count:'14', tiles: mk(6, 4, {}) }
+    ];
+    const navDef = [['Главная','home','Main.dc.html'],['Обзор','folder','Browser.dc.html'],['Сеть','cloud','Network.dc.html'],['Инструменты','tools','Cleaner.dc.html']];
+    const nav = navDef.map(([label, i, href], idx) => {
+      const a = idx === 0;
+      return { label, href, icon:P[i], pill: a ? t.secC : 'transparent', color: a ? t.onSecC : t.onVar, weight: a ? 700 : 500 };
+    });
+    return { t, ic, chips, sections, nav };
+  }
+}
+</script>
+</body>
+</html>

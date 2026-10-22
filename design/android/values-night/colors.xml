@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- «Тихий инструмент» — тёмная схема. Бесплатна для всех, по умолчанию следует системной настройке. -->
+<resources>
+    <color name="fm_primary">#FF7FD6CD</color>
+    <color name="fm_on_primary">#FF003734</color>
+    <color name="fm_primary_container">#FF00504B</color>
+    <color name="fm_on_primary_container">#FF9DF2E9</color>
+    <color name="fm_secondary_container">#FF324B48</color>
+    <color name="fm_on_secondary_container">#FFCCE8E4</color>
+    <color name="fm_tertiary_container">#FF5C4300</color>
+    <color name="fm_on_tertiary_container">#FFFFDF9E</color>
+    <color name="fm_error">#FFFFB4AB</color>
+    <color name="fm_error_container">#FF93000A</color>
+    <color name="fm_on_error_container">#FFFFDAD6</color>
+
+    <color name="fm_surface">#FF0E1514</color>
+    <color name="fm_surface_container_lowest">#FF090F0E</color>
+    <color name="fm_surface_container_low">#FF161D1C</color>
+    <color name="fm_surface_container">#FF1A2120</color>
+    <color name="fm_surface_container_high">#FF252B2A</color>
+    <color name="fm_surface_container_highest">#FF2F3635</color>
+    <color name="fm_on_surface">#FFDDE4E2</color>
+    <color name="fm_on_surface_variant">#FFBEC9C7</color>
+    <color name="fm_outline">#FF899391</color>
+    <color name="fm_outline_variant">#FF3F4948</color>
+
+    <color name="fm_cat_image_container">#FF3A2A6B</color>
+    <color name="fm_cat_image_on">#FFD2C2FF</color>
+    <color name="fm_cat_image_chart">#FF9C84F0</color>
+    <color name="fm_cat_video_container">#FF5C1A16</color>
+    <color name="fm_cat_video_on">#FFFFB4A9</color>
+    <color name="fm_cat_video_chart">#FFE8746A</color>
+    <color name="fm_cat_audio_container">#FF4D3300</color>
+    <color name="fm_cat_audio_on">#FFFFCF83</color>
+    <color name="fm_cat_audio_chart">#FFE0A93A</color>
+    <color name="fm_cat_document_container">#FF1F3266</color>
+    <color name="fm_cat_document_on">#FFB3C5FF</color>
+    <color name="fm_cat_document_chart">#FF6E95EC</color>
+    <color name="fm_cat_sheet_container">#FF16392A</color>
+    <color name="fm_cat_sheet_on">#FF9ED8B6</color>
+    <color name="fm_cat_archive_container">#FF34372B</color>
+    <color name="fm_cat_archive_on">#FFC8CAB9</color>
+    <color name="fm_cat_apk_container">#FF233A0B</color>
+    <color name="fm_cat_apk_on">#FFB0D58E</color>
+    <color name="fm_cat_apk_chart">#FF86B85A</color>
+    <color name="fm_cat_download_container">#FF003845</color>
+    <color name="fm_cat_download_on">#FFA0E2F4</color>
+    <color name="fm_cat_favorite_container">#FF5A1F3A</color>
+    <color name="fm_cat_favorite_on">#FFFFB0CF</color>
+    <color name="fm_cat_folder_container">#FF1F3A37</color>
+    <color name="fm_cat_folder_on">#FF9DF2E9</color>
+    <color name="fm_cat_other_container">#FF2F3635</color>
+    <color name="fm_cat_other_on">#FFBEC9C7</color>
+</resources>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Базовая тема для XML-экранов. DayNight сам переключает values/values-night,
+  поэтому отдельной «тёмной» темы и платного переключателя не нужно.
+  Material You: в Application вызвать DynamicColors.applyToActivitiesIfAvailable(this)
+  только если пользователь включил «Цвета из обоев».
+-->
+<resources>
+    <style name="Theme.FileManager" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/fm_primary</item>
+        <item name="colorOnPrimary">@color/fm_on_primary</item>
+        <item name="colorPrimaryContainer">@color/fm_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/fm_on_primary_container</item>
+        <item name="colorSecondaryContainer">@color/fm_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/fm_on_secondary_container</item>
+        <item name="colorTertiaryContainer">@color/fm_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/fm_on_tertiary_container</item>
+        <item name="colorError">@color/fm_error</item>
+        <item name="colorErrorContainer">@color/fm_error_container</item>
+        <item name="colorOnErrorContainer">@color/fm_on_error_container</item>
+
+        <item name="colorSurface">@color/fm_surface</item>
+        <item name="colorSurfaceContainerLowest">@color/fm_surface_container_lowest</item>
+        <item name="colorSurfaceContainerLow">@color/fm_surface_container_low</item>
+        <item name="colorSurfaceContainer">@color/fm_surface_container</item>
+        <item name="colorSurfaceContainerHigh">@color/fm_surface_container_high</item>
+        <item name="colorSurfaceContainerHighest">@color/fm_surface_container_highest</item>
+        <item name="colorOnSurface">@color/fm_on_surface</item>
+        <item name="colorOnSurfaceVariant">@color/fm_on_surface_variant</item>
+        <item name="colorOutline">@color/fm_outline</item>
+        <item name="colorOutlineVariant">@color/fm_outline_variant</item>
+        <item name="android:colorBackground">@color/fm_surface</item>
+
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.FileManager.Small</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.FileManager.Medium</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.FileManager.Large</item>
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">@bool/fm_light_system_bars</item>
+        <item name="android:windowLightNavigationBar">@bool/fm_light_system_bars</item>
+    </style>
+
+    <style name="ShapeAppearance.FileManager.Small" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">12dp</item>
+    </style>
+    <style name="ShapeAppearance.FileManager.Medium" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerSize">16dp</item>
+    </style>
+    <style name="ShapeAppearance.FileManager.Large" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerSize">28dp</item>
+    </style>
+</resources>

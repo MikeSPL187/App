@@ -1,0 +1,52 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-10-22T21:05:00Z"},
+  "title": "File Manager+ — редизайн 2026",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {"x": 0, "y": 0, "w": 390, "h": 844, "title": "01 · Главная"},
+    "Browser.dc.html": {"x": 470, "y": 0, "w": 390, "h": 844, "title": "02 · Обзор папки"},
+    "Selection.dc.html": {"x": 940, "y": 0, "w": 390, "h": 844, "title": "03 · Режим выбора"},
+    "Operations.dc.html": {"x": 1410, "y": 0, "w": 390, "h": 844, "title": "04 · Операции и конфликты"},
+    "Search.dc.html": {"x": 1880, "y": 0, "w": 390, "h": 844, "title": "05 · Поиск"},
+    "Media.dc.html": {"x": 2350, "y": 0, "w": 390, "h": 844, "title": "06 · Фото (медиа-сетка)"},
+    "Cleaner.dc.html": {"x": 0, "y": 1244, "w": 390, "h": 844, "title": "07 · Инструменты и очистка"},
+    "Network.dc.html": {"x": 470, "y": 1244, "w": 390, "h": 844, "title": "08 · Сеть и облака"},
+    "Connection.dc.html": {"x": 940, "y": 1244, "w": 390, "h": 844, "title": "09 · Новое подключение SFTP"},
+    "Settings.dc.html": {"x": 1410, "y": 1244, "w": 390, "h": 1080, "title": "10 · Настройки"},
+    "Paywall.dc.html": {"x": 1880, "y": 1244, "w": 390, "h": 844, "title": "11 · Premium"},
+    "HomeDark.dc.html": {"x": 0, "y": 2724, "w": 390, "h": 844, "title": "12 · Главная — тёмная тема"},
+    "BrowserDark.dc.html": {"x": 470, "y": 2724, "w": 390, "h": 844, "title": "13 · Обзор — тёмная тема"},
+    "SettingsDark.dc.html": {"x": 940, "y": 2724, "w": 390, "h": 1080, "title": "14 · Настройки — тёмная тема"},
+    "Tablet.dc.html": {"x": 1410, "y": 2724, "w": 1280, "h": 800, "title": "15 · Планшет: две панели + drag & drop"},
+    "DesignSystem.dc.html": {"x": 0, "y": 4204, "w": 1440, "h": 1320, "title": "16 · Дизайн-система «Тихий инструмент»"},
+    "BeforeAfter.dc.html": {"x": 1520, "y": 4204, "w": 1440, "h": 1000, "title": "17 · Было → стало"}
+  },
+  "order": [
+    "Main.dc.html",
+    "Browser.dc.html",
+    "Selection.dc.html",
+    "Operations.dc.html",
+    "Search.dc.html",
+    "Media.dc.html",
+    "Cleaner.dc.html",
+    "Network.dc.html",
+    "Connection.dc.html",
+    "Settings.dc.html",
+    "Paywall.dc.html",
+    "HomeDark.dc.html",
+    "BrowserDark.dc.html",
+    "SettingsDark.dc.html",
+    "Tablet.dc.html",
+    "DesignSystem.dc.html",
+    "BeforeAfter.dc.html"
+  ],
+  "notes": {
+    "row1": {"x": 0, "y": -300, "text": "Основные сценарии: главная, папка, выбор, операции, поиск, медиа", "kind": "title1", "maxW": 2740},
+    "row2": {"x": 0, "y": 944, "text": "Инструменты, сеть, безопасные подключения, настройки, честный Premium", "kind": "title1", "maxW": 2270},
+    "row3": {"x": 0, "y": 2424, "text": "Тёмная тема бесплатно для всех · Планшеты и складные устройства", "kind": "title1", "maxW": 2690},
+    "row4": {"x": 0, "y": 3904, "text": "Дизайн-система и сравнение со старой версией", "kind": "title1", "maxW": 2960}
+  },
+  "designSystems": []
+}

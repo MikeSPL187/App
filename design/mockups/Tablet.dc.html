@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Планшет: две панели</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300..800&amp;family=Roboto+Mono:wght@400;500&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width:1280px;height:800px;box-sizing:border-box;position:relative;overflow:hidden;display:flex;background:{{t.bg}};color:{{t.on}};font-family:'Roboto Flex',Roboto,system-ui,sans-serif">
+
+  <nav aria-label="Основная навигация" style="width:96px;flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;padding:20px 0 24px;box-sizing:border-box;background:{{t.cont}}">
+    <button aria-label="Создать" style="width:56px;height:56px;border:0;border-radius:16px;background:{{t.priC}};display:flex;align-items:center;justify-content:center;margin-bottom:20px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onPriC}}" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{ic.plus}}"></path></svg>
+    </button>
+    <sc-for list="{{rail}}" as="n" hint-placeholder-count="4">
+      <a href="{{n.href}}" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0 8px;text-decoration:none;width:80px">
+        <span style="width:56px;height:32px;border-radius:16px;background:{{n.pill}};display:flex;align-items:center;justify-content:center">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{n.color}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+        </span>
+        <span style="font-size:12px;line-height:16px;font-weight:{{n.weight}};color:{{n.color}}">{{n.label}}</span>
+      </a>
+    </sc-for>
+    <div style="flex:1"></div>
+    <a href="Settings.dc.html" aria-label="Настройки" style="width:48px;height:48px;border-radius:24px;display:flex;align-items:center;justify-content:center">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="{{ic.sliders}}"></path></svg>
+    </a>
+  </nav>
+
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+    <header style="display:flex;align-items:center;gap:12px;height:80px;padding:0 20px 0 24px;box-sizing:border-box;flex:none">
+      <label style="display:flex;align-items:center;gap:12px;width:520px;height:52px;padding:0 18px;box-sizing:border-box;border-radius:26px;background:{{t.high}}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="{{ic.search}}"></path></svg>
+        <input type="search" aria-label="Поиск" placeholder="Поиск в файлах и облаках" style="flex:1;border:0;background:transparent;font:inherit;font-size:15px;color:{{t.on}};outline:none">
+        <span style="font-family:'Roboto Mono',monospace;font-size:12px;color:{{t.onVar}};padding:2px 6px;border:1px solid {{t.outlineVar}};border-radius:6px">Ctrl K</span>
+      </label>
+      <div style="flex:1"></div>
+      <button aria-pressed="true" style="display:flex;align-items:center;gap:8px;height:40px;padding:0 16px 0 12px;border:0;border-radius:20px;background:{{t.secC}};color:{{t.onSecC}};font:inherit;font-size:14px;font-weight:650">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.onSecC}}" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.split}}"></path></svg>
+        Две панели
+      </button>
+      <button aria-label="Ещё" style="width:48px;height:48px;border:0;border-radius:24px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="{{ic.more}}"></path></svg>
+      </button>
+    </header>
+
+    <div style="flex:1;min-height:0;display:flex;gap:12px;padding:0 16px 16px 16px">
+      <sc-for list="{{panes}}" as="p" hint-placeholder-count="2">
+        <section aria-label="{{p.label}}" style="flex:1;min-width:0;position:relative;display:flex;flex-direction:column;border-radius:24px;background:{{p.bg}};border:{{p.border}};overflow:hidden">
+          <div style="display:flex;align-items:center;gap:6px;height:56px;padding:0 12px 0 16px;flex:none">
+            <span style="display:flex;align-items:center;gap:6px;height:32px;padding:0 12px 0 8px;border-radius:16px;border:1px solid {{t.outlineVar}};font-size:13.5px;font-weight:550;color:{{t.onVar}}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{p.rootIcon}}"></path></svg>
+              {{p.root}}
+            </span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{t.outline}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.chevR}}"></path></svg>
+            <span style="display:flex;align-items:center;height:32px;padding:0 14px;border-radius:16px;background:{{t.secC}};color:{{t.onSecC}};font-size:13.5px;font-weight:650">{{p.folder}}</span>
+            <div style="flex:1"></div>
+            <span style="font-size:13px;color:{{t.onVar}}">{{p.count}}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 110px 120px;gap:12px;padding:6px 28px 6px 70px;font-size:12px;line-height:16px;font-weight:650;color:{{t.onVar}};border-bottom:1px solid {{t.line}};flex:none">
+            <span>Имя ↑</span><span style="text-align:right">Размер</span><span style="text-align:right">Изменён</span>
+          </div>
+          <div style="flex:1;min-height:0;overflow:hidden;padding:4px 8px">
+            <sc-for list="{{p.rows}}" as="r" hint-placeholder-count="7">
+              <div style="display:grid;grid-template-columns:40px minmax(0,1fr) 110px 120px;gap:12px;align-items:center;height:56px;padding:0 20px 0 12px;border-radius:14px;background:{{r.rowBg}};margin-bottom:2px">
+                <span style="width:36px;height:36px;border-radius:11px;background:{{r.bg}};display:flex;align-items:center;justify-content:center">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="{{r.fill}}" stroke="{{r.fg}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{r.icon}}"></path></svg>
+                </span>
+                <span style="display:flex;align-items:center;gap:10px;min-width:0">
+                  <span style="font-size:14.5px;line-height:20px;font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{r.name}}</span>
+                  <sc-if value="{{r.sel}}" hint-placeholder-val="{{ false }}">
+                    <span aria-label="Выбрано" style="width:20px;height:20px;border-radius:10px;background:{{t.pri}};display:flex;align-items:center;justify-content:center;flex:none">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="{{t.onPri}}" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.check}}"></path></svg>
+                    </span>
+                  </sc-if>
+                </span>
+                <span style="text-align:right;font-size:13px;color:{{t.onVar}};font-variant-numeric:tabular-nums">{{r.size}}</span>
+                <span style="text-align:right;font-size:13px;color:{{t.onVar}}">{{r.date}}</span>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{p.isSource}}" hint-placeholder-val="{{ true }}">
+            <div role="toolbar" aria-label="Действия с выбранными" style="flex:none;display:flex;align-items:center;gap:4px;height:64px;margin:0 12px 12px;padding:0 8px 0 16px;border-radius:20px;background:{{t.high}}">
+              <span style="flex:1;font-size:14px;font-weight:650">2 выбрано · 54 МБ</span>
+              <sc-for list="{{acts}}" as="a" hint-placeholder-count="4">
+                <button aria-label="{{a.label}}" style="width:44px;height:44px;border:0;border-radius:22px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{a.color}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{a.icon}}"></path></svg>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{p.isTarget}}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;height:48px;padding:0 20px 0 14px;border-radius:24px;background:{{t.pri}};color:{{t.onPri}};font-size:14.5px;font-weight:650;white-space:nowrap;box-shadow:0 6px 18px {{t.shadow}}">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.onPri}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.copy}}"></path></svg>
+              Отпустите, чтобы скопировать сюда
+            </div>
+          </sc-if>
+        </section>
+      </sc-for>
+    </div>
+  </div>
+
+  <div aria-hidden="true" style="position:absolute;left:640px;top:396px;width:250px;padding:10px 14px 10px 10px;box-sizing:border-box;border-radius:16px;background:{{t.card}};box-shadow:0 12px 32px {{t.shadow}};display:flex;align-items:center;gap:12px;border:1px solid {{t.line}}">
+    <span style="position:relative;width:40px;height:40px;flex:none">
+      <span style="position:absolute;left:5px;top:-4px;width:36px;height:36px;border-radius:11px;background:{{t.audioBg}};opacity:0.6"></span>
+      <span style="position:absolute;left:0;top:2px;width:36px;height:36px;border-radius:11px;background:{{t.audioBg}};display:flex;align-items:center;justify-content:center">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.audioFg}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="{{ic.music}}"></path></svg>
+      </span>
+      <span style="position:absolute;right:-6px;top:-8px;min-width:20px;height:20px;border-radius:10px;background:{{t.pri}};color:{{t.onPri}};font-size:11.5px;line-height:20px;font-weight:700;text-align:center">2</span>
+    </span>
+    <span style="display:flex;flex-direction:column">
+      <span style="font-size:14px;line-height:19px;font-weight:650">Подкаст_ep41.mp3 и ещё 1</span>
+      <span style="font-size:12.5px;line-height:16px;color:{{t.onVar}}">54 МБ → Музыка</span>
+    </span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false,"section":"Тема"},"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const d = !!this.props.dark;
+    const t = d ? {
+      bg:'#0E1514', cont:'#1A2120', high:'#252B2A', card:'#161D1C', line:'#2A3231',
+      on:'#DDE4E2', onVar:'#BEC9C7', outline:'#899391', outlineVar:'#3F4948',
+      pri:'#7FD6CD', onPri:'#003734', priC:'#00504B', onPriC:'#9DF2E9', secC:'#324B48', onSecC:'#CCE8E4',
+      err:'#FFB4AB', dropBg:'#13302D', selRow:'#324B48', shadow:'rgba(0,0,0,0.5)', audioBg:'#4D3300', audioFg:'#FFCF83'
+    } : {
+      bg:'#F5F9F8', cont:'#E9EFEE', high:'#E3EAE8', card:'#FFFFFF', line:'#E3EAE8',
+      on:'#161D1C', onVar:'#3F4948', outline:'#6F7978', outlineVar:'#BEC9C7',
+      pri:'#006A64', onPri:'#FFFFFF', priC:'#9DF2E9', onPriC:'#00201E', secC:'#CCE8E4', onSecC:'#051F1D',
+      err:'#BA1A1A', dropBg:'#E6F5F2', selRow:'#CCE8E4', shadow:'rgba(22,29,28,0.2)', audioBg:'#FFE2B8', audioFg:'#6B4300'
+    };
+    const ic = {
+      plus:'M12 5v14 M5 12h14',
+      sliders:'M4 7h9 M17 7h3 M15 5v4 M4 12h3 M11 12h9 M9 10v4 M4 17h11 M19 17h1 M17 15v4',
+      search:'M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14z M20 20l-4.3-4.3',
+      split:'M4 5h16v14H4z M12 5v14',
+      more:'M12 5.5h.01 M12 12h.01 M12 18.5h.01',
+      chevR:'M9 6l6 6-6 6',
+      check:'M5 12.5l4.5 4.5L19 7.5',
+      copy:'M9 9h10a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H10a1 1 0 0 1-1-1z M5.5 15H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v.5',
+      music:'M9 17.5V6l10-2v11.5 M9 17.5a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0z M19 15.5a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0z'
+    };
+    const P = {
+      home:'M4 10.5L12 4l8 6.5 M6 9v10.5h4.5V14h3v5.5H18V9',
+      folder:'M3.5 7.5a2 2 0 0 1 2-2h3.8l2 2h7.2a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z',
+      cloud:'M7.5 18.5a4.5 4.5 0 0 1-.4-9A6 6 0 0 1 18.3 10a4.3 4.3 0 0 1-.8 8.5z',
+      tools:'M14.5 5.5a4 4 0 0 0-5 5L4.5 15.5a2.1 2.1 0 0 0 3 3l5-5a4 4 0 0 0 5-5l-2.4 2.4-2.6-.4-.4-2.6z',
+      hdd:'M4 14l2.6-8.2A1.2 1.2 0 0 1 7.7 5h8.6a1.2 1.2 0 0 1 1.1.8L20 14 M4 14h16v4.8a1.2 1.2 0 0 1-1.2 1.2H5.2A1.2 1.2 0 0 1 4 18.8z M8 17h.01 M11.5 17h.01',
+      sd:'M8 3h8.5L19 5.5V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6z M9 7v3 M12 7v3 M15 7v3',
+      image:'M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z M4 16l4.5-4.5 4 4 2.5-2.5 5 5 M15.5 8.5h.01',
+      music:'M9 17.5V6l10-2v11.5 M9 17.5a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0z M19 15.5a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0z',
+      doc:'M13.5 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.5z M13.5 3v5.5H19 M8.5 13h7 M8.5 16.5h7',
+      archive:'M4 5h16v4H4z M5.5 9v9.5A1.5 1.5 0 0 0 7 20h10a1.5 1.5 0 0 0 1.5-1.5V9 M10 13h4',
+      apk:'M12 3l8 4.5v9L12 21l-8-4.5v-9z M4.3 7.6L12 12l7.7-4.4 M12 12v9',
+      move:'M3.5 7.5a2 2 0 0 1 2-2h3.8l2 2h7.2a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z M9 13h6.5 M13 10.5l2.5 2.5-2.5 2.5',
+      share:'M18 3.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 0 1 0-5z M6 9.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 0 1 0-5z M18 15.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 0 1 0-5z M8.3 13.2l7.4 3.6 M15.7 7.2l-7.4 3.6',
+      trash:'M4 7h16 M10 11v6 M14 11v6 M6 7l1 12.2A1 1 0 0 0 8 20h8a1 1 0 0 0 1-.8L18 7 M9 7V4.5h6V7'
+    };
+    const C = d ? {
+      folder:['#1F3A37','#9DF2E9','#2C5551'], photo:['#3A2A6B','#D2C2FF','none'], audio:['#4D3300','#FFCF83','none'],
+      docs:['#1F3266','#B3C5FF','none'], archive:['#34372B','#C8CAB9','none'], apk:['#233A0B','#B0D58E','none']
+    } : {
+      folder:['#CCE8E4','#00504B','#A8DCD5'], photo:['#E9DDFF','#4A2C9E','none'], audio:['#FFE2B8','#6B4300','none'],
+      docs:['#D8E2FF','#1B3D8F','none'], archive:['#E4E6D7','#46493A','none'], apk:['#D5F0B9','#2C5000','none']
+    };
+    const row = (name, size, date, k, icon, sel) => ({
+      name, size, date, icon: icon || P.folder, bg: C[k][0], fg: C[k][1], fill: C[k][2],
+      sel: !!sel, rowBg: sel ? t.selRow : 'transparent'
+    });
+    const left = [
+      row('Telegram', '148 объектов', 'сегодня', 'folder'),
+      row('Документы_работа', '32 объекта', '18 окт.', 'folder'),
+      row('Отчёт_Q3_2026.pdf', '2,4 МБ', 'вчера', 'docs', P.doc),
+      row('Голосовое_0412.m4a', '812 КБ', '17 окт.', 'audio', P.music, true),
+      row('IMG_20261021_1845.jpg', '3,1 МБ', '21 окт.', 'photo', P.image),
+      row('Подкаст_ep41.mp3', '53,2 МБ', '16 окт.', 'audio', P.music, true),
+      row('setup-v2.4.1.apk', '48,2 МБ', '20 окт.', 'apk', P.apk),
+      row('Архив_проекта.zip', '156 МБ', '19 окт.', 'archive', P.archive)
+    ];
+    const right = [
+      row('Альбомы', '41 объект', '2 сент.', 'folder'),
+      row('Плейлисты', '9 объектов', '30 авг.', 'folder'),
+      row('Демо_v3.wav', '48 МБ', '12 окт.', 'audio', P.music),
+      row('Тема_для_звонка.ogg', '1,2 МБ', '3 окт.', 'audio', P.music),
+      row('Утро_live.flac', '31 МБ', '28 сент.', 'audio', P.music)
+    ];
+    const panes = [
+      { label:'Левая панель', root:'Память', rootIcon:P.hdd, folder:'Download', count:'24 объекта', rows:left,
+        isSource:true, isTarget:false, bg:t.card, border:'1px solid ' + t.line },
+      { label:'Правая панель', root:'SD-карта', rootIcon:P.sd, folder:'Музыка', count:'5 объектов', rows:right,
+        isSource:false, isTarget:true, bg:t.dropBg, border:'2px dashed ' + t.pri }
+    ];
+    const acts = [
+      { label:'Копировать', icon:ic.copy, color:t.on }, { label:'Переместить', icon:P.move, color:t.on },
+      { label:'Поделиться', icon:P.share, color:t.on }, { label:'Удалить', icon:P.trash, color:t.err }
+    ];
+    const railDef = [['Главная','home','Main.dc.html'],['Обзор','folder','Browser.dc.html'],['Сеть','cloud','Network.dc.html'],['Инструменты','tools','Cleaner.dc.html']];
+    const rail = railDef.map(([label, i, href], idx) => {
+      const a = idx === 1;
+      return { label, href, icon:P[i], pill: a ? t.secC : 'transparent', color: a ? t.onSecC : t.onVar, weight: a ? 700 : 500 };
+    });
+    return { t, ic, panes, acts, rail };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Поиск</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300..800&amp;family=Roboto+Mono:wght@400;500&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;display:flex;flex-direction:column;background:{{t.bg}};color:{{t.on}};font-family:'Roboto Flex',Roboto,system-ui,sans-serif">
+
+  <div style="padding:12px 16px 0;flex:none">
+    <div style="display:flex;align-items:center;gap:4px;height:56px;padding:0 4px;border-radius:28px;background:{{t.high}}">
+      <a href="Main.dc.html" aria-label="Назад" style="width:48px;height:48px;border-radius:24px;display:flex;align-items:center;justify-content:center;flex:none">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{t.on}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.back}}"></path></svg>
+      </a>
+      <input type="search" aria-label="Поиск" value="отчёт" style="flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:17px;color:{{t.on}};outline:none;caret-color:{{t.pri}}">
+      <button aria-label="Очистить" style="width:48px;height:48px;border:0;border-radius:24px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;flex:none">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="{{ic.close}}"></path></svg>
+      </button>
+    </div>
+  </div>
+
+  <div role="tablist" aria-label="Где искать" style="display:flex;margin:12px 16px 0;height:40px;border:1px solid {{t.outline}};border-radius:20px;overflow:hidden;flex:none">
+    <button role="tab" aria-selected="true" style="flex:1;border:0;background:{{t.secC}};color:{{t.onSecC}};font:inherit;font-size:13.5px;font-weight:650;display:flex;align-items:center;justify-content:center;gap:6px">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{t.onSecC}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.check}}"></path></svg>
+      Везде
+    </button>
+    <button role="tab" aria-selected="false" style="flex:1;border:0;border-left:1px solid {{t.outline}};background:transparent;color:{{t.on}};font:inherit;font-size:13.5px;font-weight:600">Эта папка</button>
+    <button role="tab" aria-selected="false" style="flex:1;border:0;border-left:1px solid {{t.outline}};background:transparent;color:{{t.on}};font:inherit;font-size:13.5px;font-weight:600">Облака</button>
+  </div>
+
+  <div style="display:flex;gap:8px;padding:12px 16px 4px;overflow:hidden;flex:none">
+    <button aria-pressed="true" style="flex:none;display:flex;align-items:center;gap:6px;height:32px;padding:0 12px 0 8px;border-radius:8px;border:0;background:{{t.secC}};color:{{t.onSecC}};font:inherit;font-size:13px;font-weight:650">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{t.onSecC}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.check}}"></path></svg>
+      Документы
+    </button>
+    <button style="flex:none;display:flex;align-items:center;gap:4px;height:32px;padding:0 8px 0 12px;border-radius:8px;border:1px solid {{t.outlineVar}};background:transparent;color:{{t.on}};font:inherit;font-size:13px;font-weight:550">
+      Дата
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.chevD}}"></path></svg>
+    </button>
+    <button style="flex:none;display:flex;align-items:center;gap:4px;height:32px;padding:0 8px 0 12px;border-radius:8px;border:1px solid {{t.outlineVar}};background:transparent;color:{{t.on}};font:inherit;font-size:13px;font-weight:550">
+      Размер
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.chevD}}"></path></svg>
+    </button>
+    <button aria-pressed="true" style="flex:none;display:flex;align-items:center;gap:6px;height:32px;padding:0 12px 0 8px;border-radius:8px;border:0;background:{{t.secC}};color:{{t.onSecC}};font:inherit;font-size:13px;font-weight:650">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{t.onSecC}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.check}}"></path></svg>
+      Внутри файлов
+    </button>
+  </div>
+
+  <div style="flex:1;min-height:0;overflow:hidden;padding:0 8px">
+    <sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+      <div style="display:flex;align-items:center;gap:8px;padding:14px 12px 4px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{g.icon}}"></path></svg>
+        <span style="flex:1;font-size:12.5px;line-height:16px;font-weight:650;color:{{t.onVar}}">{{g.title}}</span>
+        <span style="font-size:12.5px;line-height:16px;color:{{t.onVar}}">{{g.count}}</span>
+      </div>
+      <sc-for list="{{g.items}}" as="r" hint-placeholder-count="2">
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:10px 12px;border-radius:16px">
+          <span style="width:40px;height:40px;border-radius:12px;background:{{r.bg}};display:flex;align-items:center;justify-content:center;flex:none">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{r.fg}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{r.icon}}"></path></svg>
+          </span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:15px;line-height:21px;font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{r.pre}}<mark style="background:{{t.hl}};color:{{t.on}};border-radius:4px;padding:0">{{r.hit}}</mark>{{r.post}}</div>
+            <div style="font-family:'Roboto Mono',monospace;font-size:11.5px;line-height:17px;color:{{t.onVar}};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{r.path}}</div>
+            <sc-if value="{{r.hasSnippet}}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:6px;padding:8px 10px;border-radius:12px;background:{{t.inset}};font-size:13px;line-height:19px;color:{{t.onVar}}">{{r.s1}}<mark style="background:{{t.hl}};color:{{t.on}};border-radius:4px;padding:0 1px">{{r.s2}}</mark>{{r.s3}}</div>
+            </sc-if>
+          </div>
+          <div style="flex:none;text-align:right;font-size:12.5px;line-height:21px;color:{{t.onVar}};font-variant-numeric:tabular-nums">{{r.size}}</div>
+        </div>
+      </sc-for>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false,"section":"Тема"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const d = !!this.props.dark;
+    const t = d ? {
+      bg:'#0E1514', high:'#252B2A', inset:'#1A2120', on:'#DDE4E2', onVar:'#BEC9C7', outline:'#899391', outlineVar:'#3F4948',
+      pri:'#7FD6CD', secC:'#324B48', onSecC:'#CCE8E4', hl:'#6B4E00'
+    } : {
+      bg:'#F5F9F8', high:'#E3EAE8', inset:'#EFF4F3', on:'#161D1C', onVar:'#3F4948', outline:'#6F7978', outlineVar:'#BEC9C7',
+      pri:'#006A64', secC:'#CCE8E4', onSecC:'#051F1D', hl:'#FFE08A'
+    };
+    const ic = {
+      back:'M19 12H5 M11 6l-6 6 6 6',
+      close:'M6 6l12 12 M18 6L6 18',
+      check:'M5 12.5l4.5 4.5L19 7.5',
+      chevD:'M6 9l6 6 6-6'
+    };
+    const P = {
+      phone:'M8 3h8a1.5 1.5 0 0 1 1.5 1.5v15A1.5 1.5 0 0 1 16 21H8a1.5 1.5 0 0 1-1.5-1.5v-15A1.5 1.5 0 0 1 8 3z M11 18h2',
+      cloud:'M7.5 18.5a4.5 4.5 0 0 1-.4-9A6 6 0 0 1 18.3 10a4.3 4.3 0 0 1-.8 8.5z',
+      text:'M5 6h14 M5 10h14 M5 14h9 M5 18h6',
+      doc:'M13.5 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.5z M13.5 3v5.5H19 M8.5 13h7 M8.5 16.5h7',
+      sheet:'M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z M4 9.5h16 M4 14.5h16 M10 9.5V20'
+    };
+    const docs = d ? ['#1F3266','#B3C5FF'] : ['#D8E2FF','#1B3D8F'];
+    const sheet = d ? ['#16392A','#9ED8B6'] : ['#CDEFD9','#0F5132'];
+    const it = (pre, hit, post, path, size, k, icon, snip) => ({
+      pre, hit, post, path, size, bg: k[0], fg: k[1], icon,
+      hasSnippet: !!snip, s1: snip ? snip[0] : '', s2: snip ? snip[1] : '', s3: snip ? snip[2] : ''
+    });
+    const groups = [
+      { title:'На устройстве', count:'4', icon:P.phone, items:[
+        it('', 'Отчёт', '_Q3_2026.pdf', 'Память/Download', '2,4 МБ', docs, P.doc),
+        it('', 'Отчёт', '_Q3_2026.pdf', 'Память/Download/Документы_работа', '2,1 МБ', docs, P.doc),
+        it('', 'отчёт', '_командировка.xlsx', 'Память/Documents/Поездки', '64 КБ', sheet, P.sheet),
+        it('Фото', 'отчёт', '_стройка.pdf', 'Память/Download/Telegram', '14,8 МБ', docs, P.doc)
+      ]},
+      { title:'Google Drive', count:'1', icon:P.cloud, items:[
+        it('', 'Отчёт', '_инвестору.pdf', 'Google Drive/Работа/2026', '5,6 МБ', docs, P.doc)
+      ]},
+      { title:'Совпадения в тексте', count:'2', icon:P.text, items:[
+        it('Договор_аренды.docx', '', '', 'Память/Documents', '310 КБ', docs, P.doc, ['…ежемесячный ', 'отчёт', ' арендатор передаёт до 5-го числа…'])
+      ]}
+    ];
+    return { t, ic, groups };
+  }
+}
+</script>
+</body>
+</html>

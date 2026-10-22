@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Главная</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300..800&amp;family=Roboto+Mono:wght@400;500&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;display:flex;flex-direction:column;background:{{t.bg}};color:{{t.on}};font-family:'Roboto Flex',Roboto,system-ui,sans-serif">
+
+  <header style="display:flex;align-items:center;gap:2px;height:64px;padding:8px 8px 0 20px;box-sizing:border-box;flex:none">
+    <h1 style="margin:0;flex:1;font-size:26px;line-height:32px;font-weight:650;letter-spacing:-0.3px">Файлы</h1>
+    <button aria-label="Открытые окна: 2" style="position:relative;width:48px;height:48px;border:0;border-radius:24px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.tabs}}"></path></svg>
+      <span style="position:absolute;top:8px;right:6px;min-width:16px;height:16px;padding:0 4px;box-sizing:border-box;border-radius:8px;background:{{t.pri}};color:{{t.onPri}};font-size:11px;line-height:16px;font-weight:700;text-align:center">2</span>
+    </button>
+    <button aria-label="Настройки" style="width:48px;height:48px;border:0;border-radius:24px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.sliders}}"></path></svg>
+    </button>
+  </header>
+
+  <div style="padding:8px 16px 0;flex:none">
+    <label style="display:flex;align-items:center;gap:12px;height:56px;padding:0 4px 0 18px;border-radius:28px;background:{{t.high}}">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.search}}"></path></svg>
+      <input type="search" aria-label="Поиск" placeholder="Поиск в файлах и облаках" style="flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:16px;color:{{t.on}};outline:none">
+      <button aria-label="Фильтры поиска" style="width:48px;height:48px;border:0;border-radius:24px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.filter}}"></path></svg>
+      </button>
+    </label>
+  </div>
+
+  <section aria-label="Внутренняя память" style="margin:16px 16px 0;padding:16px 16px 16px;border-radius:28px;background:{{t.card}};border:1px solid {{t.line}};flex:none">
+    <a href="Browser.dc.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;color:{{t.on}}">
+      <span style="width:40px;height:40px;border-radius:12px;background:{{t.secC}};display:flex;align-items:center;justify-content:center;flex:none">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{t.onSecC}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.hdd}}"></path></svg>
+      </span>
+      <span style="flex:1;min-width:0;display:flex;flex-direction:column">
+        <span style="font-size:15px;line-height:20px;font-weight:600">Внутренняя память</span>
+        <span style="font-size:13px;line-height:18px;color:{{t.onVar}}">86,4 ГБ из 128 ГБ · свободно 41,6 ГБ</span>
+      </span>
+      <span style="font-size:22px;line-height:28px;font-weight:650;letter-spacing:-0.3px">67%</span>
+    </a>
+    <div role="img" aria-label="Занято 67 процентов памяти" style="display:flex;gap:2px;height:12px;margin-top:14px;border-radius:6px;overflow:hidden;background:{{t.high}}">
+      <sc-for list="{{segs}}" as="s" hint-placeholder-count="6"><span style="width:{{s.w}};background:{{s.c}};flex:none"></span></sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 20px;margin-top:12px">
+      <sc-for list="{{segs}}" as="s" hint-placeholder-count="6">
+        <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;line-height:16px">
+          <span style="width:8px;height:8px;border-radius:4px;background:{{s.c}};flex:none"></span>
+          <span style="flex:1;color:{{t.onVar}}">{{s.label}}</span>
+          <span style="font-weight:600;font-variant-numeric:tabular-nums">{{s.size}}</span>
+        </div>
+      </sc-for>
+    </div>
+    <a href="Cleaner.dc.html" style="margin-top:14px;height:40px;border-radius:20px;background:{{t.priC}};color:{{t.onPriC}};font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.onPriC}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.sparkle}}"></path></svg>
+      Можно освободить 3,2 ГБ
+    </a>
+  </section>
+
+  <section aria-label="Категории" style="padding:0 8px;flex:none">
+    <h2 style="margin:0;padding:18px 12px 10px;font-size:16px;line-height:24px;font-weight:650">Категории</h2>
+    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px 0">
+      <sc-for list="{{cats}}" as="c" hint-placeholder-count="8">
+        <a href="{{c.href}}" style="display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:{{t.on}}">
+          <span style="width:56px;height:56px;border-radius:18px;background:{{c.bg}};display:flex;align-items:center;justify-content:center">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{c.fg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{c.icon}}"></path></svg>
+          </span>
+          <span style="font-size:12.5px;line-height:16px;font-weight:500">{{c.label}}</span>
+        </a>
+      </sc-for>
+    </div>
+  </section>
+
+  <section aria-label="Недавние файлы" style="flex:none">
+    <div style="display:flex;align-items:center;padding:16px 8px 8px 20px">
+      <h2 style="margin:0;flex:1;font-size:16px;line-height:24px;font-weight:650">Недавние</h2>
+      <a href="Search.dc.html" style="padding:8px 12px;border-radius:16px;font-size:14px;font-weight:600;color:{{t.pri}};text-decoration:none">Все</a>
+    </div>
+    <div style="display:flex;gap:10px;padding:0 16px;overflow:hidden">
+      <sc-for list="{{recents}}" as="r" hint-placeholder-count="3">
+        <div style="width:132px;flex:none;display:flex;flex-direction:column;gap:6px">
+          <div style="height:76px;border-radius:16px;background:{{r.bg}};display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="{{r.fg}}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{r.icon}}"></path></svg>
+            <span style="position:absolute;left:8px;bottom:6px;padding:1px 6px;border-radius:6px;background:{{t.card}};color:{{t.onVar}};font-size:10.5px;line-height:15px;font-weight:600;letter-spacing:0.3px">{{r.ext}}</span>
+          </div>
+          <div style="padding:0 2px">
+            <div style="font-size:13px;line-height:18px;font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{r.name}}</div>
+            <div style="font-size:12px;line-height:16px;color:{{t.onVar}}">{{r.meta}}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <div style="flex:1"></div>
+
+  <nav aria-label="Основная навигация" style="height:80px;flex:none;display:flex;background:{{t.cont}};padding:12px 0 16px;box-sizing:border-box">
+    <sc-for list="{{nav}}" as="n" hint-placeholder-count="4">
+      <a href="{{n.href}}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none">
+        <span style="width:64px;height:32px;border-radius:16px;background:{{n.pill}};display:flex;align-items:center;justify-content:center">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{n.color}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+        </span>
+        <span style="font-size:12px;line-height:16px;font-weight:{{n.weight}};color:{{n.color}}">{{n.label}}</span>
+      </a>
+    </sc-for>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false,"section":"Тема"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const d = !!this.props.dark;
+    const t = d ? {
+      bg:'#0E1514', cont:'#1A2120', high:'#252B2A', card:'#161D1C', line:'#2A3231',
+      on:'#DDE4E2', onVar:'#BEC9C7', outlineVar:'#3F4948',
+      pri:'#7FD6CD', onPri:'#003734', priC:'#00504B', onPriC:'#9DF2E9',
+      secC:'#324B48', onSecC:'#CCE8E4'
+    } : {
+      bg:'#F5F9F8', cont:'#E9EFEE', high:'#E3EAE8', card:'#FFFFFF', line:'#DCE5E3',
+      on:'#161D1C', onVar:'#3F4948', outlineVar:'#BEC9C7',
+      pri:'#006A64', onPri:'#FFFFFF', priC:'#9DF2E9', onPriC:'#00201E',
+      secC:'#CCE8E4', onSecC:'#051F1D'
+    };
+    const ic = {
+      search:'M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14z M20 20l-4.3-4.3',
+      tabs:'M4 6.5A1.5 1.5 0 0 1 5.5 5h13A1.5 1.5 0 0 1 20 6.5v11a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5z M4 9.5h16 M9 5v4.5',
+      sliders:'M4 7h9 M17 7h3 M15 5v4 M4 12h3 M11 12h9 M9 10v4 M4 17h11 M19 17h1 M17 15v4',
+      filter:'M4 6h16 M7 12h10 M10 18h4',
+      hdd:'M4 14l2.6-8.2A1.2 1.2 0 0 1 7.7 5h8.6a1.2 1.2 0 0 1 1.1.8L20 14 M4 14h16v4.8a1.2 1.2 0 0 1-1.2 1.2H5.2A1.2 1.2 0 0 1 4 18.8z M8 17h.01 M11.5 17h.01',
+      sparkle:'M12 4l1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6z M18.5 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z'
+    };
+    const P = {
+      image:'M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z M4 16l4.5-4.5 4 4 2.5-2.5 5 5 M15.5 8.5h.01',
+      video:'M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z M10 9.2v5.6l4.6-2.8z',
+      music:'M9 17.5V6l10-2v11.5 M9 17.5a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0z M19 15.5a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0z',
+      doc:'M13.5 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.5z M13.5 3v5.5H19 M8.5 13h7 M8.5 16.5h7',
+      archive:'M4 5h16v4H4z M5.5 9v9.5A1.5 1.5 0 0 0 7 20h10a1.5 1.5 0 0 0 1.5-1.5V9 M10 13h4',
+      apk:'M12 3l8 4.5v9L12 21l-8-4.5v-9z M4.3 7.6L12 12l7.7-4.4 M12 12v9',
+      download:'M12 4v11 M7.5 10.5L12 15l4.5-4.5 M5 20h14',
+      star:'M12 4l2.5 5.1 5.6.8-4 4 1 5.6-5.1-2.7-5.1 2.7 1-5.6-4-4 5.6-.8z',
+      home:'M4 10.5L12 4l8 6.5 M6 9v10.5h4.5V14h3v5.5H18V9',
+      folder:'M3.5 7.5a2 2 0 0 1 2-2h3.8l2 2h7.2a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z',
+      cloud:'M7.5 18.5a4.5 4.5 0 0 1-.4-9A6 6 0 0 1 18.3 10a4.3 4.3 0 0 1-.8 8.5z',
+      tools:'M14.5 5.5a4 4 0 0 0-5 5L4.5 15.5a2.1 2.1 0 0 0 3 3l5-5a4 4 0 0 0 5-5l-2.4 2.4-2.6-.4-.4-2.6z'
+    };
+    const C = d ? {
+      photo:['#3A2A6B','#D2C2FF','#9C84F0'], video:['#5C1A16','#FFB4A9','#E8746A'], audio:['#4D3300','#FFCF83','#E0A93A'],
+      docs:['#1F3266','#B3C5FF','#6E95EC'], archive:['#34372B','#C8CAB9','#A6AA8A'], apk:['#233A0B','#B0D58E','#86B85A'],
+      download:['#003845','#A0E2F4','#4FB8D0'], fav:['#5A1F3A','#FFB0CF','#E07BA6'], other:['#2F3635','#BEC9C7','#6F7978']
+    } : {
+      photo:['#E9DDFF','#4A2C9E','#7B5CE0'], video:['#FFDAD4','#8C1D18','#D9534A'], audio:['#FFE2B8','#6B4300','#C98A00'],
+      docs:['#D8E2FF','#1B3D8F','#3B6FD9'], archive:['#E4E6D7','#46493A','#8A8F6E'], apk:['#D5F0B9','#2C5000','#5C8A2E'],
+      download:['#C9EEF8','#00515F','#1E8FA8'], fav:['#FFD8E8','#7D1D4B','#C2457E'], other:['#E3EAE8','#3F4948','#9AA5A3']
+    };
+    const total = 128;
+    const segs = [
+      ['Фото', 21.8, 'photo'], ['Видео', 18.3, 'video'], ['Приложения', 14.1, 'apk'],
+      ['Аудио', 6.2, 'audio'], ['Документы', 3.9, 'docs'], ['Другое', 22.1, 'other']
+    ].map(([label, gb, k]) => ({ label, size: String(gb).replace('.', ',') + ' ГБ', w: (gb / total * 100).toFixed(2) + '%', c: C[k][2] }));
+    const cats = [
+      ['Фото', 'image', 'photo', 'Media.dc.html'], ['Видео', 'video', 'video', 'Media.dc.html'], ['Аудио', 'music', 'audio', 'Browser.dc.html'], ['Документы', 'doc', 'docs', 'Search.dc.html'],
+      ['Архивы', 'archive', 'archive', 'Browser.dc.html'], ['APK', 'apk', 'apk', 'Browser.dc.html'], ['Загрузки', 'download', 'download', 'Browser.dc.html'], ['Избранное', 'star', 'fav', 'Browser.dc.html']
+    ].map(([label, i, k, href]) => ({ label, icon: P[i], bg: C[k][0], fg: C[k][1], href }));
+    const recents = [
+      { name: 'Отчёт_Q3_2026.pdf', meta: '2,4 МБ · вчера', ext: 'PDF', icon: P.doc, bg: C.docs[0], fg: C.docs[1] },
+      { name: 'IMG_20261021_1845.jpg', meta: '3,1 МБ · 21 окт.', ext: 'JPG', icon: P.image, bg: C.photo[0], fg: C.photo[1] },
+      { name: 'Архив_проекта.zip', meta: '156 МБ · 19 окт.', ext: 'ZIP', icon: P.archive, bg: C.archive[0], fg: C.archive[1] }
+    ];
+    const navDef = [['Главная', 'home', 'Main.dc.html'], ['Обзор', 'folder', 'Browser.dc.html'], ['Сеть', 'cloud', 'Network.dc.html'], ['Инструменты', 'tools', 'Cleaner.dc.html']];
+    const nav = navDef.map(([label, i, href], idx) => {
+      const a = idx === 0;
+      return { label, href, icon: P[i], pill: a ? t.secC : 'transparent', color: a ? t.onSecC : t.onVar, weight: a ? 700 : 500 };
+    });
+    return { t, ic, segs, cats, recents, nav };
+  }
+}
+</script>
+</body>
+</html>

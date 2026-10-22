@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Обзор папки</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300..800&amp;family=Roboto+Mono:wght@400;500&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;display:flex;flex-direction:column;background:{{t.bg}};color:{{t.on}};font-family:'Roboto Flex',Roboto,system-ui,sans-serif">
+
+  <sc-if value="{{browse}}" hint-placeholder-val="{{ true }}">
+    <header style="display:flex;align-items:center;gap:2px;height:64px;padding:8px 4px 0 4px;box-sizing:border-box;flex:none">
+      <a href="Main.dc.html" aria-label="Назад" style="width:48px;height:48px;border-radius:24px;display:flex;align-items:center;justify-content:center;flex:none">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.on}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.back}}"></path></svg>
+      </a>
+      <div style="flex:1;min-width:0;padding-left:4px">
+        <h1 style="margin:0;font-size:22px;line-height:28px;font-weight:650;letter-spacing:-0.2px">Download</h1>
+        <div style="font-size:13px;line-height:18px;color:{{t.onVar}}">Внутренняя память · 24 объекта · 3,4 ГБ</div>
+      </div>
+      <a href="Search.dc.html" aria-label="Поиск в папке" style="width:48px;height:48px;border-radius:24px;display:flex;align-items:center;justify-content:center;flex:none">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.search}}"></path></svg>
+      </a>
+      <button aria-label="Ещё" style="width:48px;height:48px;border:0;border-radius:24px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;flex:none">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="{{ic.more}}"></path></svg>
+      </button>
+    </header>
+  </sc-if>
+
+  <sc-if value="{{select}}" hint-placeholder-val="{{ false }}">
+    <header style="display:flex;align-items:center;gap:2px;height:64px;padding:8px 4px 0 4px;box-sizing:border-box;flex:none;background:{{t.bg}}">
+      <a href="Browser.dc.html" aria-label="Отменить выбор" style="width:48px;height:48px;border-radius:24px;display:flex;align-items:center;justify-content:center;flex:none">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.on}}" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="{{ic.close}}"></path></svg>
+      </a>
+      <div style="flex:1;min-width:0;padding-left:4px">
+        <h1 style="margin:0;font-size:22px;line-height:28px;font-weight:650">3 выбрано</h1>
+        <div style="font-size:13px;line-height:18px;color:{{t.onVar}}">206,6 МБ из 24 объектов</div>
+      </div>
+      <button aria-label="Выбрать всё" style="height:40px;padding:0 14px;border:1px solid {{t.outlineVar}};border-radius:20px;background:transparent;color:{{t.pri}};font:inherit;font-size:14px;font-weight:600;flex:none">Все</button>
+      <button aria-label="Ещё действия" style="width:48px;height:48px;border:0;border-radius:24px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;flex:none">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="{{ic.more}}"></path></svg>
+      </button>
+    </header>
+  </sc-if>
+
+  <nav aria-label="Путь" style="display:flex;align-items:center;gap:4px;padding:4px 16px 0;height:48px;box-sizing:border-box;flex:none;overflow:hidden">
+    <a href="Main.dc.html" style="display:flex;align-items:center;gap:6px;height:32px;padding:0 12px 0 8px;border-radius:16px;border:1px solid {{t.outlineVar}};color:{{t.onVar}};font-size:13.5px;font-weight:550;text-decoration:none;flex:none">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.hdd}}"></path></svg>
+      Память
+    </a>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{t.outline}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none"><path d="{{ic.chevR}}"></path></svg>
+    <span aria-current="page" style="display:flex;align-items:center;height:32px;padding:0 14px;border-radius:16px;background:{{t.secC}};color:{{t.onSecC}};font-size:13.5px;font-weight:650;flex:none">Download</span>
+  </nav>
+
+  <div style="display:flex;align-items:center;gap:8px;padding:6px 16px 4px;flex:none">
+    <button style="display:flex;align-items:center;gap:6px;height:32px;padding:0 10px 0 8px;border-radius:8px;border:1px solid {{t.outlineVar}};background:transparent;color:{{t.on}};font:inherit;font-size:13px;font-weight:550">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.sortUp}}"></path></svg>
+      По имени
+    </button>
+    <button aria-pressed="true" style="display:flex;align-items:center;gap:6px;height:32px;padding:0 12px 0 8px;border-radius:8px;border:0;background:{{t.secC}};color:{{t.onSecC}};font:inherit;font-size:13px;font-weight:600">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{t.onSecC}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.check}}"></path></svg>
+      Папки сверху
+    </button>
+    <div style="flex:1"></div>
+    <div role="group" aria-label="Вид" style="display:flex;border:1px solid {{t.outlineVar}};border-radius:16px;overflow:hidden;height:32px">
+      <button aria-label="Список" aria-pressed="true" style="width:44px;border:0;background:{{t.secC}};display:flex;align-items:center;justify-content:center;padding:0">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.onSecC}}" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{ic.list}}"></path></svg>
+      </button>
+      <button aria-label="Сетка" style="width:44px;border:0;border-left:1px solid {{t.outlineVar}};background:transparent;display:flex;align-items:center;justify-content:center;padding:0">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.grid}}"></path></svg>
+      </button>
+    </div>
+  </div>
+
+  <div style="flex:1;min-height:0;overflow:hidden;padding:0 8px">
+    <div style="padding:12px 12px 4px;font-size:12.5px;line-height:16px;font-weight:650;color:{{t.onVar}};letter-spacing:0.2px">Папки · 3</div>
+    <sc-for list="{{folders}}" as="f" hint-placeholder-count="3">
+      <div style="display:flex;align-items:center;gap:14px;height:64px;padding:0 4px 0 12px;border-radius:16px">
+        <span style="width:40px;height:40px;border-radius:12px;background:{{fold.bg}};display:flex;align-items:center;justify-content:center;flex:none">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="{{fold.fill}}" stroke="{{fold.fg}}" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.folder}}"></path></svg>
+        </span>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:15.5px;line-height:22px;font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{f.name}}</div>
+          <div style="font-size:13px;line-height:18px;color:{{t.onVar}}">{{f.meta}}</div>
+        </div>
+        <sc-if value="{{browse}}" hint-placeholder-val="{{ true }}">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.outline}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:14px"><path d="{{ic.chevR}}"></path></svg>
+        </sc-if>
+        <sc-if value="{{select}}" hint-placeholder-val="{{ false }}">
+          <span aria-hidden="true" style="width:22px;height:22px;border-radius:11px;border:2px solid {{t.outline}};box-sizing:border-box;margin-right:14px"></span>
+        </sc-if>
+      </div>
+    </sc-for>
+
+    <div style="padding:12px 12px 4px;font-size:12.5px;line-height:16px;font-weight:650;color:{{t.onVar}};letter-spacing:0.2px">Файлы · 21</div>
+    <sc-for list="{{files}}" as="f" hint-placeholder-count="5">
+      <div style="display:flex;align-items:center;gap:14px;height:64px;padding:0 4px 0 12px;border-radius:16px;background:{{f.rowBg}};margin-bottom:2px">
+        <span style="width:40px;height:40px;border-radius:12px;background:{{f.bg}};display:flex;align-items:center;justify-content:center;flex:none;position:relative;overflow:hidden">
+          <sc-if value="{{f.thumb}}" hint-placeholder-val="{{ false }}">
+            <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" fill="{{f.sky}}"></rect><circle cx="29" cy="12" r="5" fill="{{f.sun}}"></circle><path d="M0 32l11-13 9 10 6-6 14 14v3H0z" fill="{{f.hill}}"></path></svg>
+          </sc-if>
+          <sc-if value="{{f.noThumb}}" hint-placeholder-val="{{ true }}">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{f.fg}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{f.icon}}"></path></svg>
+          </sc-if>
+        </span>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:15.5px;line-height:22px;font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{f.name}}</span>
+            <sc-if value="{{f.isNew}}" hint-placeholder-val="{{ false }}">
+              <span style="flex:none;height:18px;padding:0 6px;border-radius:9px;background:{{t.priC}};color:{{t.onPriC}};font-size:11px;line-height:18px;font-weight:700">Новый</span>
+            </sc-if>
+          </div>
+          <div style="font-size:13px;line-height:18px;color:{{t.onVar}};white-space:nowrap">{{f.meta}}</div>
+        </div>
+        <sc-if value="{{browse}}" hint-placeholder-val="{{ true }}">
+          <button aria-label="Действия с файлом" style="width:44px;height:44px;border:0;border-radius:22px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;flex:none">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="{{ic.more}}"></path></svg>
+          </button>
+        </sc-if>
+        <sc-if value="{{select}}" hint-placeholder-val="{{ false }}">
+          <span aria-hidden="true" style="width:22px;height:22px;border-radius:11px;border:2px solid {{f.ring}};background:{{f.dot}};box-sizing:border-box;margin-right:14px;display:flex;align-items:center;justify-content:center;flex:none">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{f.tick}}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="{{ic.check}}"></path></svg>
+          </span>
+        </sc-if>
+      </div>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{browse}}" hint-placeholder-val="{{ true }}">
+    <button style="position:absolute;right:16px;bottom:96px;height:56px;padding:0 20px 0 16px;border:0;border-radius:16px;background:{{t.priC}};color:{{t.onPriC}};font:inherit;font-size:15px;font-weight:650;display:flex;align-items:center;gap:10px;box-shadow:0 4px 12px {{t.shadow}}">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onPriC}}" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="{{ic.plus}}"></path></svg>
+      Создать
+    </button>
+    <nav aria-label="Основная навигация" style="height:80px;flex:none;display:flex;background:{{t.cont}};padding:12px 0 16px;box-sizing:border-box">
+      <sc-for list="{{nav}}" as="n" hint-placeholder-count="4">
+        <a href="{{n.href}}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none">
+          <span style="width:64px;height:32px;border-radius:16px;background:{{n.pill}};display:flex;align-items:center;justify-content:center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{n.color}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+          </span>
+          <span style="font-size:12px;line-height:16px;font-weight:{{n.weight}};color:{{n.color}}">{{n.label}}</span>
+        </a>
+      </sc-for>
+    </nav>
+  </sc-if>
+
+  <sc-if value="{{select}}" hint-placeholder-val="{{ false }}">
+    <div role="toolbar" aria-label="Действия с выбранными" style="flex:none;margin:8px 12px 16px;height:76px;border-radius:28px;background:{{t.bar}};box-shadow:0 6px 20px {{t.shadow}};display:flex;align-items:center;padding:0 6px">
+      <sc-for list="{{actions}}" as="a" hint-placeholder-count="5">
+        <a href="{{a.href}}" style="flex:1;height:64px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-decoration:none;color:{{a.color}}">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{a.color}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{a.icon}}"></path></svg>
+          <span style="font-size:12px;line-height:16px;font-weight:600">{{a.label}}</span>
+        </a>
+      </sc-for>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false,"section":"Тема"},"mode":{"editor":"enum","options":["browse","select"],"default":"browse","section":"Состояние"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const d = !!this.props.dark;
+    const select = (this.props.mode ?? 'browse') === 'select';
+    const t = d ? {
+      bg:'#0E1514', cont:'#1A2120', high:'#252B2A', card:'#161D1C', bar:'#252B2A',
+      on:'#DDE4E2', onVar:'#BEC9C7', outline:'#899391', outlineVar:'#3F4948',
+      pri:'#7FD6CD', onPri:'#003734', priC:'#00504B', onPriC:'#9DF2E9',
+      secC:'#324B48', onSecC:'#CCE8E4', err:'#FFB4AB', shadow:'rgba(0,0,0,0.45)'
+    } : {
+      bg:'#F5F9F8', cont:'#E9EFEE', high:'#E3EAE8', card:'#FFFFFF', bar:'#FFFFFF',
+      on:'#161D1C', onVar:'#3F4948', outline:'#6F7978', outlineVar:'#BEC9C7',
+      pri:'#006A64', onPri:'#FFFFFF', priC:'#9DF2E9', onPriC:'#00201E',
+      secC:'#CCE8E4', onSecC:'#051F1D', err:'#BA1A1A', shadow:'rgba(22,29,28,0.16)'
+    };
+    const ic = {
+      back:'M19 12H5 M11 6l-6 6 6 6',
+      close:'M6 6l12 12 M18 6L6 18',
+      search:'M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14z M20 20l-4.3-4.3',
+      more:'M12 5.5h.01 M12 12h.01 M12 18.5h.01',
+      hdd:'M4 14l2.6-8.2A1.2 1.2 0 0 1 7.7 5h8.6a1.2 1.2 0 0 1 1.1.8L20 14 M4 14h16v4.8a1.2 1.2 0 0 1-1.2 1.2H5.2A1.2 1.2 0 0 1 4 18.8z M8 17h.01 M11.5 17h.01',
+      chevR:'M9 6l6 6-6 6',
+      sortUp:'M7 20V5 M3.5 8.5L7 5l3.5 3.5 M13 7h7 M13 12h5 M13 17h3',
+      check:'M5 12.5l4.5 4.5L19 7.5',
+      list:'M9 6h11 M9 12h11 M9 18h11 M4.5 6h.01 M4.5 12h.01 M4.5 18h.01',
+      grid:'M4 4h6.5v6.5H4z M13.5 4H20v6.5h-6.5z M4 13.5h6.5V20H4z M13.5 13.5H20V20h-6.5z',
+      folder:'M3.5 7.5a2 2 0 0 1 2-2h3.8l2 2h7.2a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z',
+      plus:'M12 5v14 M5 12h14'
+    };
+    const P = {
+      image:'M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z M4 16l4.5-4.5 4 4 2.5-2.5 5 5 M15.5 8.5h.01',
+      music:'M9 17.5V6l10-2v11.5 M9 17.5a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0z M19 15.5a2.5 2.5 0 1 1-5 0a2.5 2.5 0 0 1 5 0z',
+      doc:'M13.5 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.5z M13.5 3v5.5H19 M8.5 13h7 M8.5 16.5h7',
+      sheet:'M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z M4 9.5h16 M4 14.5h16 M10 9.5V20',
+      archive:'M4 5h16v4H4z M5.5 9v9.5A1.5 1.5 0 0 0 7 20h10a1.5 1.5 0 0 0 1.5-1.5V9 M10 13h4',
+      apk:'M12 3l8 4.5v9L12 21l-8-4.5v-9z M4.3 7.6L12 12l7.7-4.4 M12 12v9',
+      home:'M4 10.5L12 4l8 6.5 M6 9v10.5h4.5V14h3v5.5H18V9',
+      folder:'M3.5 7.5a2 2 0 0 1 2-2h3.8l2 2h7.2a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z',
+      cloud:'M7.5 18.5a4.5 4.5 0 0 1-.4-9A6 6 0 0 1 18.3 10a4.3 4.3 0 0 1-.8 8.5z',
+      tools:'M14.5 5.5a4 4 0 0 0-5 5L4.5 15.5a2.1 2.1 0 0 0 3 3l5-5a4 4 0 0 0 5-5l-2.4 2.4-2.6-.4-.4-2.6z',
+      copy:'M9 9h10a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H10a1 1 0 0 1-1-1z M5.5 15H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v.5',
+      move:'M3.5 7.5a2 2 0 0 1 2-2h3.8l2 2h7.2a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z M9 13h6.5 M13 10.5l2.5 2.5-2.5 2.5',
+      share:'M18 3.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 0 1 0-5z M6 9.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 0 1 0-5z M18 15.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 0 1 0-5z M8.3 13.2l7.4 3.6 M15.7 7.2l-7.4 3.6',
+      trash:'M4 7h16 M10 11v6 M14 11v6 M6 7l1 12.2A1 1 0 0 0 8 20h8a1 1 0 0 0 1-.8L18 7 M9 7V4.5h6V7'
+    };
+    const C = d ? {
+      photo:['#3A2A6B','#D2C2FF'], audio:['#4D3300','#FFCF83'], docs:['#1F3266','#B3C5FF'],
+      archive:['#34372B','#C8CAB9'], apk:['#233A0B','#B0D58E'], sheet:['#16392A','#9ED8B6']
+    } : {
+      photo:['#E9DDFF','#4A2C9E'], audio:['#FFE2B8','#6B4300'], docs:['#D8E2FF','#1B3D8F'],
+      archive:['#E4E6D7','#46493A'], apk:['#D5F0B9','#2C5000'], sheet:['#CDEFD9','#0F5132']
+    };
+    const fold = d ? { bg:'#1F3A37', fg:'#9DF2E9', fill:'#2C5551' } : { bg:'#CCE8E4', fg:'#00504B', fill:'#A8DCD5' };
+    const folders = [
+      { name:'Telegram', meta:'148 объектов · сегодня, 09:12' },
+      { name:'Документы_работа', meta:'32 объекта · 18 окт.' },
+      { name:'Шрифты', meta:'12 объектов · 2 авг.' }
+    ];
+    const raw = [
+      { name:'Отчёт_Q3_2026.pdf', meta:'PDF · 2,4 МБ · вчера, 18:40', k:'docs', icon:P.doc, isNew:true, sel:true },
+      { name:'IMG_20261021_1845.jpg', meta:'JPG · 3,1 МБ · 21 окт.', k:'photo', icon:P.image, thumb:true, sel:false },
+      { name:'setup-v2.4.1.apk', meta:'APK · 48,2 МБ · 20 окт.', k:'apk', icon:P.apk, sel:true },
+      { name:'Архив_проекта.zip', meta:'ZIP · 156 МБ · 19 окт.', k:'archive', icon:P.archive, sel:true },
+      { name:'Голосовое_0412.m4a', meta:'M4A · 812 КБ · 17 окт.', k:'audio', icon:P.music, sel:false },
+      { name:'Бюджет_2027.xlsx', meta:'XLSX · 96 КБ · 15 окт.', k:'sheet', icon:P.sheet, sel:false }
+    ];
+    const files = raw.map((f) => {
+      const on = select && f.sel;
+      return Object.assign({}, f, {
+        bg: C[f.k][0], fg: C[f.k][1], thumb: !!f.thumb, noThumb: !f.thumb, isNew: !!f.isNew && !select,
+        sky: d ? '#3A2A6B' : '#DCD3F5', sun: d ? '#E0A93A' : '#F2B84B', hill: d ? '#6A55B8' : '#8F78DE',
+        rowBg: on ? t.secC : 'transparent',
+        ring: on ? t.pri : t.outline, dot: on ? t.pri : 'transparent', tick: on ? t.onPri : 'transparent'
+      });
+    });
+    const navDef = [['Главная','home','Main.dc.html'],['Обзор','folder','Browser.dc.html'],['Сеть','cloud','Network.dc.html'],['Инструменты','tools','Cleaner.dc.html']];
+    const nav = navDef.map(([label, i, href], idx) => {
+      const a = idx === 1;
+      return { label, href, icon:P[i], pill: a ? t.secC : 'transparent', color: a ? t.onSecC : t.onVar, weight: a ? 700 : 500 };
+    });
+    const actions = [
+      { label:'Копировать', icon:P.copy, href:'Operations.dc.html', color:t.on },
+      { label:'Переместить', icon:P.move, href:'Operations.dc.html', color:t.on },
+      { label:'Поделиться', icon:P.share, href:'Selection.dc.html', color:t.on },
+      { label:'В архив', icon:P.archive, href:'Operations.dc.html', color:t.on },
+      { label:'Удалить', icon:P.trash, href:'Operations.dc.html', color:t.err }
+    ];
+    return { t, ic, fold, folders, files, nav, actions, select, browse: !select };
+  }
+}
+</script>
+</body>
+</html>

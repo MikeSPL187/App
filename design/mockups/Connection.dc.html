@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Новое подключение SFTP</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300..800&amp;family=Roboto+Mono:wght@400;500&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;display:flex;flex-direction:column;background:{{t.bg}};color:{{t.on}};font-family:'Roboto Flex',Roboto,system-ui,sans-serif">
+
+  <header style="display:flex;align-items:center;gap:2px;height:64px;padding:8px 8px 0 4px;box-sizing:border-box;flex:none">
+    <a href="Network.dc.html" aria-label="Закрыть" style="width:48px;height:48px;border-radius:24px;display:flex;align-items:center;justify-content:center">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.on}}" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="{{ic.close}}"></path></svg>
+    </a>
+    <h1 style="margin:0;flex:1;padding-left:4px;font-size:22px;line-height:28px;font-weight:650">Новое подключение</h1>
+    <button style="height:40px;padding:0 12px;border:0;border-radius:20px;background:transparent;color:{{t.pri}};font:inherit;font-size:14px;font-weight:650">Сохранить</button>
+  </header>
+
+  <form style="flex:1;min-height:0;overflow:hidden;padding:8px 16px 0;display:flex;flex-direction:column;gap:16px">
+    <div role="radiogroup" aria-label="Протокол" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px">
+      <sc-for list="{{protos}}" as="p" hint-placeholder-count="4">
+        <button type="button" role="radio" aria-checked="{{p.checked}}" style="height:40px;border-radius:12px;border:1px solid {{p.border}};background:{{p.bg}};color:{{p.fg}};font:inherit;font-size:13.5px;font-weight:{{p.weight}}">{{p.label}}</button>
+      </sc-for>
+    </div>
+
+    <div style="display:grid;grid-template-columns:minmax(0,2.4fr) minmax(0,1fr);gap:10px">
+      <label style="position:relative;display:block">
+        <span style="position:absolute;top:-8px;left:12px;padding:0 4px;background:{{t.bg}};font-size:12px;line-height:16px;color:{{t.pri}};font-weight:600">Адрес сервера</span>
+        <input type="text" value="192.168.1.50" style="width:100%;box-sizing:border-box;height:56px;padding:0 16px;border:2px solid {{t.pri}};border-radius:12px;background:transparent;color:{{t.on}};font:inherit;font-size:16px;outline:none">
+      </label>
+      <label style="position:relative;display:block">
+        <span style="position:absolute;top:-8px;left:12px;padding:0 4px;background:{{t.bg}};font-size:12px;line-height:16px;color:{{t.onVar}}">Порт</span>
+        <input type="text" inputmode="numeric" value="22" style="width:100%;box-sizing:border-box;height:56px;padding:0 16px;border:1px solid {{t.outline}};border-radius:12px;background:transparent;color:{{t.on}};font:inherit;font-size:16px;outline:none">
+      </label>
+    </div>
+
+    <label style="position:relative;display:block">
+      <span style="position:absolute;top:-8px;left:12px;padding:0 4px;background:{{t.bg}};font-size:12px;line-height:16px;color:{{t.onVar}}">Имя пользователя</span>
+      <input type="text" value="pi" autocomplete="username" style="width:100%;box-sizing:border-box;height:56px;padding:0 16px;border:1px solid {{t.outline}};border-radius:12px;background:transparent;color:{{t.on}};font:inherit;font-size:16px;outline:none">
+    </label>
+
+    <div>
+      <div style="font-size:13px;line-height:18px;font-weight:600;color:{{t.onVar}};margin:0 0 8px 4px">Вход</div>
+      <div role="radiogroup" aria-label="Способ входа" style="display:flex;height:40px;border:1px solid {{t.outline}};border-radius:20px;overflow:hidden">
+        <button type="button" role="radio" aria-checked="false" style="flex:1;border:0;background:transparent;color:{{t.on}};font:inherit;font-size:13.5px;font-weight:600">Пароль</button>
+        <button type="button" role="radio" aria-checked="true" style="flex:1;border:0;border-left:1px solid {{t.outline}};background:{{t.secC}};color:{{t.onSecC}};font:inherit;font-size:13.5px;font-weight:650;display:flex;align-items:center;justify-content:center;gap:6px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{t.onSecC}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.check}}"></path></svg>
+          Ключ SSH
+        </button>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:10px;padding:12px 8px 12px 14px;border-radius:16px;background:{{t.card}}">
+        <span style="width:36px;height:36px;border-radius:11px;background:{{t.secC}};display:flex;align-items:center;justify-content:center;flex:none">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.onSecC}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.key}}"></path></svg>
+        </span>
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Roboto Mono',monospace;font-size:14px;line-height:20px;font-weight:500">id_ed25519</div>
+          <div style="font-size:12.5px;line-height:16px;color:{{t.onVar}}">ED25519 · защищён парольной фразой</div>
+        </div>
+        <button type="button" style="height:36px;padding:0 12px;border:0;border-radius:18px;background:transparent;color:{{t.pri}};font:inherit;font-size:13.5px;font-weight:650">Заменить</button>
+      </div>
+    </div>
+
+    <label style="position:relative;display:block">
+      <span style="position:absolute;top:-8px;left:12px;padding:0 4px;background:{{t.bg}};font-size:12px;line-height:16px;color:{{t.onVar}}">Название (необязательно)</span>
+      <input type="text" value="Raspberry Pi" style="width:100%;box-sizing:border-box;height:56px;padding:0 16px;border:1px solid {{t.outline}};border-radius:12px;background:transparent;color:{{t.on}};font:inherit;font-size:16px;outline:none">
+    </label>
+
+    <section aria-label="Проверка сервера" style="padding:14px 16px;border-radius:20px;background:{{t.okC}};color:{{t.onOkC}}">
+      <div style="display:flex;align-items:center;gap:10px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{t.onOkC}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.shield}}"></path></svg>
+        <span style="font-size:14.5px;line-height:20px;font-weight:650">Отпечаток ключа сервера</span>
+      </div>
+      <div style="margin-top:8px;font-family:'Roboto Mono',monospace;font-size:12.5px;line-height:18px;word-break:break-all">SHA256:Xk3q9VfR2tLm8pQ0wZ7cN4yH1sB6dJ5gE2aU9oK1Rw</div>
+      <div style="margin-top:6px;font-size:12.5px;line-height:17px;opacity:0.9">Сверьте с сервером. Если ключ изменится, приложение не подключится молча и предупредит вас.</div>
+    </section>
+
+    <div style="display:flex;gap:10px;align-items:flex-start;padding:0 4px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;margin-top:1px"><path d="{{ic.lock}}"></path></svg>
+      <span style="font-size:12.5px;line-height:17px;color:{{t.onVar}}">Пароли и ключи хранятся в Android Keystore и не попадают в облачные резервные копии.</span>
+    </div>
+  </form>
+
+  <div style="padding:12px 16px 20px;flex:none">
+    <button style="width:100%;height:52px;border:0;border-radius:26px;background:{{t.pri}};color:{{t.onPri}};font:inherit;font-size:15.5px;font-weight:650">Проверить и подключить</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false,"section":"Тема"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const d = !!this.props.dark;
+    const t = d ? {
+      bg:'#0E1514', card:'#1A2120', on:'#DDE4E2', onVar:'#BEC9C7', outline:'#899391', outlineVar:'#3F4948',
+      pri:'#7FD6CD', onPri:'#003734', secC:'#324B48', onSecC:'#CCE8E4', okC:'#1F3A37', onOkC:'#B8F0E8'
+    } : {
+      bg:'#F5F9F8', card:'#FFFFFF', on:'#161D1C', onVar:'#3F4948', outline:'#6F7978', outlineVar:'#BEC9C7',
+      pri:'#006A64', onPri:'#FFFFFF', secC:'#CCE8E4', onSecC:'#051F1D', okC:'#D3F0EB', onOkC:'#00332F'
+    };
+    const ic = {
+      close:'M6 6l12 12 M18 6L6 18',
+      check:'M5 12.5l4.5 4.5L19 7.5',
+      key:'M14.5 4a5 5 0 1 1-4.3 7.6L4 17.8V20h2.5v-2h2v-2h2l1.2-1.2A5 5 0 0 1 14.5 4z M16 8h.01',
+      shield:'M12 3.5l7 2.6v5.4c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6.1z M9 12l2 2 4-4',
+      lock:'M6 11h12v9H6z M8.5 11V8a3.5 3.5 0 0 1 7 0v3'
+    };
+    const protos = ['SMB', 'SFTP', 'FTP(S)', 'WebDAV'].map((label, i) => {
+      const on = i === 1;
+      return { label, checked: on ? 'true' : 'false', bg: on ? t.secC : 'transparent', fg: on ? t.onSecC : t.on, border: on ? t.secC : t.outlineVar, weight: on ? 700 : 550 };
+    });
+    return { t, ic, protos };
+  }
+}
+</script>
+</body>
+</html>

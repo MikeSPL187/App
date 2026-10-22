@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Premium</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300..800&amp;family=Roboto+Mono:wght@400;500&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;display:flex;flex-direction:column;background:{{t.bg}};color:{{t.on}};font-family:'Roboto Flex',Roboto,system-ui,sans-serif">
+
+  <header style="display:flex;align-items:center;justify-content:space-between;height:56px;padding:8px 8px 0 4px;box-sizing:border-box;flex:none">
+    <a href="Settings.dc.html" aria-label="Закрыть" style="width:48px;height:48px;border-radius:24px;display:flex;align-items:center;justify-content:center">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.on}}" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="{{ic.close}}"></path></svg>
+    </a>
+    <button style="height:40px;padding:0 12px;border:0;border-radius:20px;background:transparent;color:{{t.pri}};font:inherit;font-size:14px;font-weight:650">Восстановить покупки</button>
+  </header>
+
+  <div style="display:flex;align-items:center;gap:14px;padding:4px 24px 0;flex:none">
+    <span style="width:56px;height:56px;border-radius:18px;background:{{t.terC}};display:flex;align-items:center;justify-content:center;flex:none">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="{{t.onTerC}}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.crown}}"></path></svg>
+    </span>
+    <div>
+      <h1 style="margin:0;font-size:28px;line-height:34px;font-weight:700;letter-spacing:-0.4px">Premium</h1>
+      <div style="font-size:14px;line-height:20px;color:{{t.onVar}}">Поддержите разработку и уберите лишнее</div>
+    </div>
+  </div>
+
+  <ul style="list-style:none;margin:16px 16px 0;padding:6px 0;border-radius:24px;background:{{t.card}};flex:none">
+    <sc-for list="{{feats}}" as="f" hint-placeholder-count="5">
+      <li style="display:flex;align-items:center;gap:12px;padding:8px 16px">
+        <span style="width:24px;height:24px;border-radius:12px;background:{{t.secC}};display:flex;align-items:center;justify-content:center;flex:none">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{t.onSecC}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.check}}"></path></svg>
+        </span>
+        <span style="display:flex;flex-direction:column">
+          <span style="font-size:15px;line-height:20px;font-weight:600">{{f.title}}</span>
+          <span style="font-size:12.5px;line-height:17px;color:{{t.onVar}}">{{f.sub}}</span>
+        </span>
+      </li>
+    </sc-for>
+  </ul>
+
+  <div style="display:flex;gap:10px;align-items:flex-start;margin:12px 20px 0;flex:none">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.pri}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;margin-top:1px"><path d="{{ic.heart}}"></path></svg>
+    <span style="font-size:13px;line-height:18px;color:{{t.onVar}}">Тёмная тема, облака, сеть, root и Shizuku остаются бесплатными.</span>
+  </div>
+
+  <div role="radiogroup" aria-label="Тариф" style="display:flex;flex-direction:column;gap:8px;margin:14px 16px 0;flex:none">
+    <sc-for list="{{plans}}" as="p" hint-placeholder-count="3">
+      <label style="position:relative;display:flex;align-items:center;gap:12px;min-height:60px;padding:8px 16px;box-sizing:border-box;border-radius:20px;border:{{p.border}};background:{{p.bg}}">
+        <input type="radio" name="plan" checked="{{p.on}}" style="width:20px;height:20px;margin:0;accent-color:{{t.pri}};flex:none">
+        <span style="flex:1;display:flex;flex-direction:column">
+          <span style="font-size:15.5px;line-height:21px;font-weight:650">{{p.title}}</span>
+          <span style="font-size:12.5px;line-height:17px;color:{{t.onVar}}">{{p.sub}}</span>
+        </span>
+        <span style="font-size:15px;font-weight:700">{{p.price}}</span>
+        <sc-if value="{{p.badge}}" hint-placeholder-val="{{ false }}">
+          <span style="position:absolute;top:-9px;right:16px;height:18px;padding:0 8px;border-radius:9px;background:{{t.pri}};color:{{t.onPri}};font-size:11px;line-height:18px;font-weight:700">Выгоднее</span>
+        </sc-if>
+      </label>
+    </sc-for>
+  </div>
+
+  <div style="flex:1"></div>
+  <div style="padding:0 16px 18px;flex:none">
+    <button style="width:100%;height:52px;border:0;border-radius:26px;background:{{t.pri}};color:{{t.onPri}};font:inherit;font-size:15.5px;font-weight:700">Попробовать 7 дней бесплатно</button>
+    <p style="margin:10px 8px 0;font-size:12px;line-height:17px;color:{{t.onVar}};text-align:center">Затем [ЦЕНА] в год. Напомним за 2 дня до списания. Отмена — в Google Play в любой момент.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false,"section":"Тема"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const d = !!this.props.dark;
+    const t = d ? {
+      bg:'#0E1514', card:'#1A2120', on:'#DDE4E2', onVar:'#BEC9C7', outline:'#899391', outlineVar:'#3F4948',
+      pri:'#7FD6CD', onPri:'#003734', secC:'#324B48', onSecC:'#CCE8E4', selBg:'#1F3A37', terC:'#5C4300', onTerC:'#FFDF9E'
+    } : {
+      bg:'#F5F9F8', card:'#FFFFFF', on:'#161D1C', onVar:'#3F4948', outline:'#6F7978', outlineVar:'#BEC9C7',
+      pri:'#006A64', onPri:'#FFFFFF', secC:'#CCE8E4', onSecC:'#051F1D', selBg:'#E6F5F2', terC:'#FFDF9E', onTerC:'#261A00'
+    };
+    const ic = {
+      close:'M6 6l12 12 M18 6L6 18',
+      crown:'M3.5 8l4.5 4 4-6.5 4 6.5 4.5-4-1.8 10.5H5.3z',
+      check:'M5 12.5l4.5 4.5L19 7.5',
+      heart:'M12 19.5s-7.5-4.4-7.5-10A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 7.5 2.5c0 5.6-7.5 10-7.5 10z'
+    };
+    const feats = [
+      { title:'Без рекламы', sub:'Ни баннеров, ни видео при запуске' },
+      { title:'Защищённая папка', sub:'Шифрование и вход по отпечатку' },
+      { title:'Две панели и вкладки', sub:'Для планшетов и складных телефонов' },
+      { title:'Синхронизация папок', sub:'Папка на телефоне ↔ облако' },
+      { title:'Поддержка напрямую', sub:'Ответ от разработчика' }
+    ];
+    const plans = [
+      { title:'Год', sub:'7 дней бесплатно', price:'[ЦЕНА]', on:true, badge:true },
+      { title:'Месяц', sub:'Без пробного периода', price:'[ЦЕНА]', on:false, badge:false },
+      { title:'Навсегда', sub:'Один платёж', price:'[ЦЕНА]', on:false, badge:false }
+    ].map((p) => Object.assign({}, p, {
+      border: p.on ? '2px solid ' + t.pri : '1px solid ' + t.outlineVar,
+      bg: p.on ? t.selBg : t.card
+    }));
+    return { t, ic, feats, plans };
+  }
+}
+</script>
+</body>
+</html>

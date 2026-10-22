@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Настройки</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300..800&amp;family=Roboto+Mono:wght@400;500&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width:390px;height:1080px;box-sizing:border-box;position:relative;overflow:hidden;display:flex;flex-direction:column;background:{{t.bg}};color:{{t.on}};font-family:'Roboto Flex',Roboto,system-ui,sans-serif">
+
+  <header style="display:flex;align-items:center;gap:2px;height:64px;padding:8px 8px 0 4px;box-sizing:border-box;flex:none">
+    <a href="Main.dc.html" aria-label="Назад" style="width:48px;height:48px;border-radius:24px;display:flex;align-items:center;justify-content:center">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.on}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.back}}"></path></svg>
+    </a>
+    <h1 style="margin:0;flex:1;padding-left:4px;font-size:22px;line-height:28px;font-weight:650">Настройки</h1>
+    <button aria-label="Поиск по настройкам" style="width:48px;height:48px;border:0;border-radius:24px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.search}}"></path></svg>
+    </button>
+  </header>
+
+  <a href="Paywall.dc.html" style="margin:8px 16px 0;padding:16px;border-radius:24px;background:{{t.terC}};color:{{t.onTerC}};display:flex;align-items:center;gap:14px;text-decoration:none;flex:none">
+    <span style="width:44px;height:44px;border-radius:14px;background:{{t.terIn}};display:flex;align-items:center;justify-content:center;flex:none">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onTerC}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.crown}}"></path></svg>
+    </span>
+    <span style="flex:1;display:flex;flex-direction:column">
+      <span style="font-size:16px;line-height:22px;font-weight:650">File Manager+ Premium</span>
+      <span style="font-size:13px;line-height:18px;opacity:0.85">Без рекламы, защищённая папка, две панели</span>
+    </span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.onTerC}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.chevR}}"></path></svg>
+  </a>
+
+  <h2 style="margin:0;padding:20px 20px 8px;font-size:14px;line-height:20px;font-weight:650;color:{{t.pri}};flex:none">Оформление</h2>
+  <div style="margin:0 16px;display:flex;flex-direction:column;gap:2px;border-radius:24px;overflow:hidden;flex:none">
+    <div style="padding:14px 16px 16px;background:{{t.card}}">
+      <div style="font-size:15.5px;line-height:22px;font-weight:550">Тема</div>
+      <div style="font-size:12.5px;line-height:17px;color:{{t.onVar}};margin-bottom:10px">Доступна всем, без подписки</div>
+      <div role="radiogroup" aria-label="Тема" style="display:flex;height:40px;border:1px solid {{t.outline}};border-radius:20px;overflow:hidden">
+        <sc-for list="{{themes}}" as="m" hint-placeholder-count="3">
+          <button role="radio" aria-checked="{{m.checked}}" style="flex:1;border:0;border-left:{{m.divider}};background:{{m.bg}};color:{{m.fg}};font:inherit;font-size:13.5px;font-weight:{{m.weight}};display:flex;align-items:center;justify-content:center;gap:5px">
+            <sc-if value="{{m.on}}" hint-placeholder-val="{{ false }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{m.fg}}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.check}}"></path></svg>
+            </sc-if>
+            {{m.label}}
+          </button>
+        </sc-for>
+      </div>
+    </div>
+    <sc-for list="{{g1}}" as="r" hint-placeholder-count="2">
+      <div style="display:flex;align-items:center;gap:12px;min-height:60px;padding:8px 16px;box-sizing:border-box;background:{{t.card}}">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:15.5px;line-height:22px;font-weight:550">{{r.title}}</div>
+          <sc-if value="{{r.hasSub}}" hint-placeholder-val="{{ true }}"><div style="font-size:12.5px;line-height:17px;color:{{t.onVar}}">{{r.sub}}</div></sc-if>
+        </div>
+        <sc-if value="{{r.isValue}}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:{{t.onVar}}">{{r.value}}</span></sc-if>
+        <sc-if value="{{r.isSwitch}}" hint-placeholder-val="{{ true }}">
+          <span role="switch" aria-checked="{{r.aria}}" aria-label="{{r.title}}" style="position:relative;width:52px;height:32px;border-radius:16px;background:{{r.track}};border:2px solid {{r.edge}};box-sizing:border-box;flex:none">
+            <span style="position:absolute;top:{{r.kTop}};left:{{r.kLeft}};width:{{r.kSize}};height:{{r.kSize}};border-radius:12px;background:{{r.knob}}"></span>
+          </span>
+        </sc-if>
+      </div>
+    </sc-for>
+  </div>
+
+  <sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+    <h2 style="margin:0;padding:20px 20px 8px;font-size:14px;line-height:20px;font-weight:650;color:{{t.pri}}">{{g.title}}</h2>
+    <div style="margin:0 16px;display:flex;flex-direction:column;gap:2px;border-radius:24px;overflow:hidden">
+      <sc-for list="{{g.rows}}" as="r" hint-placeholder-count="3">
+        <div style="display:flex;align-items:center;gap:12px;min-height:60px;padding:8px 16px;box-sizing:border-box;background:{{t.card}}">
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:15.5px;line-height:22px;font-weight:550">{{r.title}}</span>
+              <sc-if value="{{r.premium}}" hint-placeholder-val="{{ false }}">
+                <span style="height:18px;padding:0 6px;border-radius:9px;background:{{t.terC}};color:{{t.onTerC}};font-size:10.5px;line-height:18px;font-weight:700">PREMIUM</span>
+              </sc-if>
+            </div>
+            <sc-if value="{{r.hasSub}}" hint-placeholder-val="{{ true }}"><div style="font-size:12.5px;line-height:17px;color:{{t.onVar}}">{{r.sub}}</div></sc-if>
+          </div>
+          <sc-if value="{{r.isValue}}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:{{t.onVar}};white-space:nowrap">{{r.value}}</span></sc-if>
+          <sc-if value="{{r.isSwitch}}" hint-placeholder-val="{{ true }}">
+            <span role="switch" aria-checked="{{r.aria}}" aria-label="{{r.title}}" style="position:relative;width:52px;height:32px;border-radius:16px;background:{{r.track}};border:2px solid {{r.edge}};box-sizing:border-box;flex:none">
+              <span style="position:absolute;top:{{r.kTop}};left:{{r.kLeft}};width:{{r.kSize}};height:{{r.kSize}};border-radius:12px;background:{{r.knob}}"></span>
+            </span>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false,"section":"Тема"},"$preview":{"width":390,"height":1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const d = !!this.props.dark;
+    const t = d ? {
+      bg:'#0E1514', card:'#1A2120', on:'#DDE4E2', onVar:'#BEC9C7', outline:'#899391',
+      pri:'#7FD6CD', onPri:'#003734', secC:'#324B48', onSecC:'#CCE8E4',
+      terC:'#5C4300', onTerC:'#FFDF9E', terIn:'#735500', swOff:'#2F3635', knobOff:'#899391'
+    } : {
+      bg:'#F5F9F8', card:'#FFFFFF', on:'#161D1C', onVar:'#3F4948', outline:'#6F7978',
+      pri:'#006A64', onPri:'#FFFFFF', secC:'#CCE8E4', onSecC:'#051F1D',
+      terC:'#FFDF9E', onTerC:'#261A00', terIn:'#FFEFC7', swOff:'#E3EAE8', knobOff:'#6F7978'
+    };
+    const ic = {
+      back:'M19 12H5 M11 6l-6 6 6 6',
+      search:'M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14z M20 20l-4.3-4.3',
+      crown:'M3.5 8l4.5 4 4-6.5 4 6.5 4.5-4-1.8 10.5H5.3z',
+      chevR:'M9 6l6 6-6 6',
+      check:'M5 12.5l4.5 4.5L19 7.5'
+    };
+    const sel = d ? 1 : 2;
+    const themes = ['Светлая', 'Тёмная', 'Системная'].map((label, i) => ({
+      label, on: i === sel, checked: i === sel ? 'true' : 'false',
+      bg: i === sel ? t.secC : 'transparent', fg: i === sel ? t.onSecC : t.on,
+      weight: i === sel ? 700 : 550, divider: i === 0 ? '0' : '1px solid ' + t.outline
+    }));
+    const row = (title, sub, kind, val) => {
+      const on = kind === 'switch' && val === true;
+      return {
+        title, sub: sub || '', hasSub: !!sub, isSwitch: kind === 'switch', isValue: kind === 'value', value: kind === 'value' ? val : '',
+        premium: false, aria: on ? 'true' : 'false',
+        track: on ? t.pri : t.swOff, edge: on ? t.pri : t.outline, knob: on ? t.onPri : t.knobOff,
+        kSize: on ? '24px' : '16px', kTop: on ? '2px' : '6px', kLeft: on ? '22px' : '6px'
+      };
+    };
+    const g1 = [
+      row('Цвета из обоев', 'Material You, Android 12 и новее', 'switch', true),
+      row('Плотность списка', '', 'value', 'Обычная')
+    ];
+    const prem = (r) => Object.assign(r, { premium: true });
+    const groups = [
+      { title:'Файлы', rows:[
+        row('Скрытые файлы', 'Показывать файлы с точкой в начале имени', 'switch', false),
+        row('Корзина', 'Удалённое можно вернуть', 'value', '30 дней'),
+        row('Встроенные просмотрщики', 'Фото, видео, музыка, текст', 'switch', true)
+      ]},
+      { title:'Безопасность', rows:[
+        row('Блокировка приложения', 'Отпечаток пальца, лицо или PIN', 'switch', false),
+        prem(row('Защищённая папка', 'Шифрование AES-256, ключ в Keystore', 'value', 'Настроить')),
+        row('Расширенный доступ', 'Android/data и obb через Shizuku', 'value', 'Включён')
+      ]},
+      { title:'Конфиденциальность', rows:[
+        row('Персонализированная реклама', 'Можно отключить в любой момент', 'switch', false),
+        row('Отчёты о сбоях', 'Без имён файлов и путей', 'switch', true)
+      ]}
+    ];
+    return { t, ic, themes, g1, groups };
+  }
+}
+</script>
+</body>
+</html>

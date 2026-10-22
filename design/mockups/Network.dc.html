@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Сеть и облака</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300..800&amp;family=Roboto+Mono:wght@400;500&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;display:flex;flex-direction:column;background:{{t.bg}};color:{{t.on}};font-family:'Roboto Flex',Roboto,system-ui,sans-serif">
+
+  <header style="display:flex;align-items:center;height:64px;padding:8px 8px 0 20px;box-sizing:border-box;flex:none">
+    <h1 style="margin:0;flex:1;font-size:26px;line-height:32px;font-weight:650;letter-spacing:-0.3px">Сеть</h1>
+    <a href="Connection.dc.html" aria-label="Добавить подключение" style="width:48px;height:48px;border-radius:24px;display:flex;align-items:center;justify-content:center">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="{{ic.plus}}"></path></svg>
+    </a>
+  </header>
+
+  <section aria-label="Доступ с ПК" style="margin:8px 16px 0;padding:16px;border-radius:28px;background:{{t.priC}};color:{{t.onPriC}};flex:none">
+    <div style="display:flex;align-items:center;gap:12px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onPriC}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.laptop}}"></path></svg>
+      <div style="flex:1">
+        <div style="font-size:16px;line-height:22px;font-weight:650">Доступ с ПК</div>
+        <div style="font-size:13px;line-height:18px;opacity:0.85">Подключено 1 устройство</div>
+      </div>
+      <label style="position:relative;width:52px;height:32px;flex:none">
+        <input type="checkbox" checked aria-label="Сервер включён" style="position:absolute;inset:0;opacity:0;margin:0">
+        <span aria-hidden="true" style="position:absolute;inset:0;border-radius:16px;background:{{t.pri}}"></span>
+        <span aria-hidden="true" style="position:absolute;top:4px;left:24px;width:24px;height:24px;border-radius:12px;background:{{t.onPri}}"></span>
+      </label>
+    </div>
+    <div style="margin-top:12px;padding:10px 12px;border-radius:14px;background:{{t.inPri}};font-family:'Roboto Mono',monospace;font-size:15px;line-height:20px;font-weight:500;display:flex;align-items:center;gap:8px">
+      <span style="flex:1">ftps://192.168.1.34:2221</span>
+      <button aria-label="Показать QR-код" style="width:36px;height:36px;border:0;border-radius:18px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.onPriC}}" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.qr}}"></path></svg>
+      </button>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+      <sc-for list="{{flags}}" as="f" hint-placeholder-count="3">
+        <span style="display:flex;align-items:center;gap:4px;height:26px;padding:0 10px 0 6px;border-radius:13px;background:{{t.inPri}};font-size:12px;font-weight:600">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{t.onPriC}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{f.icon}}"></path></svg>
+          {{f.label}}
+        </span>
+      </sc-for>
+    </div>
+  </section>
+
+  <h2 style="margin:0;padding:16px 20px 8px;font-size:16px;line-height:24px;font-weight:650;flex:none">Облака</h2>
+  <div style="margin:0 16px;display:flex;flex-direction:column;gap:2px;border-radius:24px;overflow:hidden;flex:none">
+    <sc-for list="{{clouds}}" as="c" hint-placeholder-count="3">
+      <div style="display:flex;align-items:center;gap:12px;min-height:64px;padding:8px 8px 8px 14px;box-sizing:border-box;background:{{t.card}}">
+        <span style="width:40px;height:40px;border-radius:12px;background:{{c.bg}};display:flex;align-items:center;justify-content:center;flex:none;color:{{c.fg}};font-size:15px;font-weight:750">{{c.mono}}</span>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:15px;line-height:20px;font-weight:600">{{c.name}}</div>
+          <div style="font-size:12.5px;line-height:16px;color:{{c.subColor}}">{{c.sub}}</div>
+          <sc-if value="{{c.hasBar}}" hint-placeholder-val="{{ true }}">
+            <div style="height:4px;margin-top:6px;border-radius:2px;background:{{t.track}};overflow:hidden;width:150px"><span style="display:block;height:4px;width:{{c.pct}};background:{{t.pri}}"></span></div>
+          </sc-if>
+        </div>
+        <sc-if value="{{c.needsLogin}}" hint-placeholder-val="{{ false }}">
+          <button style="height:36px;padding:0 14px;border:1px solid {{t.outline}};border-radius:18px;background:transparent;color:{{t.pri}};font:inherit;font-size:13.5px;font-weight:650">Войти</button>
+        </sc-if>
+        <sc-if value="{{c.hasBar}}" hint-placeholder-val="{{ true }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.outline}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right:6px"><path d="{{ic.chevR}}"></path></svg>
+        </sc-if>
+      </div>
+    </sc-for>
+  </div>
+
+  <h2 style="margin:0;padding:16px 20px 8px;font-size:16px;line-height:24px;font-weight:650;flex:none">Локальная сеть</h2>
+  <div style="margin:0 16px;display:flex;flex-direction:column;gap:2px;border-radius:24px;overflow:hidden;flex:none">
+    <sc-for list="{{servers}}" as="s" hint-placeholder-count="3">
+      <div style="display:flex;align-items:center;gap:12px;min-height:64px;padding:8px 14px;box-sizing:border-box;background:{{t.card}}">
+        <span style="width:40px;height:40px;border-radius:12px;background:{{t.secC}};display:flex;align-items:center;justify-content:center;flex:none">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{t.onSecC}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{s.icon}}"></path></svg>
+        </span>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:15px;line-height:20px;font-weight:600">{{s.name}}</div>
+          <div style="font-family:'Roboto Mono',monospace;font-size:11.5px;line-height:16px;color:{{t.onVar}}">{{s.addr}}</div>
+          <div style="display:flex;align-items:center;gap:5px;margin-top:3px;font-size:12.5px;line-height:16px;font-weight:600;color:{{s.stColor}}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{s.stColor}}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{s.stIcon}}"></path></svg>
+            {{s.status}}
+          </div>
+        </div>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{t.outline}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ic.chevR}}"></path></svg>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="flex:1"></div>
+  <nav aria-label="Основная навигация" style="height:80px;flex:none;display:flex;background:{{t.cont}};padding:12px 0 16px;box-sizing:border-box">
+    <sc-for list="{{nav}}" as="n" hint-placeholder-count="4">
+      <a href="{{n.href}}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none">
+        <span style="width:64px;height:32px;border-radius:16px;background:{{n.pill}};display:flex;align-items:center;justify-content:center">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{n.color}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{n.icon}}"></path></svg>
+        </span>
+        <span style="font-size:12px;line-height:16px;font-weight:{{n.weight}};color:{{n.color}}">{{n.label}}</span>
+      </a>
+    </sc-for>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false,"section":"Тема"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const d = !!this.props.dark;
+    const t = d ? {
+      bg:'#0E1514', cont:'#1A2120', card:'#1A2120', track:'#2F3635',
+      on:'#DDE4E2', onVar:'#BEC9C7', outline:'#899391',
+      pri:'#7FD6CD', onPri:'#003734', priC:'#00504B', onPriC:'#9DF2E9', inPri:'#0A615B',
+      secC:'#324B48', onSecC:'#CCE8E4', ok:'#7FD6CD', warn:'#FFB95C', err:'#FFB4AB'
+    } : {
+      bg:'#F5F9F8', cont:'#E9EFEE', card:'#FFFFFF', track:'#E3EAE8',
+      on:'#161D1C', onVar:'#3F4948', outline:'#6F7978',
+      pri:'#006A64', onPri:'#FFFFFF', priC:'#9DF2E9', onPriC:'#00201E', inPri:'#C4F7F0',
+      secC:'#CCE8E4', onSecC:'#051F1D', ok:'#006A64', warn:'#8A5300', err:'#BA1A1A'
+    };
+    const ic = {
+      plus:'M12 5v14 M5 12h14',
+      laptop:'M5 6a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v9H5z M3 19h18 M5 15l-2 4 M19 15l2 4',
+      qr:'M4 4h6v6H4z M14 4h6v6h-6z M4 14h6v6H4z M14 14h2.5v2.5H14z M17.5 17.5H20V20h-2.5z M14 19.5h1.5 M19.5 14v1.5',
+      chevR:'M9 6l6 6-6 6'
+    };
+    const S = {
+      lock:'M6 11h12v9H6z M8.5 11V8a3.5 3.5 0 0 1 7 0v3',
+      wifi:'M3 9.5a13 13 0 0 1 18 0 M6 13a8.5 8.5 0 0 1 12 0 M9 16.5a4 4 0 0 1 6 0 M12 19.5h.01',
+      shield:'M12 3.5l7 2.6v5.4c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6.1z M9 12l2 2 4-4',
+      dot:'M12 9a3 3 0 1 1 0 6a3 3 0 0 1 0-6z',
+      alert:'M12 4l9 15.5H3z M12 10v4 M12 17h.01',
+      server:'M4 5h16v6H4z M4 13h16v6H4z M7.5 8h.01 M7.5 16h.01',
+      term:'M4 5h16v14H4z M7.5 10l3 2.5-3 2.5 M12.5 15.5h4',
+      globe:'M12 3a9 9 0 1 1 0 18a9 9 0 0 1 0-18z M3.5 12h17 M12 3c2.6 2.8 2.6 15.2 0 18 M12 3c-2.6 2.8-2.6 15.2 0 18',
+      home:'M4 10.5L12 4l8 6.5 M6 9v10.5h4.5V14h3v5.5H18V9',
+      folder:'M3.5 7.5a2 2 0 0 1 2-2h3.8l2 2h7.2a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z',
+      cloud:'M7.5 18.5a4.5 4.5 0 0 1-.4-9A6 6 0 0 1 18.3 10a4.3 4.3 0 0 1-.8 8.5z',
+      tools:'M14.5 5.5a4 4 0 0 0-5 5L4.5 15.5a2.1 2.1 0 0 0 3 3l5-5a4 4 0 0 0 5-5l-2.4 2.4-2.6-.4-.4-2.6z'
+    };
+    const flags = [ { label:'Пароль', icon:S.lock }, { label:'Только Wi-Fi «Home_5G»', icon:S.wifi }, { label:'Шифрование TLS', icon:S.shield } ];
+    const tone = d ? { blue:['#1F3266','#B3C5FF'], amber:['#4D3300','#FFCF83'], sky:['#003845','#A0E2F4'] }
+                   : { blue:['#D8E2FF','#1B3D8F'], amber:['#FFE2B8','#6B4300'], sky:['#C9EEF8','#00515F'] };
+    const clouds = [
+      { name:'Google Drive', mono:'G', k:'blue', sub:'ivan•••@gmail.com · 9,1 из 15 ГБ', pct:'61%', hasBar:true },
+      { name:'Яндекс Диск', mono:'Я', k:'amber', sub:'ivan•••@yandex.ru · 4,2 из 10 ГБ', pct:'42%', hasBar:true },
+      { name:'OneDrive', mono:'O', k:'sky', sub:'Сессия истекла — войдите снова', needsLogin:true, hasBar:false }
+    ].map((c) => Object.assign({ needsLogin:false }, c, { bg: tone[c.k][0], fg: tone[c.k][1], subColor: c.needsLogin ? t.warn : t.onVar }));
+    const servers = [
+      { name:'NAS-HOME', addr:'smb://192.168.1.20', status:'В сети · SMB 3.1', stIcon:S.dot, stColor:t.ok, icon:S.server },
+      { name:'Raspberry Pi', addr:'sftp://pi@192.168.1.50', status:'Ключ сервера проверен', stIcon:S.shield, stColor:t.ok, icon:S.term },
+      { name:'nextcloud.home', addr:'https://nextcloud.home/dav', status:'Сертификат изменился — проверьте', stIcon:S.alert, stColor:t.err, icon:S.globe }
+    ];
+    const navDef = [['Главная','home','Main.dc.html'],['Обзор','folder','Browser.dc.html'],['Сеть','cloud','Network.dc.html'],['Инструменты','tools','Cleaner.dc.html']];
+    const nav = navDef.map(([label, i, href], idx) => {
+      const a = idx === 2;
+      return { label, href, icon:S[i], pill: a ? t.secC : 'transparent', color: a ? t.onSecC : t.onVar, weight: a ? 700 : 500 };
+    });
+    return { t, ic, flags, clouds, servers, nav };
+  }
+}
+</script>
+</body>
+</html>
