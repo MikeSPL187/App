@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="op_title_copy">
+        <item quantity="one">Копирование %d объекта</item>
+        <item quantity="few">Копирование %d объектов</item>
+        <item quantity="many">Копирование %d объектов</item>
+        <item quantity="other">Копирование %d объекта</item>
+    </plurals>
+    <plurals name="op_title_move">
+        <item quantity="one">Перемещение %d объекта</item>
+        <item quantity="few">Перемещение %d объектов</item>
+        <item quantity="many">Перемещение %d объектов</item>
+        <item quantity="other">Перемещение %d объекта</item>
+    </plurals>
+    <plurals name="op_title_delete">
+        <item quantity="one">Удаление %d объекта</item>
+        <item quantity="few">Удаление %d объектов</item>
+        <item quantity="many">Удаление %d объектов</item>
+        <item quantity="other">Удаление %d объекта</item>
+    </plurals>
+    <plurals name="op_title_trash">
+        <item quantity="one">%d объект в корзину</item>
+        <item quantity="few">%d объекта в корзину</item>
+        <item quantity="many">%d объектов в корзину</item>
+        <item quantity="other">%d объекта в корзину</item>
+    </plurals>
+    <plurals name="op_title_restore">
+        <item quantity="one">Восстановление %d объекта</item>
+        <item quantity="few">Восстановление %d объектов</item>
+        <item quantity="many">Восстановление %d объектов</item>
+        <item quantity="other">Восстановление %d объекта</item>
+    </plurals>
+    <plurals name="op_more_queued">
+        <item quantity="one">ещё %d в очереди</item>
+        <item quantity="few">ещё %d в очереди</item>
+        <item quantity="many">ещё %d в очереди</item>
+        <item quantity="other">ещё %d в очереди</item>
+    </plurals>
+    <string name="op_title_compress">Сжатие в %1$s</string>
+    <string name="op_title_extract">Распаковка %1$s</string>
+    <string name="op_channel_name">Файловые операции</string>
+    <string name="op_channel_description">Ход копирования, перемещения, сжатия и распаковки</string>
+    <string name="op_notification_preparing">Подготовка…</string>
+    <string name="op_waiting_decision">Нужно ваше решение</string>
+    <string name="op_paused">На паузе</string>
+    <string name="op_cancel_all">Отменить всё</string>
+    <string name="op_error_interrupted">Операция прервалась, когда приложение закрылось</string>
+    <string name="op_error_not_found">«%1$s» не найден</string>
+    <string name="op_error_exists">«%1$s» уже существует</string>
+    <string name="op_error_access">Нет доступа к «%1$s»</string>
+    <string name="op_error_invalid_name">В имени есть недопустимые символы</string>
+    <string name="op_error_no_space">Не хватает свободного места</string>
+    <string name="op_error_self_copy">Папку нельзя скопировать в саму себя</string>
+    <string name="op_error_same_location">Папка назначения совпадает с исходной</string>
+    <string name="op_error_archive_encrypted">Архив защищён паролем. Такие архивы пока не поддерживаются</string>
+    <string name="op_error_archive_unsupported">Этот формат архива не поддерживается</string>
+    <string name="op_error_archive_corrupted">Архив повреждён или скачан не полностью</string>
+    <string name="op_error_archive_unsafe">В архиве есть небезопасные пути, он не распакован</string>
+    <string name="op_error_io">Ошибка чтения или записи</string>
+</resources>

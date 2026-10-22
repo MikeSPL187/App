@@ -1,6 +1,7 @@
 plugins {
     id("quietfiles.android.library")
     id("quietfiles.hilt")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -17,5 +18,6 @@ dependencies {
     implementation(libs.commons.compress)
     implementation(libs.xz)
     implementation(libs.junrar)
+    implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.robolectric)
 }
