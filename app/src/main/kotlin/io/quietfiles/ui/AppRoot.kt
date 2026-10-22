@@ -57,6 +57,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import io.quietfiles.MainActivity
+import io.quietfiles.integration.ShortcutSigner
 import io.quietfiles.R
 import io.quietfiles.core.designsystem.icon.QfIcons
 import io.quietfiles.core.model.FileEntry
@@ -297,7 +298,7 @@ private fun NavHostController.navigateTopLevel(route: Any) {
     }
 }
 
-private fun openAllFilesSettings(context: Context) {
+internal fun openAllFilesSettings(context: Context) {
     try {
         context.startActivity(StorageAccess.requestIntent(context))
     } catch (e: ActivityNotFoundException) {
@@ -311,6 +312,7 @@ private fun pinFolderShortcut(context: Context, entry: FileEntry) {
     val intent = Intent(context, MainActivity::class.java)
         .setAction(MainActivity.ACTION_OPEN_FOLDER)
         .putExtra(MainActivity.EXTRA_PATH, entry.path)
+        .putExtra(MainActivity.EXTRA_SIGNATURE, ShortcutSigner.from(context).sign(entry.path))
         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
     val shortcut = ShortcutInfoCompat.Builder(context, "folder:${entry.path}")
         .setShortLabel(entry.name)

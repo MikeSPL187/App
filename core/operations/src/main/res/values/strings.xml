@@ -26,6 +26,7 @@
     </plurals>
     <string name="op_title_compress">Compressing to %1$s</string>
     <string name="op_title_extract">Extracting %1$s</string>
+    <string name="op_title_import">Saving to %1$s</string>
     <string name="op_channel_name">File operations</string>
     <string name="op_channel_description">Progress of copying, moving, compressing and extracting</string>
     <string name="op_notification_preparing">Preparing…</string>

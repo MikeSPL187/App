@@ -23,7 +23,11 @@ class FileOperationExecutorTest {
     private val dao = FakeTrashDao()
     private val trash = TrashManager(provider, dao)
     private val archives = ArchiveTools(Dispatchers.Unconfined)
-    private val executor = FileOperationExecutor(provider, trash, archives)
+    private val shared = mutableMapOf<String, ByteArray>()
+    private val content = ContentSource { uri ->
+        shared[uri]?.inputStream() ?: throw io.quietfiles.core.storage.StorageException.AccessDenied(uri)
+    }
+    private val executor = FileOperationExecutor(provider, trash, archives, content)
     private lateinit var src: File
     private lateinit var dst: File
 
@@ -180,5 +184,44 @@ class FileOperationExecutorTest {
             kotlinx.coroutines.runBlocking { archives.extract(evil.path, out.path, emptyList(), FakeControl()) }
         }
         assertThat(File(tmp.root, "escaped.txt").exists()).isFalse()
+    }
+
+    @Test
+    fun importSavesSharedContentUnderFreeNames() = runTest {
+        File(dst, "photo.jpg").writeText("old")
+        shared["content://a/1"] = ByteArray(300)
+        val control = FakeControl()
+        val request = OperationRequest.Import(
+            listOf(
+                ImportItem("photo.jpg", uri = "content://a/1", size = 300),
+                ImportItem("../note.txt", text = "привет"),
+            ),
+            dst.path,
+        )
+
+        val outcome = executor.execute(request, control)
+
+        assertThat(outcome.failedItems).isEqualTo(0)
+        assertThat(File(dst, "photo.jpg").readText()).isEqualTo("old")
+        assertThat(File(dst, "photo (1).jpg").length()).isEqualTo(300)
+        assertThat(File(dst, "note.txt").readText()).isEqualTo("привет")
+        assertThat(control.progress.itemsDone).isEqualTo(2)
+        assertThat(control.progress.bytesTotal).isEqualTo(300 + "привет".toByteArray().size)
+    }
+
+    @Test
+    fun importCountsRevokedItemsAsFailedAndContinues() = runTest {
+        shared["content://a/ok"] = "ok".toByteArray()
+        val request = OperationRequest.Import(
+            listOf(ImportItem("gone.bin", uri = "content://a/gone"), ImportItem("ok.txt", uri = "content://a/ok")),
+            dst.path,
+        )
+
+        val outcome = executor.execute(request, FakeControl())
+
+        assertThat(outcome.failedItems).isEqualTo(1)
+        assertThat((outcome.firstError as io.quietfiles.core.storage.StorageException.AccessDenied).path).isEqualTo("gone.bin")
+        assertThat(File(dst, "ok.txt").readText()).isEqualTo("ok")
+        assertThat(dst.walk().none { it.name.endsWith(".qfpart") }).isTrue()
     }
 }

@@ -1,5 +1,6 @@
 package io.quietfiles.feature.browser
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
@@ -72,3 +73,12 @@ fun isRecent(entry: FileEntry, now: Long = System.currentTimeMillis()): Boolean 
     !entry.isDirectory && entry.lastModified > 0 && now - entry.lastModified in 0..DAY_MS
 
 private const val DAY_MS = 24L * 60 * 60 * 1000
+
+/** Понятная причина, почему имя не подходит, или `null`, если подходит. */
+internal fun nameValidationMessage(context: Context, name: String): String? = when (val v = FileNames.validate(name)) {
+    FileNames.Validation.Ok -> null
+    FileNames.Validation.Empty -> context.getString(R.string.browser_error_empty_name)
+    FileNames.Validation.DotOnly -> context.getString(R.string.browser_error_invalid_name)
+    FileNames.Validation.TooLong -> context.getString(R.string.browser_error_long_name)
+    is FileNames.Validation.ForbiddenChar -> context.getString(R.string.browser_error_forbidden_char, v.char.toString())
+}

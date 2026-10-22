@@ -82,4 +82,24 @@
     <string name="tools_recent_hint">Файлы, изменённые за последние дни</string>
     <string name="tools_favorites">Избранное</string>
     <string name="tools_favorites_hint">Папки и файлы, отмеченные звёздочкой</string>
+
+    <string name="picker_label">Тихие файлы</string>
+    <string name="picker_not_shareable">Этот файл нельзя передать другому приложению</string>
+
+    <string name="save_label">Сохранить в Тихие файлы</string>
+    <string name="save_here">Сохранить сюда</string>
+    <string name="save_text_name">Текст %1$s</string>
+    <plurals name="save_items">
+        <item quantity="one">%d объект</item>
+        <item quantity="few">%d объекта</item>
+        <item quantity="many">%d объектов</item>
+        <item quantity="other">%d объекта</item>
+    </plurals>
+    <string name="save_nothing_title">Нечего сохранять</string>
+    <string name="save_nothing_message">Приложение не передало файлы. Попробуйте поделиться ещё раз.</string>
+    <string name="save_close">Закрыть</string>
+    <string name="save_queued">Ждём завершения других операций…</string>
+    <string name="save_progress">Сохраняем в «%1$s»…</string>
+    <string name="save_done">Сохранено в «%1$s»</string>
+    <string name="save_failed">Часть файлов не сохранена</string>
 </resources>

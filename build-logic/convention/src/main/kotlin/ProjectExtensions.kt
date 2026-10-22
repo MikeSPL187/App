@@ -44,6 +44,8 @@ internal fun Project.configureKotlin() {
         environment("LC_ALL", "C.UTF-8")
         environment("LANG", "C.UTF-8")
         systemProperty("file.encoding", "UTF-8")
+        // Robolectric сам скачивает образы Android; берём их с того же зеркала Maven Central, что и Gradle.
+        systemProperty("robolectric.dependency.repo.url", "https://maven-central.storage-download.googleapis.com/maven2/")
     }
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {

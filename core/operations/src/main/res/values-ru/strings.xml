@@ -38,6 +38,7 @@
     </plurals>
     <string name="op_title_compress">Сжатие в %1$s</string>
     <string name="op_title_extract">Распаковка %1$s</string>
+    <string name="op_title_import">Сохранение в %1$s</string>
     <string name="op_channel_name">Файловые операции</string>
     <string name="op_channel_description">Ход копирования, перемещения, сжатия и распаковки</string>
     <string name="op_notification_preparing">Подготовка…</string>

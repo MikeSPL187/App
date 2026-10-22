@@ -88,4 +88,27 @@ object FileTypes {
     /** Расширения категории, для поиска по индексу. */
     fun extensionsOf(category: FileCategory): Set<String> =
         byExtension.filterValues { it == category }.keys
+
+    /** Расширение для MIME-типа — чтобы файл без имени из другого приложения открывался правильно. */
+    fun extensionForMime(mimeType: String): String? {
+        val mime = mimeType.lowercase().substringBefore(';').trim()
+        return preferredExtension[mime] ?: mimeByExtension.entries.firstOrNull { it.value == mime }?.key
+    }
+
+    /** Подходит ли [mimeType] под фильтр: группа вроде «image» с любым подтипом, «application/pdf» или «любой тип». Регистр не важен. */
+    fun mimeMatches(mimeType: String, filter: String): Boolean {
+        val type = mimeType.lowercase()
+        val f = filter.lowercase().substringBefore(';').trim()
+        if (f.isEmpty() || f == "*/*" || f == "*") return true
+        return if (f.endsWith("/*")) type.substringBefore('/') == f.substringBefore('/') else type == f
+    }
+
+    /** Пустой список фильтров пропускает всё. */
+    fun mimeMatchesAny(mimeType: String, filters: List<String>): Boolean =
+        filters.isEmpty() || filters.any { mimeMatches(mimeType, it) }
+
+    private val preferredExtension = mapOf(
+        "image/jpeg" to "jpg", "text/plain" to "txt", "text/html" to "html", "audio/mpeg" to "mp3",
+        "video/mp4" to "mp4", "application/gzip" to "gz",
+    )
 }

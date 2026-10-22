@@ -6,6 +6,9 @@ object FileNames {
     private val forbiddenChars = setOf('/', '\\', ':', '*', '?', '"', '<', '>', '|', '\u0000')
     private const val MAX_NAME_BYTES = 255
 
+    // Запас под « (99)» и временное имя «.имя.qfpart»: вместе с ними имя не превысит 255 байт.
+    private const val SAFE_NAME_BYTES = 230
+
     fun extension(name: String): String {
         val dot = name.lastIndexOf('.')
         return if (dot <= 0 || dot == name.length - 1) "" else name.substring(dot + 1)
@@ -57,6 +60,29 @@ object FileNames {
             trimmed.toByteArray(Charsets.UTF_8).size > MAX_NAME_BYTES -> Validation.TooLong
             else -> Validation.Ok
         }
+    }
+
+    /**
+     * Делает имя из чужого источника (другое приложение, архив) пригодным для файла: убирает путь,
+     * заменяет запрещённые символы на «_», не даёт имени стать скрытым и укорачивает его,
+     * оставляя место для суффикса « (1)» и временного файла. Пустое имя заменяется на [fallback].
+     */
+    fun sanitize(raw: String, fallback: String = "file"): String {
+        var name = raw.substringAfterLast('/').substringAfterLast('\\')
+            .map { if (it in forbiddenChars || it.code < 0x20) '_' else it }
+            .joinToString("")
+            .trim()
+            .trimStart('.')
+            .trim()
+        if (name.isEmpty()) name = fallback
+        val ext = extension(name).let { if (it.length in 1..16) it else "" }
+        var base = if (ext.isEmpty()) name else name.dropLast(ext.length + 1)
+        val suffix = if (ext.isEmpty()) "" else ".$ext"
+        while ((base + suffix).toByteArray(Charsets.UTF_8).size > SAFE_NAME_BYTES && base.isNotEmpty()) {
+            base = base.dropLast(1)
+        }
+        if (base.isEmpty()) base = fallback
+        return base.trimEnd() + suffix
     }
 
     /**

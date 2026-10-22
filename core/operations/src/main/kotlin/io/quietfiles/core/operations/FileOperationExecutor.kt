@@ -19,6 +19,7 @@ class FileOperationExecutor @Inject constructor(
     private val provider: StorageProvider,
     private val trash: TrashManager,
     private val archives: ArchiveTools,
+    private val content: ContentSource,
 ) {
 
     suspend fun execute(request: OperationRequest, control: OperationControl): OperationOutcome = when (request) {
@@ -35,6 +36,7 @@ class FileOperationExecutor @Inject constructor(
             val written = archives.extract(request.archive, request.destination, request.entries, control)
             OperationOutcome(changedPaths = written)
         }
+        is OperationRequest.Import -> import(request.items, request.destination, control)
     }
 
     // ---- Копирование и перемещение ----
@@ -177,13 +179,24 @@ class FileOperationExecutor @Inject constructor(
         return targetPath
     }
 
-    private suspend fun copyFile(source: FileEntry, target: String, replace: Boolean, control: OperationControl) {
+    private suspend fun copyFile(source: FileEntry, target: String, replace: Boolean, control: OperationControl) =
+        writeFile(source.name, target, replace, source.lastModified, control) { provider.openRead(source.path) }
+
+    /** Пишет поток во временный файл и только потом даёт ему конечное имя [target]. */
+    private suspend fun writeFile(
+        displayName: String,
+        target: String,
+        replace: Boolean,
+        lastModified: Long?,
+        control: OperationControl,
+        open: () -> java.io.InputStream,
+    ) {
         val dir = FileNames.parentOf(target) ?: "/"
         val temp = FileNames.child(dir, ".${FileNames.nameOf(target)}.qfpart")
         control.setTempFile(temp)
-        control.progress { it.copy(currentName = source.name) }
+        control.progress { it.copy(currentName = displayName) }
         try {
-            provider.openRead(source.path).use { input ->
+            open().use { input ->
                 provider.openWrite(temp).use { output ->
                     val buffer = ByteArray(BUFFER)
                     while (true) {
@@ -196,7 +209,7 @@ class FileOperationExecutor @Inject constructor(
                     (output as? java.io.FileOutputStream)?.fd?.sync()
                 }
             }
-            provider.setLastModified(temp, source.lastModified)
+            if (lastModified != null) provider.setLastModified(temp, lastModified)
             if (replace) provider.delete(target)
             if (!provider.moveFast(temp, target)) throw StorageException.Io("Cannot finalize $target")
             control.progress { it.copy(itemsDone = it.itemsDone + 1) }
@@ -205,6 +218,53 @@ class FileOperationExecutor @Inject constructor(
             throw e
         } finally {
             control.setTempFile(null)
+        }
+    }
+
+    // ---- Приём файлов из других приложений ----
+
+    private suspend fun import(items: List<ImportItem>, destination: String, control: OperationControl): OperationOutcome {
+        if (provider.stat(destination)?.isDirectory != true) throw StorageException.NotFound(destination)
+        val sizes = items.map { it.text?.toByteArray()?.size?.toLong() ?: it.size }
+        // Если хоть один размер неизвестен, показываем прогресс по числу файлов, а не по байтам.
+        val totalBytes = if (sizes.all { it >= 0 }) sizes.sum() else 0L
+        control.progress { it.copy(bytesTotal = totalBytes, itemsTotal = items.size) }
+        if (totalBytes > 0) {
+            val free = runCatching { provider.space(destination)?.free }.getOrNull()
+            if (free != null && totalBytes > free) throw OperationException.NotEnoughSpace(totalBytes, free)
+        }
+
+        var failed = 0
+        var firstError: Throwable? = null
+        val changed = mutableListOf<String>()
+        for (item in items) {
+            control.checkpoint()
+            try {
+                val name = FileNames.sanitize(item.name)
+                val target = FileNames.child(destination, uniqueIn(destination, name, isDirectory = false))
+                writeFile(name, target, replace = false, lastModified = null, control) {
+                    item.text?.byteInputStream() ?: openContent(item)
+                }
+                changed += target
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                failed++
+                if (firstError == null) firstError = e
+                control.progress { it.copy(itemsDone = it.itemsDone + 1) }
+            }
+        }
+        return OperationOutcome(failed, firstError, changed)
+    }
+
+    private fun openContent(item: ImportItem): java.io.InputStream {
+        val uri = item.uri ?: throw StorageException.NotFound(item.name)
+        return try {
+            content.open(uri)
+        } catch (e: StorageException.AccessDenied) {
+            throw StorageException.AccessDenied(item.name, e)
+        } catch (e: StorageException.NotFound) {
+            throw StorageException.NotFound(item.name)
         }
     }
 

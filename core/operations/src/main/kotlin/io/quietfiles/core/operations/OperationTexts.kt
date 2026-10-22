@@ -16,6 +16,8 @@ object OperationTitles {
             is OperationRequest.Restore -> r.getQuantityString(R.plurals.op_title_restore, request.trashIds.size, request.trashIds.size)
             is OperationRequest.Compress -> context.getString(R.string.op_title_compress, FileNames.nameOf(request.target))
             is OperationRequest.Extract -> context.getString(R.string.op_title_extract, FileNames.nameOf(request.archive))
+            is OperationRequest.Import ->
+                context.getString(R.string.op_title_import, FileNames.nameOf(request.destination))
         }
     }
 }

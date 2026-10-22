@@ -47,4 +47,18 @@ class FileNamesTest {
         assertThat(FileNames.validate("я".repeat(200))).isEqualTo(FileNames.Validation.TooLong)
         assertThat(FileNames.validate("Нормальное имя 😀.txt")).isEqualTo(FileNames.Validation.Ok)
     }
+
+    @Test
+    fun sanitizeMakesForeignNamesSafe() {
+        assertThat(FileNames.sanitize("../../etc/passwd")).isEqualTo("passwd")
+        assertThat(FileNames.sanitize("C:\\Users\\Отчёт.pdf")).isEqualTo("Отчёт.pdf")
+        assertThat(FileNames.sanitize("a:b*c?.txt")).isEqualTo("a_b_c_.txt")
+        assertThat(FileNames.sanitize(".hidden")).isEqualTo("hidden")
+        assertThat(FileNames.sanitize("   ")).isEqualTo("file")
+        assertThat(FileNames.sanitize("..", fallback = "Текст")).isEqualTo("Текст")
+        val long = FileNames.sanitize("я".repeat(300) + ".jpeg")
+        assertThat(long).endsWith(".jpeg")
+        assertThat(long.toByteArray().size).isAtMost(230)
+        assertThat(FileNames.validate(long)).isEqualTo(FileNames.Validation.Ok)
+    }
 }

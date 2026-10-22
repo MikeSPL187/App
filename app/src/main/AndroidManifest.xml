@@ -46,10 +46,43 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- Ярлык папки: только переход по экрану, путь проверяется в MainActivity. -->
+        </activity>
+
+        <!-- F15.1: «Прикрепить файл» в других приложениях. -->
+        <activity
+            android:name=".integration.PickerActivity"
+            android:exported="true"
+            android:label="@string/picker_label"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
-                <action android:name="io.quietfiles.action.OPEN_FOLDER" />
+                <action android:name="android.intent.action.GET_CONTENT" />
                 <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.OPENABLE" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PICK" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
+            </intent-filter>
+        </activity>
+
+        <!-- F15.2: «Поделиться» → «Сохранить в…». -->
+        <activity
+            android:name=".integration.SaveActivity"
+            android:exported="true"
+            android:label="@string/save_label"
+            android:icon="@mipmap/ic_launcher"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
             </intent-filter>
         </activity>
 

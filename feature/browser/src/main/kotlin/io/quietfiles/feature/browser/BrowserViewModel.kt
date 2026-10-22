@@ -442,13 +442,7 @@ class BrowserViewModel @Inject constructor(
         }
     }
 
-    fun validationMessage(name: String): String? = when (val v = FileNames.validate(name)) {
-        FileNames.Validation.Ok -> null
-        FileNames.Validation.Empty -> context.getString(R.string.browser_error_empty_name)
-        FileNames.Validation.DotOnly -> context.getString(R.string.browser_error_invalid_name)
-        FileNames.Validation.TooLong -> context.getString(R.string.browser_error_long_name)
-        is FileNames.Validation.ForbiddenChar -> context.getString(R.string.browser_error_forbidden_char, v.char.toString())
-    }
+    fun validationMessage(name: String): String? = nameValidationMessage(context, name)
 
     fun toggleFavorite(entry: FileEntry) {
         viewModelScope.launch {

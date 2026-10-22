@@ -76,4 +76,22 @@
     <string name="tools_recent_hint">Files changed during the last days</string>
     <string name="tools_favorites">Favorites</string>
     <string name="tools_favorites_hint">Folders and files you starred</string>
+
+    <string name="picker_label">Quiet Files</string>
+    <string name="picker_not_shareable">This file can’t be shared with other apps</string>
+
+    <string name="save_label">Save to Quiet Files</string>
+    <string name="save_here">Save here</string>
+    <string name="save_text_name">Text %1$s</string>
+    <plurals name="save_items">
+        <item quantity="one">%d item</item>
+        <item quantity="other">%d items</item>
+    </plurals>
+    <string name="save_nothing_title">Nothing to save</string>
+    <string name="save_nothing_message">The app didn’t pass any files. Try sharing again.</string>
+    <string name="save_close">Close</string>
+    <string name="save_queued">Waiting for other operations…</string>
+    <string name="save_progress">Saving to “%1$s”…</string>
+    <string name="save_done">Saved to “%1$s”</string>
+    <string name="save_failed">Some files weren’t saved</string>
 </resources>

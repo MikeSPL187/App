@@ -12,6 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.quietfiles.core.data.repository.SettingsRepository
 import io.quietfiles.core.designsystem.theme.QfTheme
 import io.quietfiles.core.operations.OperationService
+import io.quietfiles.integration.ShortcutSigner
 import io.quietfiles.ui.AppRoot
 import io.quietfiles.ui.LaunchRequest
 import java.io.File
@@ -53,9 +54,10 @@ class MainActivity : ComponentActivity() {
             intent.getBooleanExtra(OperationService.EXTRA_SHOW_OPERATIONS, false) ->
                 launchRequest.value = LaunchRequest.ShowOperations
             intent.action == ACTION_OPEN_FOLDER -> {
-                // Ярлык на рабочем столе. Принимаем только существующую папку: это лишь переход по экрану.
+                // Ярлык на рабочем столе. Принимаем только наш подписанный ярлык и только существующую папку.
                 val path = intent.getStringExtra(EXTRA_PATH)
-                if (path != null && File(path).isDirectory) launchRequest.value = LaunchRequest.OpenFolder(path)
+                val signed = path != null && ShortcutSigner.from(this).verify(path, intent.getStringExtra(EXTRA_SIGNATURE))
+                if (signed && File(path).isDirectory) launchRequest.value = LaunchRequest.OpenFolder(path)
             }
         }
     }
@@ -63,5 +65,6 @@ class MainActivity : ComponentActivity() {
     companion object {
         const val ACTION_OPEN_FOLDER = "io.quietfiles.action.OPEN_FOLDER"
         const val EXTRA_PATH = "path"
+        const val EXTRA_SIGNATURE = "signature"
     }
 }

@@ -270,6 +270,7 @@ val OperationRequest.itemCount: Int
         is OperationRequest.Restore -> trashIds.size
         is OperationRequest.Compress -> sources.size
         is OperationRequest.Extract -> if (entries.isEmpty()) 1 else entries.size
+        is OperationRequest.Import -> items.size
     }
 
 val OperationRequest.destinationPath: String?
@@ -278,5 +279,6 @@ val OperationRequest.destinationPath: String?
         is OperationRequest.Move -> destination
         is OperationRequest.Compress -> FileNames.parentOf(target)
         is OperationRequest.Extract -> destination
+        is OperationRequest.Import -> destination
         else -> null
     }

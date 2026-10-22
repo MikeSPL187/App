@@ -53,7 +53,28 @@ sealed interface OperationRequest {
         OperationRequest {
         override val kind get() = OperationKind.EXTRACT
     }
+
+    /**
+     * Сохранение того, чем поделилось другое приложение (F15.2). Для пользователя это копирование,
+     * поэтому вид операции — [OperationKind.COPY]. Совпадающие имена не спрашиваются: файл получает
+     * свободное имя «имя (1).ext».
+     */
+    @Serializable
+    @SerialName("import")
+    data class Import(val items: List<ImportItem>, val destination: String) : OperationRequest {
+        override val kind get() = OperationKind.COPY
+    }
 }
+
+/** Один принятый объект: содержимое по content-URI или просто текст. */
+@Serializable
+data class ImportItem(
+    val name: String,
+    val uri: String? = null,
+    val text: String? = null,
+    /** Размер, если источник его сообщил; −1 — неизвестен. */
+    val size: Long = -1,
+)
 
 /** Связь исполнителя с очередью: прогресс, пауза и отмена, вопросы пользователю. */
 interface OperationControl {
