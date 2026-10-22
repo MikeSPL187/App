@@ -21,7 +21,11 @@
     "SettingsDark.dc.html": {"x": 940, "y": 2724, "w": 390, "h": 1080, "title": "14 · Настройки — тёмная тема"},
     "Tablet.dc.html": {"x": 1410, "y": 2724, "w": 1280, "h": 800, "title": "15 · Планшет: две панели + drag & drop"},
     "DesignSystem.dc.html": {"x": 0, "y": 4204, "w": 1440, "h": 1320, "title": "16 · Дизайн-система «Тихий инструмент»"},
-    "BeforeAfter.dc.html": {"x": 1520, "y": 4204, "w": 1440, "h": 1000, "title": "17 · Было → стало"}
+    "BeforeAfter.dc.html": {"x": 1520, "y": 4204, "w": 1440, "h": 1000, "title": "17 · Было → стало"},
+    "PhotoViewer.dc.html": {"x": 0, "y": 5924, "w": 390, "h": 844, "title": "18 · Просмотр фото"},
+    "PhotoInfo.dc.html": {"x": 470, "y": 5924, "w": 390, "h": 844, "title": "19 · Фото: сведения и геоданные"},
+    "VideoPlayer.dc.html": {"x": 940, "y": 5924, "w": 844, "h": 390, "title": "20 · Видеоплеер (горизонтально)"},
+    "VideoSettings.dc.html": {"x": 1864, "y": 5924, "w": 390, "h": 844, "title": "21 · Видео: настройки воспроизведения"}
   },
   "order": [
     "Main.dc.html",
@@ -40,13 +44,18 @@
     "SettingsDark.dc.html",
     "Tablet.dc.html",
     "DesignSystem.dc.html",
-    "BeforeAfter.dc.html"
+    "BeforeAfter.dc.html",
+    "PhotoViewer.dc.html",
+    "PhotoInfo.dc.html",
+    "VideoPlayer.dc.html",
+    "VideoSettings.dc.html"
   ],
   "notes": {
     "row1": {"x": 0, "y": -300, "text": "Основные сценарии: главная, папка, выбор, операции, поиск, медиа", "kind": "title1", "maxW": 2740},
     "row2": {"x": 0, "y": 944, "text": "Инструменты, сеть, безопасные подключения, настройки, честный Premium", "kind": "title1", "maxW": 2270},
     "row3": {"x": 0, "y": 2424, "text": "Тёмная тема бесплатно для всех · Планшеты и складные устройства", "kind": "title1", "maxW": 2690},
-    "row4": {"x": 0, "y": 3904, "text": "Дизайн-система и сравнение со старой версией", "kind": "title1", "maxW": 2960}
+    "row4": {"x": 0, "y": 3904, "text": "Дизайн-система и сравнение со старой версией", "kind": "title1", "maxW": 2960},
+    "row5": {"x": 0, "y": 5624, "text": "Просмотр фото и видеоплеер", "kind": "title1", "maxW": 2254}
   },
   "designSystems": []
 }

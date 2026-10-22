@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Настройки воспроизведения</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300..800&amp;family=Roboto+Mono:wght@400;500&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;display:flex;flex-direction:column;background:#0E1514;color:#DDE4E2;font-family:'Roboto Flex',Roboto,system-ui,sans-serif">
+
+  <div style="position:relative;width:390px;height:219px;flex:none;background:#000000">
+    <svg width="390" height="219" viewBox="0 0 844 474" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Кадр видео: ночное озеро в горах" style="display:block">
+      <rect width="844" height="474" fill="#1E2A44"></rect>
+      <circle cx="610" cy="96" r="30" fill="#E8E4D0"></circle>
+      <path d="M0 250 L120 170 L230 228 L360 150 L480 224 L600 170 L720 216 L844 182 L844 300 L0 300z" fill="#2C3B5A"></path>
+      <path d="M0 284 L150 222 L280 268 L420 212 L560 270 L700 228 L844 262 L844 310 L0 310z" fill="#18223A"></path>
+      <rect y="306" width="844" height="168" fill="#22324F"></rect>
+    </svg>
+    <a href="VideoPlayer.dc.html" aria-label="Назад" style="position:absolute;left:4px;top:8px;width:44px;height:44px;border-radius:22px;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5 M11 6l-6 6 6 6"></path></svg>
+    </a>
+    <button aria-label="Воспроизвести" style="position:absolute;left:163px;top:78px;width:64px;height:64px;border:0;border-radius:32px;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;padding:0">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"></path></svg>
+    </button>
+    <div aria-hidden="true" style="position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,0.25)"><span style="display:block;width:27%;height:4px;background:#7FD6CD"></span></div>
+  </div>
+
+  <div style="padding:12px 16px 0;flex:none">
+    <div style="font-size:16px;line-height:22px;font-weight:650">Отпуск_2026_Байкал.mp4</div>
+    <div style="font-size:12.5px;line-height:17px;color:#BEC9C7">1080p · H.264 · 47:05 · 2,1 ГБ</div>
+  </div>
+
+  <div role="status" style="margin:10px 16px 0;display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;border-radius:16px;background:#1F3A37;flex:none">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9DF2E9" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7L4 8.6 M4 4v4.6h4.6"></path></svg>
+    <span style="flex:1;font-size:13.5px;line-height:18px;color:#CCE8E4">Продолжено с 12:41</span>
+    <button style="height:36px;padding:0 12px;border:0;border-radius:18px;background:transparent;color:#7FD6CD;font:inherit;font-size:13.5px;font-weight:650">С начала</button>
+  </div>
+
+  <div style="flex:1;min-height:0;overflow:hidden;padding:14px 16px 16px;display:flex;flex-direction:column;gap:14px">
+    <section aria-label="Скорость">
+      <div style="font-size:13px;line-height:18px;font-weight:650;color:#7FD6CD;margin:0 0 8px 4px">Скорость</div>
+      <div role="radiogroup" aria-label="Скорость воспроизведения" style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px">
+        <sc-for list="{{speeds}}" as="s" hint-placeholder-count="6">
+          <button role="radio" aria-checked="{{s.checked}}" style="height:40px;border-radius:12px;border:1px solid {{s.border}};background:{{s.bg}};color:{{s.fg}};font:inherit;font-size:13px;font-weight:{{s.weight}};padding:0">{{s.label}}</button>
+        </sc-for>
+      </div>
+    </section>
+
+    <section aria-label="Субтитры">
+      <div style="font-size:13px;line-height:18px;font-weight:650;color:#7FD6CD;margin:0 0 8px 4px">Субтитры</div>
+      <div role="radiogroup" aria-label="Дорожка субтитров" style="display:flex;flex-direction:column;gap:2px;border-radius:20px;overflow:hidden">
+        <sc-for list="{{subs}}" as="s" hint-placeholder-count="3">
+          <label style="display:flex;align-items:center;gap:12px;height:52px;padding:0 14px;background:#1A2120">
+            <input type="radio" name="subs" checked="{{s.on}}" style="width:20px;height:20px;margin:0;accent-color:#7FD6CD;flex:none">
+            <span style="flex:1;font-size:15px;font-weight:550">{{s.label}}</span>
+            <span style="font-size:12.5px;color:#BEC9C7">{{s.meta}}</span>
+          </label>
+        </sc-for>
+        <button style="display:flex;align-items:center;gap:12px;height:52px;padding:0 14px;border:0;background:#1A2120;color:#7FD6CD;font:inherit;font-size:14.5px;font-weight:650;text-align:left">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7FD6CD" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14 M5 12h14"></path></svg>
+          Загрузить файл субтитров
+        </button>
+      </div>
+    </section>
+
+    <section aria-label="Масштаб">
+      <div style="font-size:13px;line-height:18px;font-weight:650;color:#7FD6CD;margin:0 0 8px 4px">Масштаб</div>
+      <div role="radiogroup" aria-label="Масштаб изображения" style="display:flex;height:40px;border:1px solid #899391;border-radius:20px;overflow:hidden">
+        <button role="radio" aria-checked="true" style="flex:1;border:0;background:#324B48;color:#CCE8E4;font:inherit;font-size:13.5px;font-weight:700">Вписать</button>
+        <button role="radio" aria-checked="false" style="flex:1;border:0;border-left:1px solid #899391;background:transparent;color:#DDE4E2;font:inherit;font-size:13.5px;font-weight:600">Заполнить</button>
+        <button role="radio" aria-checked="false" style="flex:1;border:0;border-left:1px solid #899391;background:transparent;color:#DDE4E2;font:inherit;font-size:13.5px;font-weight:600">Растянуть</button>
+      </div>
+    </section>
+
+    <div style="display:flex;flex-direction:column;gap:2px;border-radius:20px;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:12px;height:56px;padding:0 14px;background:#1A2120">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#BEC9C7" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 10v4 M8 7v10 M12 4v16 M16 8v8 M20 11v2"></path></svg>
+        <span style="flex:1;font-size:15px;font-weight:550">Аудиодорожка</span>
+        <span style="font-size:13.5px;color:#BEC9C7">Русский · AAC 5.1</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;height:56px;padding:0 14px;background:#1A2120">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#BEC9C7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v5l3 2 M12 3.5a8.5 8.5 0 1 1 0 17a8.5 8.5 0 0 1 0-17z"></path></svg>
+        <span style="flex:1;font-size:15px;font-weight:550">Таймер сна</span>
+        <span style="font-size:13.5px;color:#BEC9C7">Выкл.</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const speeds = ['0,5×', '0,75×', '1×', '1,25×', '1,5×', '2×'].map((label, i) => {
+      const on = i === 3;
+      return { label, checked: on ? 'true' : 'false', bg: on ? '#324B48' : 'transparent', fg: on ? '#CCE8E4' : '#DDE4E2', border: on ? '#324B48' : '#3F4948', weight: on ? 700 : 550 };
+    });
+    const subs = [
+      { label:'Выключены', meta:'', on:false },
+      { label:'Русский', meta:'встроенные', on:true },
+      { label:'English', meta:'SRT рядом с видео', on:false }
+    ];
+    return { speeds, subs };
+  }
+}
+</script>
+</body>
+</html>

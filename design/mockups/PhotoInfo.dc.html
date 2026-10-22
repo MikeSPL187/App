@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Сведения о фото</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300..800&amp;family=Roboto+Mono:wght@400;500&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;background:#000000;color:#DDE4E2;font-family:'Roboto Flex',Roboto,system-ui,sans-serif">
+
+  <svg width="390" height="292" viewBox="0 130 390 292" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Фото: закат над горным озером" style="position:absolute;left:0;top:0;display:block;opacity:0.7">
+    <rect width="390" height="200" fill="#E9B7A0"></rect>
+    <rect y="200" width="390" height="140" fill="#F5D2A8"></rect>
+    <circle cx="250" cy="236" r="34" fill="#FFE8BC"></circle>
+    <path d="M0 290 L60 240 L120 270 L190 215 L260 262 L320 228 L390 258 L390 340 L0 340z" fill="#9C7FA8"></path>
+    <path d="M0 322 L80 270 L150 302 L230 256 L300 298 L390 272 L390 342 L0 342z" fill="#5E4B73"></path>
+    <rect y="340" width="390" height="180" fill="#6F86A8"></rect>
+  </svg>
+
+  <a href="PhotoViewer.dc.html" aria-label="Закрыть сведения" style="position:absolute;left:4px;top:12px;width:48px;height:48px;border-radius:24px;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5 M11 6l-6 6 6 6"></path></svg>
+  </a>
+
+  <section role="dialog" aria-label="Сведения о фото" style="position:absolute;left:0;right:0;bottom:0;height:584px;box-sizing:border-box;border-radius:28px 28px 0 0;background:#1A2120;padding:0 16px 18px;display:flex;flex-direction:column;gap:10px">
+    <div aria-hidden="true" style="align-self:center;width:32px;height:4px;border-radius:2px;background:#899391;margin-top:12px;opacity:0.6"></div>
+    <h2 style="margin:0;padding:2px 4px 0;font-size:20px;line-height:28px;font-weight:650">Сведения</h2>
+
+    <div style="display:flex;flex-direction:column;gap:2px;border-radius:20px;overflow:hidden">
+      <sc-for list="{{rows}}" as="r" hint-placeholder-count="4">
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:11px 14px;background:#252B2A">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#BEC9C7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;margin-top:1px"><path d="{{r.icon}}"></path></svg>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:12.5px;line-height:16px;color:#BEC9C7">{{r.label}}</div>
+            <div style="font-family:{{r.family}};font-size:{{r.size}};line-height:20px;font-weight:550;margin-top:1px">{{r.value}}</div>
+          </div>
+          <sc-if value="{{r.hasLink}}" hint-placeholder-val="{{ false }}">
+            <a href="Browser.dc.html" style="align-self:center;height:36px;padding:0 10px;border-radius:18px;color:#7FD6CD;font-size:13.5px;font-weight:650;line-height:36px;text-decoration:none">Открыть</a>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <section aria-label="Геоданные" style="padding:14px 16px;border-radius:20px;background:#3A2E12;color:#FFDF9E">
+      <div style="display:flex;align-items:center;gap:10px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFDF9E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z M12 7.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 0 1 0-5z"></path></svg>
+        <span style="flex:1;font-size:14.5px;line-height:20px;font-weight:650">В фото есть координаты съёмки</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
+        <span style="flex:1;font-size:13px;line-height:18px;color:#F2E2BC">Удалять геоданные и серийный номер камеры из копии при «Поделиться»</span>
+        <span role="switch" aria-checked="true" aria-label="Удалять геоданные при отправке" style="position:relative;width:52px;height:32px;border-radius:16px;background:#7FD6CD;flex:none">
+          <span style="position:absolute;top:4px;left:24px;width:24px;height:24px;border-radius:12px;background:#003734"></span>
+        </span>
+      </div>
+    </section>
+
+    <div style="flex:1"></div>
+    <div style="display:flex;gap:8px">
+      <button style="flex:1;height:48px;border:0;border-radius:24px;background:#324B48;color:#CCE8E4;font:inherit;font-size:14px;font-weight:650">Убрать метаданные</button>
+      <button style="flex:1;height:48px;border:0;border-radius:24px;background:#7FD6CD;color:#003734;font:inherit;font-size:14px;font-weight:700">Поделиться</button>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const sans = "'Roboto Flex',Roboto,sans-serif";
+    const mono = "'Roboto Mono',monospace";
+    const row = (label, value, icon, opts) => Object.assign({ label, value, icon, family: sans, size: '15px', hasLink: false }, opts || {});
+    const rows = [
+      row('Файл', 'JPG · 3,1 МБ · 4080 × 3072 (12,5 Мп)', 'M13.5 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.5z M13.5 3v5.5H19'),
+      row('Снято', '21 октября 2026, 18:45', 'M4 6h16v14H4z M4 10h16 M8 3.5v4 M16 3.5v4'),
+      row('Камера', 'f/1.7 · 1/120 с · ISO 200 · 6,9 мм', 'M4 8h3l1.5-2h7L17 8h3v11H4z M12 10.5a3.5 3.5 0 1 1 0 7a3.5 3.5 0 0 1 0-7z'),
+      row('Папка', 'Память/DCIM/Camera', 'M3.5 7.5a2 2 0 0 1 2-2h3.8l2 2h7.2a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z', { family: mono, size: '13px', hasLink: true })
+    ];
+    return { rows };
+  }
+}
+</script>
+</body>
+</html>
