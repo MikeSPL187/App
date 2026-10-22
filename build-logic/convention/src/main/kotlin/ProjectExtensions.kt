@@ -1,6 +1,7 @@
 import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
+import org.gradle.api.tasks.testing.Test
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.getByType
@@ -38,6 +39,12 @@ internal fun Project.configureKotlinAndroid(extension: CommonExtension<*, *, *, 
 }
 
 internal fun Project.configureKotlin() {
+    // Имена файлов в тестах содержат кириллицу; без UTF-8 локали JVM превращает их в «?».
+    tasks.withType<Test>().configureEach {
+        environment("LC_ALL", "C.UTF-8")
+        environment("LANG", "C.UTF-8")
+        systemProperty("file.encoding", "UTF-8")
+    }
     tasks.withType<KotlinCompile>().configureEach {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
