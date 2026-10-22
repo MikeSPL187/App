@@ -10,7 +10,7 @@
 | [`analysis/assets/`](analysis/assets) | Значки версии 3.8.4, извлечённые из APK, для сравнения |
 | [`design/tokens.json`](design/tokens.json) | Токены дизайн-системы «Тихий инструмент»: цвета светлой и тёмной темы, категории файлов, типографика, формы, размеры |
 | [`design/android/`](design/android) | Те же токены как Android-ресурсы: `colors.xml` (день/ночь) и тема `Theme.Material3.DayNight` |
-| [`design/mockups/`](design/mockups) | Исходники 21 макета (`.dc.html`) и раскладка холста `canvas.json` |
+| [`design/mockups/`](design/mockups) | Исходники 25 макетов (`.dc.html`) и раскладка холста `canvas.json` |
 
 **Макеты онлайн:** https://claude.ai/artifact/89jxC6BzBsCyEibcc8s6xi
 (у экранов телефона есть переключатель тёмной темы в панели Tweaks; экран «Обзор» переключается в режим выбора).

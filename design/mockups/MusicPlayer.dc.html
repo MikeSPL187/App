@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Музыкальный плеер</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300..800&amp;family=Roboto+Mono:wght@400;500&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;display:flex;flex-direction:column;background:{{t.bg}};color:{{t.on}};font-family:'Roboto Flex',Roboto,system-ui,sans-serif">
+
+  <header style="display:flex;align-items:center;height:64px;padding:8px 4px 0;box-sizing:border-box;flex:none">
+    <a href="MusicQueue.dc.html" aria-label="Свернуть плеер" style="width:48px;height:48px;border-radius:24px;display:flex;align-items:center;justify-content:center;flex:none">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{t.on}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+    </a>
+    <div style="flex:1;text-align:center">
+      <div style="font-size:12px;line-height:16px;font-weight:650;color:{{t.onVar}};letter-spacing:0.3px">Сейчас играет</div>
+      <div style="font-size:14px;line-height:20px;font-weight:600">SD-карта › Музыка</div>
+    </div>
+    <button aria-label="Ещё" style="width:48px;height:48px;border:0;border-radius:24px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0;flex:none">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5.5h.01 M12 12h.01 M12 18.5h.01"></path></svg>
+    </button>
+  </header>
+
+  <div style="padding:12px 32px 0;flex:none">
+    <svg width="326" height="326" viewBox="0 0 326 326" role="img" aria-label="Обложка: абстрактный рассвет над водой" style="display:block;border-radius:28px">
+      <rect width="326" height="326" fill="#0F3D3A"></rect>
+      <circle cx="163" cy="150" r="118" fill="none" stroke="#7FD6CD" stroke-width="2" opacity="0.25"></circle>
+      <circle cx="163" cy="150" r="88" fill="none" stroke="#7FD6CD" stroke-width="2" opacity="0.4"></circle>
+      <circle cx="163" cy="150" r="58" fill="#F2B84B"></circle>
+      <rect y="178" width="326" height="148" fill="#0A2E2C"></rect>
+      <path d="M0 196 Q40 186 82 196 T163 196 T245 196 T326 196" fill="none" stroke="#9DF2E9" stroke-width="3" opacity="0.7"></path>
+      <path d="M0 224 Q40 214 82 224 T163 224 T245 224 T326 224" fill="none" stroke="#9DF2E9" stroke-width="3" opacity="0.45"></path>
+      <path d="M0 252 Q40 242 82 252 T163 252 T245 252 T326 252" fill="none" stroke="#9DF2E9" stroke-width="3" opacity="0.25"></path>
+      <rect x="133" y="186" width="60" height="5" rx="2.5" fill="#F2B84B" opacity="0.6"></rect>
+      <rect x="145" y="204" width="36" height="4" rx="2" fill="#F2B84B" opacity="0.4"></rect>
+    </svg>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:8px;padding:22px 24px 0 32px;flex:none">
+    <div style="flex:1;min-width:0">
+      <h1 style="margin:0;font-size:24px;line-height:30px;font-weight:650;letter-spacing:-0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Утро_live</h1>
+      <div style="font-size:14.5px;line-height:20px;color:{{t.onVar}}">Неизвестный исполнитель</div>
+    </div>
+    <button aria-label="Добавить в избранное" aria-pressed="true" style="width:48px;height:48px;border:0;border-radius:24px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="{{t.pri}}" stroke="{{t.pri}}" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 19.5s-7.5-4.4-7.5-10A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 7.5 2.5c0 5.6-7.5 10-7.5 10z"></path></svg>
+    </button>
+  </div>
+  <div style="padding:8px 32px 0;flex:none">
+    <span style="display:inline-block;height:24px;padding:0 10px;border-radius:12px;background:{{t.secC}};color:{{t.onSecC}};font-family:'Roboto Mono',monospace;font-size:11.5px;line-height:24px;font-weight:500">FLAC · 24 бит / 96 кГц</span>
+  </div>
+
+  <div style="padding:16px 32px 0;flex:none">
+    <div role="slider" aria-label="Позиция в треке" aria-valuenow="102" aria-valuemin="0" aria-valuemax="258" aria-valuetext="1 минута 42 секунды из 4 минут 18 секунд" style="position:relative;height:20px;display:flex;align-items:center">
+      <div style="width:100%;height:6px;border-radius:3px;background:{{t.track}}"><span style="display:block;width:40%;height:6px;border-radius:3px;background:{{t.pri}}"></span></div>
+      <span style="position:absolute;left:calc(40% - 3px);top:0;width:6px;height:20px;border-radius:3px;background:{{t.pri}}"></span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:12.5px;color:{{t.onVar}};font-variant-numeric:tabular-nums"><span>1:42</span><span>4:18</span></div>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 28px 0;flex:none">
+    <button aria-label="Перемешивание выключено" aria-pressed="false" style="width:48px;height:48px;border:0;border-radius:24px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h3.5l9 10H20 M4 17h3.5l2.5-2.8 M14 9.8L16.5 7H20 M17.5 4.5L20 7l-2.5 2.5 M17.5 14.5L20 17l-2.5 2.5"></path></svg>
+    </button>
+    <button aria-label="Предыдущий трек" style="width:56px;height:56px;border:0;border-radius:28px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="{{t.on}}" stroke="{{t.on}}" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M18 6l-9 6 9 6z M6 6v12"></path></svg>
+    </button>
+    <button aria-label="Пауза" style="width:96px;height:76px;border:0;border-radius:26px;background:{{t.priC}};display:flex;align-items:center;justify-content:center;padding:0">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="{{t.onPriC}}" aria-hidden="true"><rect x="6" y="5" width="4.2" height="14" rx="1.2"></rect><rect x="13.8" y="5" width="4.2" height="14" rx="1.2"></rect></svg>
+    </button>
+    <button aria-label="Следующий трек" style="width:56px;height:56px;border:0;border-radius:28px;background:transparent;display:flex;align-items:center;justify-content:center;padding:0">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="{{t.on}}" stroke="{{t.on}}" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l9 6-9 6z M18 6v12"></path></svg>
+    </button>
+    <button aria-label="Повтор одного трека включён" aria-pressed="true" style="position:relative;width:48px;height:48px;border:0;border-radius:24px;background:{{t.secC}};display:flex;align-items:center;justify-content:center;padding:0">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.onSecC}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11V9.5A2.5 2.5 0 0 1 7.5 7H19 M16.5 4.5L19 7l-2.5 2.5 M19 13v1.5a2.5 2.5 0 0 1-2.5 2.5H5 M7.5 19.5L5 17l2.5-2.5"></path></svg>
+      <span aria-hidden="true" style="position:absolute;right:6px;top:6px;width:14px;height:14px;border-radius:7px;background:{{t.pri}};color:{{t.onPri}};font-size:9.5px;line-height:14px;font-weight:800;text-align:center">1</span>
+    </button>
+  </div>
+
+  <div style="flex:1"></div>
+  <div style="display:flex;gap:8px;padding:0 16px 20px;flex:none">
+    <sc-for list="{{tools}}" as="b" hint-placeholder-count="3">
+      <a href="{{b.href}}" style="flex:1;height:48px;border-radius:24px;background:{{t.cont}};color:{{t.on}};display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-size:13.5px;font-weight:600">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.onVar}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{b.icon}}"></path></svg>
+        {{b.label}}
+      </a>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false,"section":"Тема"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const d = !!this.props.dark;
+    const t = d ? {
+      bg:'#0E1514', cont:'#1A2120', track:'#2F3635', on:'#DDE4E2', onVar:'#BEC9C7',
+      pri:'#7FD6CD', onPri:'#003734', priC:'#00504B', onPriC:'#9DF2E9', secC:'#324B48', onSecC:'#CCE8E4'
+    } : {
+      bg:'#F5F9F8', cont:'#E9EFEE', track:'#DCE5E3', on:'#161D1C', onVar:'#3F4948',
+      pri:'#006A64', onPri:'#FFFFFF', priC:'#9DF2E9', onPriC:'#00201E', secC:'#CCE8E4', onSecC:'#051F1D'
+    };
+    const tools = [
+      { label:'Эквалайзер', href:'MusicPlayer.dc.html', icon:'M6 4v16 M12 4v16 M18 4v16 M3.5 14h5 M9.5 8h5 M15.5 16h5' },
+      { label:'Таймер', href:'MusicPlayer.dc.html', icon:'M12 7v5l3 2 M12 3.5a8.5 8.5 0 1 1 0 17a8.5 8.5 0 0 1 0-17z' },
+      { label:'Очередь · 8', href:'MusicQueue.dc.html', icon:'M4 6h12 M4 12h12 M4 18h8 M18 14v6 M15.5 17.5L18 20l2.5-2.5' }
+    ];
+    return { t, tools };
+  }
+}
+</script>
+</body>
+</html>

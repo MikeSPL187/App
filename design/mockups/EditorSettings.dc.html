@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Параметры файла в редакторе</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,300..800&amp;family=Roboto+Mono:wght@400;500&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;background:{{t.bg}};color:{{t.on}};font-family:'Roboto Flex',Roboto,system-ui,sans-serif">
+
+  <header style="display:flex;align-items:center;height:64px;padding:8px 4px 0;box-sizing:border-box">
+    <a href="TextEditor.dc.html" aria-label="Назад" style="width:48px;height:48px;border-radius:24px;display:flex;align-items:center;justify-content:center">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="{{t.on}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5 M11 6l-6 6 6 6"></path></svg>
+    </a>
+    <div style="flex:1;padding-left:4px">
+      <div style="font-size:19px;line-height:26px;font-weight:650">Список_покупок.txt</div>
+      <div style="font-size:12.5px;line-height:17px;color:{{t.onVar}}">Память/Download/Telegram</div>
+    </div>
+  </header>
+
+  <div role="alert" style="margin:6px 12px 0;padding:12px 14px;border-radius:20px;background:{{t.warnC}};color:{{t.onWarnC}};display:flex;gap:10px;align-items:flex-start">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{t.onWarnC}}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;margin-top:1px"><path d="M12 4l9 15.5H3z M12 10v4 M12 17h.01"></path></svg>
+    <span style="font-size:13.5px;line-height:19px">Текст выглядит искажённым. Похоже, файл в кодировке Windows-1251.</span>
+  </div>
+
+  <div style="padding:10px 0 0;font-family:'Roboto Mono',monospace;font-size:13.5px;line-height:22px;opacity:0.55">
+    <sc-for list="{{garbled}}" as="g" hint-placeholder-count="5">
+      <div style="display:flex">
+        <span aria-hidden="true" style="width:40px;text-align:right;padding-right:12px;color:{{t.onVar}};font-size:12px">{{g.n}}</span>
+        <span style="white-space:pre">{{g.s}}</span>
+      </div>
+    </sc-for>
+  </div>
+
+  <div aria-hidden="true" style="position:absolute;inset:0;background:{{t.scrim}}"></div>
+
+  <section role="dialog" aria-label="Параметры файла" style="position:absolute;left:0;right:0;bottom:0;height:604px;box-sizing:border-box;border-radius:28px 28px 0 0;background:{{t.sheet}};padding:0 16px 18px;display:flex;flex-direction:column;gap:12px">
+    <div aria-hidden="true" style="align-self:center;width:32px;height:4px;border-radius:2px;background:{{t.outline}};margin-top:12px;opacity:0.6"></div>
+    <h2 style="margin:0;padding:0 4px;font-size:20px;line-height:28px;font-weight:650">Параметры файла</h2>
+
+    <div>
+      <div style="font-size:13px;line-height:18px;font-weight:650;color:{{t.pri}};margin:0 0 8px 4px">Кодировка</div>
+      <div role="radiogroup" aria-label="Кодировка" style="display:flex;flex-direction:column;gap:2px;border-radius:20px;overflow:hidden">
+        <sc-for list="{{encs}}" as="e" hint-placeholder-count="4">
+          <label style="display:flex;align-items:center;gap:12px;height:52px;padding:0 14px;background:{{e.bg}}">
+            <input type="radio" name="enc" checked="{{e.on}}" style="width:20px;height:20px;margin:0;accent-color:{{t.pri}};flex:none">
+            <span style="flex:1;font-size:15px;font-weight:{{e.weight}}">{{e.label}}</span>
+            <sc-if value="{{e.badge}}" hint-placeholder-val="{{ false }}">
+              <span style="height:22px;padding:0 8px;border-radius:11px;background:{{t.pri}};color:{{t.onPri}};font-size:11.5px;line-height:22px;font-weight:700">Подходит</span>
+            </sc-if>
+            <span style="font-size:12.5px;color:{{t.onVar}}">{{e.meta}}</span>
+          </label>
+        </sc-for>
+      </div>
+      <div style="margin:8px 4px 0;padding:10px 12px;border-radius:14px;background:{{t.card}};font-size:14px;line-height:20px">Предпросмотр: <b style="font-weight:650">Список покупок · молоко 2 л · хлеб</b></div>
+    </div>
+
+    <div>
+      <div style="font-size:13px;line-height:18px;font-weight:650;color:{{t.pri}};margin:0 0 8px 4px">Окончания строк</div>
+      <div role="radiogroup" aria-label="Окончания строк" style="display:flex;height:40px;border:1px solid {{t.outline}};border-radius:20px;overflow:hidden">
+        <button role="radio" aria-checked="false" style="flex:1;border:0;background:transparent;color:{{t.on}};font:inherit;font-size:13.5px;font-weight:600">LF (Linux, Android)</button>
+        <button role="radio" aria-checked="true" style="flex:1;border:0;border-left:1px solid {{t.outline}};background:{{t.secC}};color:{{t.onSecC}};font:inherit;font-size:13.5px;font-weight:700">CRLF (Windows)</button>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:2px;border-radius:20px;overflow:hidden">
+      <sc-for list="{{toggles}}" as="s" hint-placeholder-count="2">
+        <div style="display:flex;align-items:center;gap:12px;height:52px;padding:0 14px;background:{{t.card}}">
+          <span style="flex:1;font-size:15px;font-weight:550">{{s.label}}</span>
+          <span role="switch" aria-checked="{{s.aria}}" aria-label="{{s.label}}" style="position:relative;width:52px;height:32px;border-radius:16px;background:{{s.track}};border:2px solid {{s.edge}};box-sizing:border-box;flex:none">
+            <span style="position:absolute;top:{{s.kTop}};left:{{s.kLeft}};width:{{s.kSize}};height:{{s.kSize}};border-radius:12px;background:{{s.knob}}"></span>
+          </span>
+        </div>
+      </sc-for>
+      <div style="display:flex;align-items:center;gap:12px;height:52px;padding:0 8px 0 14px;background:{{t.card}}">
+        <span style="flex:1;font-size:15px;font-weight:550">Размер шрифта</span>
+        <button aria-label="Уменьшить шрифт" style="width:40px;height:40px;border:0;border-radius:20px;background:{{t.field}};color:{{t.on}};font:inherit;font-size:18px;font-weight:600;padding:0">−</button>
+        <span style="width:48px;text-align:center;font-size:14px;font-weight:650;font-variant-numeric:tabular-nums">14 sp</span>
+        <button aria-label="Увеличить шрифт" style="width:40px;height:40px;border:0;border-radius:20px;background:{{t.field}};color:{{t.on}};font:inherit;font-size:18px;font-weight:600;padding:0">+</button>
+      </div>
+    </div>
+
+    <div style="flex:1"></div>
+    <button style="height:52px;border:0;border-radius:26px;background:{{t.pri}};color:{{t.onPri}};font:inherit;font-size:15px;font-weight:700">Открыть заново в Windows-1251</button>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dark":{"editor":"boolean","default":false,"section":"Тема"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const d = !!this.props.dark;
+    const t = d ? {
+      bg:'#0E1514', sheet:'#1A2120', card:'#252B2A', field:'#2F3635', on:'#DDE4E2', onVar:'#BEC9C7', outline:'#899391',
+      pri:'#7FD6CD', onPri:'#003734', secC:'#324B48', onSecC:'#CCE8E4', sel:'#1F3A37',
+      warnC:'#4D3300', onWarnC:'#FFDF9E', scrim:'rgba(0,0,0,0.55)', swOff:'#2F3635', knobOff:'#899391'
+    } : {
+      bg:'#FFFFFF', sheet:'#EFF4F3', card:'#FFFFFF', field:'#E9EFEE', on:'#161D1C', onVar:'#3F4948', outline:'#6F7978',
+      pri:'#006A64', onPri:'#FFFFFF', secC:'#CCE8E4', onSecC:'#051F1D', sel:'#E6F5F2',
+      warnC:'#FFE2B8', onWarnC:'#3D2600', scrim:'rgba(22,29,28,0.32)', swOff:'#E3EAE8', knobOff:'#6F7978'
+    };
+    const garbled = ['Ñïèñîê ïîêóïîê', '- ìîëîêî 2 ë', '- õëåá', '- ÿéöà, 10 øò', '- ñûð'].map((s, i) => ({ n: String(i + 1), s }));
+    const encs = [
+      { label:'UTF-8', meta:'сейчас', on:false, badge:false },
+      { label:'Windows-1251', meta:'', on:true, badge:true },
+      { label:'KOI8-R', meta:'', on:false, badge:false },
+      { label:'Другая…', meta:'48 кодировок', on:false, badge:false }
+    ].map((e) => Object.assign({}, e, { bg: e.on ? t.sel : t.card, weight: e.on ? 700 : 550 }));
+    const sw = (label, on) => ({
+      label, aria: on ? 'true' : 'false', track: on ? t.pri : t.swOff, edge: on ? t.pri : t.outline, knob: on ? t.onPri : t.knobOff,
+      kSize: on ? '24px' : '16px', kTop: on ? '2px' : '6px', kLeft: on ? '22px' : '6px'
+    });
+    const toggles = [sw('Перенос строк', true), sw('Только чтение', false)];
+    return { t, garbled, encs, toggles };
+  }
+}
+</script>
+</body>
+</html>
