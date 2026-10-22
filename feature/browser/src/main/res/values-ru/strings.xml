@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="browser_title_photos">Фото</string>
+    <string name="browser_title_videos">Видео</string>
+    <string name="browser_title_audio">Аудио</string>
+    <string name="browser_title_documents">Документы</string>
+    <string name="browser_title_archives">Архивы</string>
+    <string name="browser_title_apks">Установочные APK</string>
+    <string name="browser_title_recent">Недавние</string>
+    <string name="browser_title_favorites">Избранное</string>
+    <string name="browser_title_trash">Корзина</string>
+    <string name="browser_title_large">Большие файлы</string>
+    <string name="browser_title_storage">Обзор</string>
+    <string name="browser_archive">Архив</string>
+
+    <string name="volume_internal">Внутренняя память</string>
+    <string name="volume_internal_short">Память</string>
+    <string name="volume_sd">SD-карта</string>
+    <string name="volume_usb">USB-накопитель</string>
+    <string name="volume_free">свободно %1$s</string>
+    <string name="volume_used_of">%1$s из %2$s</string>
+
+    <string name="browser_section_folders">Папки · %1$d</string>
+    <string name="browser_section_files">Файлы · %1$d</string>
+
+    <string name="sort_title">Сортировка</string>
+    <string name="sort_name">По имени</string>
+    <string name="sort_date">По дате</string>
+    <string name="sort_size">По размеру</string>
+    <string name="sort_type">По типу</string>
+    <string name="sort_name_asc">А → Я</string>
+    <string name="sort_name_desc">Я → А</string>
+    <string name="sort_date_desc">Сначала новые</string>
+    <string name="sort_date_asc">Сначала старые</string>
+    <string name="sort_size_desc">Сначала большие</string>
+    <string name="sort_size_asc">Сначала маленькие</string>
+    <string name="sort_type_asc">По расширению, А → Я</string>
+    <string name="sort_type_desc">По расширению, Я → А</string>
+    <string name="sort_folders_first">Папки сверху</string>
+    <string name="view_list">Список</string>
+    <string name="view_grid">Сетка</string>
+
+    <string name="action_open">Открыть</string>
+    <string name="action_open_with">Открыть с помощью</string>
+    <string name="action_share">Поделиться</string>
+    <string name="action_copy">Копировать</string>
+    <string name="action_cut">Переместить</string>
+    <string name="action_rename">Переименовать</string>
+    <string name="action_compress">В архив</string>
+    <string name="action_extract_here">Распаковать сюда</string>
+    <string name="action_extract_folder">Распаковать в «%1$s»</string>
+    <string name="action_favorite_add">В избранное</string>
+    <string name="action_favorite_remove">Убрать из избранного</string>
+    <string name="action_pin">На главный экран</string>
+    <string name="action_properties">Свойства</string>
+    <string name="action_delete">Удалить</string>
+    <string name="action_restore">Восстановить</string>
+    <string name="action_delete_forever">Удалить навсегда</string>
+    <string name="action_empty_trash">Очистить корзину</string>
+    <string name="action_open_location">Открыть расположение</string>
+    <string name="action_select_all">Выбрать всё</string>
+    <string name="action_all">Все</string>
+    <string name="action_create">Создать</string>
+    <string name="action_new_folder">Папка</string>
+    <string name="action_new_file">Текстовый файл</string>
+    <string name="action_refresh">Обновить</string>
+    <string name="action_search">Поиск</string>
+    <string name="action_more">Ещё</string>
+    <string name="action_back">Назад</string>
+    <string name="action_cancel">Отмена</string>
+    <string name="action_save">Сохранить</string>
+    <string name="action_close_selection">Отменить выбор</string>
+    <string name="action_paste_here">Вставить сюда</string>
+    <string name="action_move_here">Переместить сюда</string>
+    <string name="action_extract">Распаковать</string>
+    <string name="action_open_operations">Операции</string>
+
+    <plurals name="selection_count">
+        <item quantity="one">%d выбран</item>
+        <item quantity="few">%d выбрано</item>
+        <item quantity="many">%d выбрано</item>
+        <item quantity="other">%d выбрано</item>
+    </plurals>
+    <plurals name="clipboard_copy">
+        <item quantity="one">Копировать %d объект</item>
+        <item quantity="few">Копировать %d объекта</item>
+        <item quantity="many">Копировать %d объектов</item>
+        <item quantity="other">Копировать %d объекта</item>
+    </plurals>
+    <plurals name="clipboard_cut">
+        <item quantity="one">Переместить %d объект</item>
+        <item quantity="few">Переместить %d объекта</item>
+        <item quantity="many">Переместить %d объектов</item>
+        <item quantity="other">Переместить %d объекта</item>
+    </plurals>
+
+    <string name="dialog_new_folder">Новая папка</string>
+    <string name="dialog_new_file">Новый файл</string>
+    <string name="dialog_rename">Переименовать</string>
+    <string name="dialog_compress">Сжать в ZIP</string>
+    <string name="dialog_name">Имя</string>
+    <string name="dialog_archive_name">Имя архива</string>
+    <string name="dialog_default_folder">Новая папка</string>
+    <string name="dialog_default_file">Новый файл.txt</string>
+    <string name="dialog_default_archive">Архив</string>
+
+    <string name="delete_trash_title">Переместить в корзину?</string>
+    <plurals name="delete_trash_message">
+        <item quantity="one">%1$d объект можно будет вернуть из корзины в течение %2$d дн.</item>
+        <item quantity="few">%1$d объекта можно будет вернуть из корзины в течение %2$d дн.</item>
+        <item quantity="many">%1$d объектов можно будет вернуть из корзины в течение %2$d дн.</item>
+        <item quantity="other">%1$d объекта можно будет вернуть из корзины в течение %2$d дн.</item>
+    </plurals>
+    <string name="delete_trash_message_forever">Объекты останутся в корзине, пока вы её не очистите.</string>
+    <string name="delete_forever_title">Удалить навсегда?</string>
+    <plurals name="delete_forever_message">
+        <item quantity="one">%d объект будет удалён без возможности восстановления.</item>
+        <item quantity="few">%d объекта будут удалены без возможности восстановления.</item>
+        <item quantity="many">%d объектов будут удалены без возможности восстановления.</item>
+        <item quantity="other">%d объекта будут удалены без возможности восстановления.</item>
+    </plurals>
+    <string name="delete_skip_trash">Удалить без корзины</string>
+    <string name="empty_trash_title">Очистить корзину?</string>
+    <string name="empty_trash_message">Все файлы в корзине будут удалены без возможности восстановления.</string>
+
+    <string name="empty_folder_title">Папка пуста</string>
+    <string name="empty_folder_message">Создайте папку или вставьте сюда файлы.</string>
+    <string name="empty_library_title">Здесь пока ничего нет</string>
+    <string name="empty_trash_state">Корзина пуста</string>
+    <string name="empty_trash_hint">Удалённые файлы хранятся здесь, пока не истечёт срок или вы не очистите корзину.</string>
+    <string name="empty_favorites_title">В избранном пусто</string>
+    <string name="empty_favorites_hint">Добавляйте папки и файлы через меню «Ещё» у файла.</string>
+    <string name="no_access_title">Нет доступа к файлам</string>
+    <string name="no_access_message">Разрешите приложению доступ ко всем файлам, чтобы смотреть и менять файлы на устройстве.</string>
+    <string name="no_access_action">Открыть настройки</string>
+    <string name="not_found_title">Папка не найдена</string>
+    <string name="not_found_message">Возможно, её удалили или извлекли носитель.</string>
+    <string name="error_title">Не удалось открыть</string>
+    <string name="action_retry">Повторить</string>
+
+    <string name="props_title">Свойства</string>
+    <string name="props_type">Тип</string>
+    <string name="props_location">Расположение</string>
+    <string name="props_size">Размер</string>
+    <string name="props_modified">Изменён</string>
+    <string name="props_contains">Содержит</string>
+    <string name="props_counting">Подсчёт…</string>
+    <string name="props_folder">Папка</string>
+    <string name="props_file">Файл %1$s</string>
+    <string name="props_hidden">Скрытый</string>
+    <string name="props_selected">Выбрано объектов</string>
+    <string name="props_bytes">%1$s (%2$s байт)</string>
+    <string name="props_contains_value">%1$s, %2$s</string>
+
+    <string name="meta_trash">удалён %1$s · из %2$s</string>
+    <string name="meta_separator"> · </string>
+
+    <string name="browser_renamed">Переименовано: %1$s</string>
+    <string name="browser_favorite_added">Добавлено в избранное</string>
+    <string name="browser_favorite_removed">Убрано из избранного</string>
+    <string name="browser_share_folders">Папки нельзя отправить. Сожмите их в архив и отправьте его.</string>
+    <string name="browser_share_title">Отправить</string>
+    <string name="browser_open_with">Открыть с помощью</string>
+    <string name="browser_no_app">Нет приложения, которое может открыть этот файл</string>
+    <string name="browser_error_empty_name">Введите имя</string>
+    <string name="browser_error_invalid_name">Недопустимое имя</string>
+    <string name="browser_error_long_name">Слишком длинное имя</string>
+    <string name="browser_error_forbidden_char">Нельзя использовать символ «%1$s»</string>
+    <string name="browser_show_hidden">Показывать скрытые</string>
+    <string name="browser_hide_hidden">Не показывать скрытые</string>
+
+    <string name="root_storages">Хранилища</string>
+    <string name="root_places">Места</string>
+    <string name="root_downloads">Загрузки</string>
+    <string name="root_documents">Документы</string>
+    <string name="root_camera">Камера</string>
+    <string name="root_pictures">Изображения</string>
+</resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_title">Файлы</string>
+    <string name="home_settings">Настройки</string>
+    <string name="home_search_hint">Поиск файлов</string>
+    <string name="home_categories">Категории</string>
+    <string name="home_recent">Недавние</string>
+    <string name="home_all">Все</string>
+    <string name="home_space">%1$s из %2$s · свободно %3$s</string>
+    <string name="home_used_percent">Занято %1$d%% памяти</string>
+    <string name="home_large_files">Найти большие файлы</string>
+    <string name="home_access_title">Нужен доступ к файлам</string>
+    <string name="home_access_message">Без него приложение не увидит папки, недавние файлы и разбивку памяти.</string>
+    <string name="home_access_action">Разрешить доступ</string>
+    <string name="usage_photos">Фото</string>
+    <string name="usage_videos">Видео</string>
+    <string name="usage_audio">Аудио</string>
+    <string name="usage_documents">Документы</string>
+    <string name="usage_archives">Архивы и APK</string>
+    <string name="usage_other">Другое</string>
+    <string name="cat_photos">Фото</string>
+    <string name="cat_videos">Видео</string>
+    <string name="cat_audio">Аудио</string>
+    <string name="cat_documents">Документы</string>
+    <string name="cat_archives">Архивы</string>
+    <string name="cat_apks">APK</string>
+    <string name="cat_downloads">Загрузки</string>
+    <string name="cat_favorites">Избранное</string>
+</resources>

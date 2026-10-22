@@ -58,21 +58,43 @@ class SettingsRepository @Inject constructor(
         )
     }
 
-    suspend fun setThemeMode(mode: ThemeMode) = store.edit { it[Keys.theme] = mode.name }
-    suspend fun setDynamicColor(enabled: Boolean) = store.edit { it[Keys.dynamic] = enabled }
-    suspend fun setListDensity(density: ListDensity) = store.edit { it[Keys.density] = density.name }
-    suspend fun setShowHidden(show: Boolean) = store.edit { it[Keys.hidden] = show }
-    suspend fun setDefaultSort(sort: SortOrder) = store.edit {
-        it[Keys.sortField] = sort.field.name
-        it[Keys.sortAsc] = sort.ascending
-        it[Keys.foldersFirst] = sort.foldersFirst
+    suspend fun setThemeMode(mode: ThemeMode) {
+        store.edit { it[Keys.theme] = mode.name }
     }
-    suspend fun setDefaultViewMode(mode: ViewMode) = store.edit { it[Keys.viewMode] = mode.name }
-    suspend fun setUseTrash(enabled: Boolean) = store.edit { it[Keys.useTrash] = enabled }
-    suspend fun setTrashRetentionDays(days: Int) = store.edit { it[Keys.trashDays] = days }
-    suspend fun setConfirmDelete(enabled: Boolean) = store.edit { it[Keys.confirmDelete] = enabled }
-    suspend fun setCrashReports(enabled: Boolean) = store.edit { it[Keys.crashReports] = enabled }
-    suspend fun setOnboardingDone() = store.edit { it[Keys.onboarding] = true }
+    suspend fun setDynamicColor(enabled: Boolean) {
+        store.edit { it[Keys.dynamic] = enabled }
+    }
+    suspend fun setListDensity(density: ListDensity) {
+        store.edit { it[Keys.density] = density.name }
+    }
+    suspend fun setShowHidden(show: Boolean) {
+        store.edit { it[Keys.hidden] = show }
+    }
+    suspend fun setDefaultSort(sort: SortOrder) {
+        store.edit {
+            it[Keys.sortField] = sort.field.name
+            it[Keys.sortAsc] = sort.ascending
+            it[Keys.foldersFirst] = sort.foldersFirst
+        }
+    }
+    suspend fun setDefaultViewMode(mode: ViewMode) {
+        store.edit { it[Keys.viewMode] = mode.name }
+    }
+    suspend fun setUseTrash(enabled: Boolean) {
+        store.edit { it[Keys.useTrash] = enabled }
+    }
+    suspend fun setTrashRetentionDays(days: Int) {
+        store.edit { it[Keys.trashDays] = days }
+    }
+    suspend fun setConfirmDelete(enabled: Boolean) {
+        store.edit { it[Keys.confirmDelete] = enabled }
+    }
+    suspend fun setCrashReports(enabled: Boolean) {
+        store.edit { it[Keys.crashReports] = enabled }
+    }
+    suspend fun setOnboardingDone() {
+        store.edit { it[Keys.onboarding] = true }
+    }
 
     private inline fun <reified E : Enum<E>> String?.toEnum(default: E): E =
         this?.let { name -> enumValues<E>().firstOrNull { it.name == name } } ?: default

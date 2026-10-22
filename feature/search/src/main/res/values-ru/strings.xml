@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_hint">Поиск по имени файла</string>
+    <string name="search_hint_folder">Поиск в этой папке</string>
+    <string name="search_back">Назад</string>
+    <string name="search_clear">Очистить</string>
+    <string name="search_scope_everywhere">Везде</string>
+    <string name="search_scope_folder">В «%1$s»</string>
+    <string name="filter_type">Тип</string>
+    <string name="filter_date">Дата</string>
+    <string name="filter_size">Размер</string>
+    <string name="filter_any_type">Любой тип</string>
+    <string name="filter_images">Фото</string>
+    <string name="filter_videos">Видео</string>
+    <string name="filter_audio">Аудио</string>
+    <string name="filter_documents">Документы</string>
+    <string name="filter_archives">Архивы</string>
+    <string name="filter_apks">APK</string>
+    <string name="filter_any_date">Любая дата</string>
+    <string name="filter_today">Сегодня</string>
+    <string name="filter_week">За неделю</string>
+    <string name="filter_month">За месяц</string>
+    <string name="filter_year">За год</string>
+    <string name="filter_any_size">Любой размер</string>
+    <string name="filter_10mb">Больше 10 МБ</string>
+    <string name="filter_100mb">Больше 100 МБ</string>
+    <string name="filter_1gb">Больше 1 ГБ</string>
+    <string name="search_history">Недавние запросы</string>
+    <string name="search_history_clear">Очистить</string>
+    <string name="search_history_remove">Удалить запрос «%1$s»</string>
+    <string name="search_empty_title">Что ищем?</string>
+    <string name="search_empty_hint">Введите часть имени или выберите тип, дату или размер.</string>
+    <string name="search_nothing">Ничего не найдено</string>
+    <string name="search_nothing_hint">Проверьте написание или уберите часть фильтров.</string>
+    <string name="search_truncated"> · показаны первые</string>
+    <string name="search_open_location">Открыть расположение</string>
+    <string name="search_no_app">Нет приложения, которое может открыть этот файл</string>
+    <plurals name="search_found">
+        <item quantity="one">Найден %d</item>
+        <item quantity="few">Найдено %d</item>
+        <item quantity="many">Найдено %d</item>
+        <item quantity="other">Найдено %d</item>
+    </plurals>
+</resources>

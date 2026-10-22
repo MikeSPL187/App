@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- В резервную копию попадают только настройки и избранное; журнал операций и кеш — нет. -->
+<full-backup-content>
+    <include domain="sharedpref" path="." />
+    <include domain="file" path="datastore/" />
+    <include domain="database" path="quietfiles.db" />
+</full-backup-content>

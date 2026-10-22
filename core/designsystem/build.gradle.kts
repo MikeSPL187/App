@@ -9,7 +9,8 @@ android {
 
 dependencies {
     implementation(project(":core:model"))
+    api(project(":core:common"))
     implementation(libs.androidx.core.ktx)
     api(libs.coil.compose)
-    implementation(libs.coil.video)
+    api(libs.coil.video)
 }

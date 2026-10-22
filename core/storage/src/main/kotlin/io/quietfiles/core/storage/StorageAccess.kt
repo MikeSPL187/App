@@ -2,7 +2,7 @@ package io.quietfiles.core.storage
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 import android.os.Environment
 import android.provider.Settings
 
@@ -11,7 +11,7 @@ object StorageAccess {
     fun hasAllFilesAccess(): Boolean = Environment.isExternalStorageManager()
 
     fun requestIntent(context: Context): Intent =
-        Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, Uri.parse("package:${context.packageName}"))
+        Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, "package:${context.packageName}".toUri())
 
     /** Запасной экран, если прошивка не поддерживает запрос для конкретного приложения. */
     fun fallbackIntent(): Intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)

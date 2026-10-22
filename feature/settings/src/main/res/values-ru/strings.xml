@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Настройки</string>
+    <string name="settings_back">Назад</string>
+    <string name="settings_close">Закрыть</string>
+    <string name="settings_group_appearance">Оформление</string>
+    <string name="settings_theme">Тема</string>
+    <string name="settings_theme_free">Доступна всем, без подписки</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Тёмная</string>
+    <string name="theme_system">Системная</string>
+    <string name="settings_dynamic">Цвета из обоев</string>
+    <string name="settings_dynamic_hint">Material You: цвета приложения подстраиваются под обои</string>
+    <string name="settings_density">Плотность списка</string>
+    <string name="density_comfortable">Обычная</string>
+    <string name="density_compact">Компактная</string>
+    <string name="settings_group_files">Файлы</string>
+    <string name="settings_hidden">Скрытые файлы</string>
+    <string name="settings_hidden_hint">Показывать файлы и папки, имя которых начинается с точки</string>
+    <string name="settings_folders_first">Папки сверху</string>
+    <string name="settings_grid_default">Сетка по умолчанию</string>
+    <string name="settings_grid_default_hint">Для папок, где вид ещё не выбирали</string>
+    <string name="settings_trash">Корзина</string>
+    <string name="settings_trash_hint">Удалённое можно вернуть</string>
+    <string name="settings_trash_retention">Хранить в корзине</string>
+    <string name="settings_confirm_delete">Спрашивать перед удалением</string>
+    <string name="retention_forever">Пока не очищу</string>
+    <plurals name="retention_days">
+        <item quantity="one">%d день</item>
+        <item quantity="few">%d дня</item>
+        <item quantity="many">%d дней</item>
+        <item quantity="other">%d дня</item>
+    </plurals>
+    <string name="settings_group_access">Доступ</string>
+    <string name="settings_all_files">Доступ ко всем файлам</string>
+    <string name="settings_access_granted">Разрешён</string>
+    <string name="settings_access_denied">Не разрешён</string>
+    <string name="settings_notifications">Уведомления</string>
+    <string name="settings_notifications_hint">Ход операций</string>
+    <string name="settings_group_about">О приложении</string>
+    <string name="settings_version">Версия</string>
+    <string name="settings_licenses">Лицензии открытого ПО</string>
+</resources>

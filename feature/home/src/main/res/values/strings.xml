@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home_title">Files</string>
+    <string name="home_settings">Settings</string>
+    <string name="home_search_hint">Search files</string>
+    <string name="home_categories">Categories</string>
+    <string name="home_recent">Recent</string>
+    <string name="home_all">All</string>
+    <string name="home_space">%1$s of %2$s · %3$s free</string>
+    <string name="home_used_percent">%1$d%% of storage used</string>
+    <string name="home_large_files">Find large files</string>
+    <string name="home_access_title">File access needed</string>
+    <string name="home_access_message">Without it the app can’t see folders, recent files or the storage breakdown.</string>
+    <string name="home_access_action">Allow access</string>
+    <string name="usage_photos">Photos</string>
+    <string name="usage_videos">Videos</string>
+    <string name="usage_audio">Audio</string>
+    <string name="usage_documents">Documents</string>
+    <string name="usage_archives">Archives &amp; APKs</string>
+    <string name="usage_other">Other</string>
+    <string name="cat_photos">Photos</string>
+    <string name="cat_videos">Videos</string>
+    <string name="cat_audio">Audio</string>
+    <string name="cat_documents">Documents</string>
+    <string name="cat_archives">Archives</string>
+    <string name="cat_apks">APKs</string>
+    <string name="cat_downloads">Downloads</string>
+    <string name="cat_favorites">Favorites</string>
+</resources>

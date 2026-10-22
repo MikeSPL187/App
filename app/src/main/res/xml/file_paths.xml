@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Какие файлы можно отдать другим приложениям через content://.
+  Только общее хранилище и съёмные тома; внутренние данные приложения закрыты,
+  кроме папки предпросмотра файлов из архивов.
+-->
+<paths>
+    <external-path name="primary" path="." />
+    <root-path name="volumes" path="storage/" />
+    <cache-path name="archive_preview" path="archive-preview/" />
+</paths>

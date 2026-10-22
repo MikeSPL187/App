@@ -104,7 +104,7 @@ class MediaIndex @Inject constructor(
         limit: Int = 500,
     ): List<FileEntry> = withContext(io) {
         val needle = normalize(query.trim())
-        if (needle.isEmpty() && categories.isEmpty()) return@withContext emptyList()
+        if (needle.isEmpty() && categories.isEmpty() && minSize == 0L && modifiedAfter == 0L) return@withContext emptyList()
         query(notDirectory, "${FileColumns.DATE_MODIFIED} DESC", limit = limit) { entry ->
             (needle.isEmpty() || normalize(entry.name).contains(needle)) &&
                 (categories.isEmpty() || entry.category in categories) &&

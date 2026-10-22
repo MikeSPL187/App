@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="browser_title_photos">Photos</string>
+    <string name="browser_title_videos">Videos</string>
+    <string name="browser_title_audio">Audio</string>
+    <string name="browser_title_documents">Documents</string>
+    <string name="browser_title_archives">Archives</string>
+    <string name="browser_title_apks">Installation APKs</string>
+    <string name="browser_title_recent">Recent</string>
+    <string name="browser_title_favorites">Favorites</string>
+    <string name="browser_title_trash">Trash</string>
+    <string name="browser_title_large">Large files</string>
+    <string name="browser_title_storage">Browse</string>
+    <string name="browser_archive">Archive</string>
+
+    <string name="volume_internal">Internal storage</string>
+    <string name="volume_internal_short">Storage</string>
+    <string name="volume_sd">SD card</string>
+    <string name="volume_usb">USB drive</string>
+    <string name="volume_free">%1$s free</string>
+    <string name="volume_used_of">%1$s of %2$s</string>
+
+    <string name="browser_section_folders">Folders · %1$d</string>
+    <string name="browser_section_files">Files · %1$d</string>
+
+    <string name="sort_title">Sort</string>
+    <string name="sort_name">By name</string>
+    <string name="sort_date">By date</string>
+    <string name="sort_size">By size</string>
+    <string name="sort_type">By type</string>
+    <string name="sort_name_asc">A → Z</string>
+    <string name="sort_name_desc">Z → A</string>
+    <string name="sort_date_desc">Newest first</string>
+    <string name="sort_date_asc">Oldest first</string>
+    <string name="sort_size_desc">Largest first</string>
+    <string name="sort_size_asc">Smallest first</string>
+    <string name="sort_type_asc">By extension, A → Z</string>
+    <string name="sort_type_desc">By extension, Z → A</string>
+    <string name="sort_folders_first">Folders first</string>
+    <string name="view_list">List</string>
+    <string name="view_grid">Grid</string>
+
+    <string name="action_open">Open</string>
+    <string name="action_open_with">Open with</string>
+    <string name="action_share">Share</string>
+    <string name="action_copy">Copy</string>
+    <string name="action_cut">Move</string>
+    <string name="action_rename">Rename</string>
+    <string name="action_compress">Compress</string>
+    <string name="action_extract_here">Extract here</string>
+    <string name="action_extract_folder">Extract to “%1$s”</string>
+    <string name="action_favorite_add">Add to favorites</string>
+    <string name="action_favorite_remove">Remove from favorites</string>
+    <string name="action_pin">Add to home screen</string>
+    <string name="action_properties">Properties</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_restore">Restore</string>
+    <string name="action_delete_forever">Delete forever</string>
+    <string name="action_empty_trash">Empty trash</string>
+    <string name="action_open_location">Open location</string>
+    <string name="action_select_all">Select all</string>
+    <string name="action_all">All</string>
+    <string name="action_create">Create</string>
+    <string name="action_new_folder">Folder</string>
+    <string name="action_new_file">Text file</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_search">Search</string>
+    <string name="action_more">More</string>
+    <string name="action_back">Back</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
+    <string name="action_close_selection">Clear selection</string>
+    <string name="action_paste_here">Paste here</string>
+    <string name="action_move_here">Move here</string>
+    <string name="action_extract">Extract</string>
+    <string name="action_open_operations">Operations</string>
+
+    <plurals name="selection_count">
+        <item quantity="one">%d selected</item>
+        <item quantity="other">%d selected</item>
+    </plurals>
+    <plurals name="clipboard_copy">
+        <item quantity="one">Copy %d item</item>
+        <item quantity="other">Copy %d items</item>
+    </plurals>
+    <plurals name="clipboard_cut">
+        <item quantity="one">Move %d item</item>
+        <item quantity="other">Move %d items</item>
+    </plurals>
+
+    <string name="dialog_new_folder">New folder</string>
+    <string name="dialog_new_file">New file</string>
+    <string name="dialog_rename">Rename</string>
+    <string name="dialog_compress">Compress to ZIP</string>
+    <string name="dialog_name">Name</string>
+    <string name="dialog_archive_name">Archive name</string>
+    <string name="dialog_default_folder">New folder</string>
+    <string name="dialog_default_file">New file.txt</string>
+    <string name="dialog_default_archive">Archive</string>
+
+    <string name="delete_trash_title">Move to trash?</string>
+    <plurals name="delete_trash_message">
+        <item quantity="one">%1$d item can be restored from the trash for %2$d days.</item>
+        <item quantity="other">%1$d items can be restored from the trash for %2$d days.</item>
+    </plurals>
+    <string name="delete_trash_message_forever">Items stay in the trash until you empty it.</string>
+    <string name="delete_forever_title">Delete forever?</string>
+    <plurals name="delete_forever_message">
+        <item quantity="one">%d item will be deleted and can’t be restored.</item>
+        <item quantity="other">%d items will be deleted and can’t be restored.</item>
+    </plurals>
+    <string name="delete_skip_trash">Delete without trash</string>
+    <string name="empty_trash_title">Empty trash?</string>
+    <string name="empty_trash_message">All files in the trash will be deleted and can’t be restored.</string>
+
+    <string name="empty_folder_title">This folder is empty</string>
+    <string name="empty_folder_message">Create a folder or paste files here.</string>
+    <string name="empty_library_title">Nothing here yet</string>
+    <string name="empty_trash_state">Trash is empty</string>
+    <string name="empty_trash_hint">Deleted files stay here until they expire or you empty the trash.</string>
+    <string name="empty_favorites_title">No favorites yet</string>
+    <string name="empty_favorites_hint">Add folders and files from the “More” menu of a file.</string>
+    <string name="no_access_title">No access to files</string>
+    <string name="no_access_message">Allow access to all files to view and manage files on this device.</string>
+    <string name="no_access_action">Open settings</string>
+    <string name="not_found_title">Folder not found</string>
+    <string name="not_found_message">It may have been deleted, or the storage was removed.</string>
+    <string name="error_title">Couldn’t open</string>
+    <string name="action_retry">Retry</string>
+
+    <string name="props_title">Properties</string>
+    <string name="props_type">Type</string>
+    <string name="props_location">Location</string>
+    <string name="props_size">Size</string>
+    <string name="props_modified">Modified</string>
+    <string name="props_contains">Contains</string>
+    <string name="props_counting">Counting…</string>
+    <string name="props_folder">Folder</string>
+    <string name="props_file">%1$s file</string>
+    <string name="props_hidden">Hidden</string>
+    <string name="props_selected">Selected items</string>
+    <string name="props_bytes">%1$s (%2$s bytes)</string>
+    <string name="props_contains_value">%1$s, %2$s</string>
+
+    <string name="meta_trash">deleted %1$s · from %2$s</string>
+    <string name="meta_separator"> · </string>
+
+    <string name="browser_renamed">Renamed: %1$s</string>
+    <string name="browser_favorite_added">Added to favorites</string>
+    <string name="browser_favorite_removed">Removed from favorites</string>
+    <string name="browser_share_folders">Folders can’t be shared. Compress them into an archive and share it.</string>
+    <string name="browser_share_title">Share</string>
+    <string name="browser_open_with">Open with</string>
+    <string name="browser_no_app">No app can open this file</string>
+    <string name="browser_error_empty_name">Enter a name</string>
+    <string name="browser_error_invalid_name">Invalid name</string>
+    <string name="browser_error_long_name">The name is too long</string>
+    <string name="browser_error_forbidden_char">The character “%1$s” is not allowed</string>
+    <string name="browser_show_hidden">Show hidden files</string>
+    <string name="browser_hide_hidden">Hide hidden files</string>
+
+    <string name="root_storages">Storage</string>
+    <string name="root_places">Places</string>
+    <string name="root_downloads">Downloads</string>
+    <string name="root_documents">Documents</string>
+    <string name="root_camera">Camera</string>
+    <string name="root_pictures">Pictures</string>
+</resources>

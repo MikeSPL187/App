@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_hint">Search by file name</string>
+    <string name="search_hint_folder">Search in this folder</string>
+    <string name="search_back">Back</string>
+    <string name="search_clear">Clear</string>
+    <string name="search_scope_everywhere">Everywhere</string>
+    <string name="search_scope_folder">In “%1$s”</string>
+    <string name="filter_type">Type</string>
+    <string name="filter_date">Date</string>
+    <string name="filter_size">Size</string>
+    <string name="filter_any_type">Any type</string>
+    <string name="filter_images">Photos</string>
+    <string name="filter_videos">Videos</string>
+    <string name="filter_audio">Audio</string>
+    <string name="filter_documents">Documents</string>
+    <string name="filter_archives">Archives</string>
+    <string name="filter_apks">APKs</string>
+    <string name="filter_any_date">Any date</string>
+    <string name="filter_today">Today</string>
+    <string name="filter_week">Past week</string>
+    <string name="filter_month">Past month</string>
+    <string name="filter_year">Past year</string>
+    <string name="filter_any_size">Any size</string>
+    <string name="filter_10mb">Over 10 MB</string>
+    <string name="filter_100mb">Over 100 MB</string>
+    <string name="filter_1gb">Over 1 GB</string>
+    <string name="search_history">Recent searches</string>
+    <string name="search_history_clear">Clear</string>
+    <string name="search_history_remove">Remove “%1$s”</string>
+    <string name="search_empty_title">What are you looking for?</string>
+    <string name="search_empty_hint">Type part of a name or choose a type, date or size.</string>
+    <string name="search_nothing">Nothing found</string>
+    <string name="search_nothing_hint">Check the spelling or remove some filters.</string>
+    <string name="search_truncated"> · showing the first ones</string>
+    <string name="search_open_location">Open location</string>
+    <string name="search_no_app">No app can open this file</string>
+    <plurals name="search_found">
+        <item quantity="one">%d found</item>
+        <item quantity="other">%d found</item>
+    </plurals>
+</resources>

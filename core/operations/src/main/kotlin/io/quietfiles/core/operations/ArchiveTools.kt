@@ -41,22 +41,7 @@ class ArchiveTools @Inject constructor(
     @IoDispatcher private val io: CoroutineDispatcher,
 ) {
 
-    fun formatOf(name: String): ArchiveFormat? {
-        val lower = name.lowercase()
-        return when {
-            lower.endsWith(".tar.gz") || lower.endsWith(".tgz") -> ArchiveFormat.TAR_GZ
-            lower.endsWith(".tar.bz2") || lower.endsWith(".tbz2") || lower.endsWith(".tbz") -> ArchiveFormat.TAR_BZ2
-            lower.endsWith(".tar.xz") || lower.endsWith(".txz") -> ArchiveFormat.TAR_XZ
-            lower.endsWith(".zip") || lower.endsWith(".jar") || lower.endsWith(".apk") -> ArchiveFormat.ZIP
-            lower.endsWith(".7z") -> ArchiveFormat.SEVEN_Z
-            lower.endsWith(".tar") -> ArchiveFormat.TAR
-            lower.endsWith(".gz") -> ArchiveFormat.GZ
-            lower.endsWith(".bz2") -> ArchiveFormat.BZ2
-            lower.endsWith(".xz") -> ArchiveFormat.XZ
-            lower.endsWith(".rar") -> ArchiveFormat.RAR
-            else -> null
-        }
-    }
+    fun formatOf(name: String): ArchiveFormat? = formatOfName(name)
 
     fun isArchive(name: String): Boolean = formatOf(name) != null
 
@@ -296,6 +281,27 @@ class ArchiveTools @Inject constructor(
 
     companion object {
         private const val BUFFER = 256 * 1024
+
+        fun formatOfName(name: String): ArchiveFormat? {
+            val lower = name.lowercase()
+            return when {
+                lower.endsWith(".tar.gz") || lower.endsWith(".tgz") -> ArchiveFormat.TAR_GZ
+                lower.endsWith(".tar.bz2") || lower.endsWith(".tbz2") || lower.endsWith(".tbz") -> ArchiveFormat.TAR_BZ2
+                lower.endsWith(".tar.xz") || lower.endsWith(".txz") -> ArchiveFormat.TAR_XZ
+                lower.endsWith(".zip") || lower.endsWith(".jar") || lower.endsWith(".apk") -> ArchiveFormat.ZIP
+                lower.endsWith(".7z") -> ArchiveFormat.SEVEN_Z
+                lower.endsWith(".tar") -> ArchiveFormat.TAR
+                lower.endsWith(".gz") -> ArchiveFormat.GZ
+                lower.endsWith(".bz2") -> ArchiveFormat.BZ2
+                lower.endsWith(".xz") -> ArchiveFormat.XZ
+                lower.endsWith(".rar") -> ArchiveFormat.RAR
+                else -> null
+            }
+        }
+
+        /** Можно ли открыть файл как архив по имени. APK — тоже zip, но открывается установщиком. */
+        fun isBrowsableArchive(name: String): Boolean =
+            formatOfName(name) != null && !name.endsWith(".apk", ignoreCase = true) && !name.endsWith(".jar", ignoreCase = true)
 
         /** Добавляет папки, которые есть только в путях файлов («a/b/c.txt» → «a», «a/b»). */
         fun withImplicitDirectories(entries: List<ArchiveEntry>): List<ArchiveEntry> {

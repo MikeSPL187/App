@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Settings</string>
+    <string name="settings_back">Back</string>
+    <string name="settings_close">Close</string>
+    <string name="settings_group_appearance">Appearance</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_free">Available to everyone, no subscription</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_system">System</string>
+    <string name="settings_dynamic">Colors from wallpaper</string>
+    <string name="settings_dynamic_hint">Material You: app colors follow your wallpaper</string>
+    <string name="settings_density">List density</string>
+    <string name="density_comfortable">Comfortable</string>
+    <string name="density_compact">Compact</string>
+    <string name="settings_group_files">Files</string>
+    <string name="settings_hidden">Hidden files</string>
+    <string name="settings_hidden_hint">Show files and folders whose names start with a dot</string>
+    <string name="settings_folders_first">Folders first</string>
+    <string name="settings_grid_default">Grid by default</string>
+    <string name="settings_grid_default_hint">For folders where you haven’t picked a view yet</string>
+    <string name="settings_trash">Trash</string>
+    <string name="settings_trash_hint">Deleted items can be restored</string>
+    <string name="settings_trash_retention">Keep in trash</string>
+    <string name="settings_confirm_delete">Ask before deleting</string>
+    <string name="retention_forever">Until I empty it</string>
+    <plurals name="retention_days">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <string name="settings_group_access">Access</string>
+    <string name="settings_all_files">All files access</string>
+    <string name="settings_access_granted">Allowed</string>
+    <string name="settings_access_denied">Not allowed</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_notifications_hint">Operation progress</string>
+    <string name="settings_group_about">About</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_licenses">Open source licenses</string>
+</resources>

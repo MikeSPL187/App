@@ -4,7 +4,6 @@ import android.content.Context
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.time.Instant
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -60,7 +59,7 @@ class DateFormatter(
     fun short(epochMillis: Long): String {
         val dateTime = Instant.ofEpochMilli(epochMillis).atZone(zone)
         val date = dateTime.toLocalDate()
-        val now = LocalDate.ofInstant(clock(), zone)
+        val now = clock().atZone(zone).toLocalDate()
         return when {
             date == now -> "$today, ${time.format(dateTime)}"
             date == now.minusDays(1) -> "$yesterday, ${time.format(dateTime)}"

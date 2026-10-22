@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Тихие файлы</string>
+
+    <string name="nav_home">Главная</string>
+    <string name="nav_browse">Обзор</string>
+    <string name="nav_tools">Инструменты</string>
+
+    <string name="msg_undo">Вернуть</string>
+    <string name="msg_details">Подробнее</string>
+    <string name="msg_open">Открыть</string>
+    <string name="msg_no_app">Нет приложения, которое может открыть этот файл</string>
+    <string name="msg_failed">Не удалось завершить: %1$s</string>
+    <string name="msg_copied">Скопировано в «%1$s»</string>
+    <string name="msg_moved">Перемещено в «%1$s»</string>
+    <string name="msg_compressed">Архив создан</string>
+    <string name="msg_extracted">Распаковано в «%1$s»</string>
+    <plurals name="msg_trashed">
+        <item quantity="one">%d объект перемещён в корзину</item>
+        <item quantity="few">%d объекта перемещены в корзину</item>
+        <item quantity="many">%d объектов перемещены в корзину</item>
+        <item quantity="other">%d объекта перемещены в корзину</item>
+    </plurals>
+    <plurals name="msg_deleted">
+        <item quantity="one">%d объект удалён</item>
+        <item quantity="few">%d объекта удалены</item>
+        <item quantity="many">%d объектов удалены</item>
+        <item quantity="other">%d объекта удалены</item>
+    </plurals>
+    <plurals name="msg_restored">
+        <item quantity="one">%d объект восстановлен</item>
+        <item quantity="few">%d объекта восстановлены</item>
+        <item quantity="many">%d объектов восстановлены</item>
+        <item quantity="other">%d объекта восстановлены</item>
+    </plurals>
+
+    <string name="ops_needs_decision">Нужно ваше решение</string>
+    <string name="ops_title">Операции</string>
+    <string name="ops_none_active">Ничего не выполняется</string>
+    <string name="ops_summary">Выполняется: %1$d · в очереди: %2$d</string>
+    <string name="ops_clear_finished">Очистить завершённые</string>
+    <string name="ops_empty">Операций пока нет. Здесь появятся копирование, перемещение и архивация.</string>
+    <string name="ops_queued">В очереди</string>
+    <string name="ops_paused">На паузе</string>
+    <string name="ops_cancelled">Отменено</string>
+    <string name="ops_done">Готово</string>
+    <string name="ops_failed">Ошибка</string>
+    <string name="ops_to">В «%1$s»</string>
+    <string name="ops_bytes">%1$s из %2$s</string>
+    <string name="ops_items">%1$d из %2$d</string>
+    <string name="ops_speed">%1$s/с</string>
+    <string name="ops_pause">Пауза</string>
+    <string name="ops_resume">Продолжить</string>
+    <string name="ops_cancel">Отменить</string>
+    <string name="ops_remove_from_queue">Убрать из очереди</string>
+    <string name="ops_retry">Повторить</string>
+    <string name="ops_dismiss">Скрыть</string>
+
+    <string name="conflict_title">«%1$s» уже существует</string>
+    <string name="conflict_new">Новый</string>
+    <string name="conflict_existing">Существующий</string>
+    <string name="conflict_replace">Заменить</string>
+    <string name="conflict_skip">Пропустить</string>
+    <string name="conflict_keep_both">Оставить оба</string>
+    <string name="conflict_apply_all">Применить ко всем конфликтам</string>
+    <string name="conflict_continue">Продолжить</string>
+
+    <string name="onboarding_title">Доступ к файлам</string>
+    <string name="onboarding_message">Чтобы показывать, копировать и упорядочивать файлы во всех папках, приложению нужно разрешение «Доступ ко всем файлам». Дальше Android откроет экран настроек.</string>
+    <string name="onboarding_point_folders">Все папки, карта памяти и USB-накопители</string>
+    <string name="onboarding_point_privacy">Без рекламы и слежки: файлы не покидают устройство, пока вы ими не поделитесь</string>
+    <string name="onboarding_point_revoke">Доступ можно отозвать в любой момент в настройках системы</string>
+    <string name="onboarding_grant">Разрешить доступ</string>
+    <string name="onboarding_skip">Не сейчас</string>
+
+    <string name="tools_settings">Настройки</string>
+    <string name="tools_trash">Корзина</string>
+    <string name="tools_trash_hint">Восстановить или удалить навсегда</string>
+    <string name="tools_large">Большие файлы</string>
+    <string name="tools_large_hint">Файлы больше 100 МБ, которые занимают больше всего места</string>
+    <string name="tools_recent">Недавние</string>
+    <string name="tools_recent_hint">Файлы, изменённые за последние дни</string>
+    <string name="tools_favorites">Избранное</string>
+    <string name="tools_favorites_hint">Папки и файлы, отмеченные звёздочкой</string>
+</resources>
