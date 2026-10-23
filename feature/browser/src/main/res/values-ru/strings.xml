@@ -186,4 +186,10 @@
         <item quantity="many">Выбрать %d файлов</item>
         <item quantity="other">Выбрать %d файла</item>
     </plurals>
+
+    <string name="action_install">Установить</string>
+    <string name="meta_apk_version">v%1$s</string>
+    <string name="meta_apk_installed">установлено</string>
+    <string name="meta_apk_update">обновление</string>
+    <string name="meta_apk_older">старее установленной</string>
 </resources>

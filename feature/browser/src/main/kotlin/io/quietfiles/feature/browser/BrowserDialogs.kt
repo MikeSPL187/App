@@ -54,6 +54,7 @@ import io.quietfiles.core.designsystem.component.FileTile
 import io.quietfiles.core.designsystem.component.Formatters
 import io.quietfiles.core.designsystem.icon.QfIcons
 import io.quietfiles.core.designsystem.theme.MonoTextStyle
+import io.quietfiles.core.model.FileCategory
 import io.quietfiles.core.model.FileNames
 import io.quietfiles.core.model.SortField
 import io.quietfiles.core.model.SortOrder
@@ -92,6 +93,10 @@ fun ItemActionsSheet(
                 add(ActionRow(ItemAction.EXTRACT_ENTRY, stringResource(R.string.action_extract_here), QfIcons.Extract))
             }
             else -> {
+                if (!entry.isDirectory && entry.category == FileCategory.APK) {
+                    // Открытие APK запускает системный установщик (F7.3).
+                    add(ActionRow(ItemAction.OPEN, stringResource(R.string.action_install), QfIcons.Download))
+                }
                 if (!entry.isDirectory) {
                     add(ActionRow(ItemAction.OPEN_WITH, stringResource(R.string.action_open_with), QfIcons.OpenWith))
                     add(ActionRow(ItemAction.SHARE, stringResource(R.string.action_share), QfIcons.Share))

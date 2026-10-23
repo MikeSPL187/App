@@ -8,6 +8,8 @@ import io.quietfiles.core.model.TrashItem
 import io.quietfiles.core.operations.ArchiveEntry
 import io.quietfiles.core.operations.ArchiveTools
 import io.quietfiles.core.operations.TrashManager
+import io.quietfiles.core.storage.ApkInfo
+import io.quietfiles.core.storage.ApkInspector
 import io.quietfiles.core.storage.LibraryCategory
 import io.quietfiles.core.storage.MediaIndex
 import io.quietfiles.core.storage.StorageProvider
@@ -21,6 +23,8 @@ data class BrowserItem(
     val trash: TrashItem? = null,
     /** Для архива: путь внутри архива. */
     val archivePath: String? = null,
+    /** Для установочного файла: версия и состояние установки (F7.3). */
+    val apk: ApkInfo? = null,
 )
 
 /** Загружает содержимое для каждого вида источника. */
@@ -30,10 +34,25 @@ class BrowserSourceLoader @Inject constructor(
     private val favorites: FavoritesRepository,
     private val trash: TrashManager,
     private val archives: ArchiveTools,
+    private val apkInspector: ApkInspector,
 ) {
     private var archiveCache: Pair<String, List<ArchiveEntry>>? = null
 
-    suspend fun load(kind: SourceKind, path: String, inner: String, showHidden: Boolean): List<BrowserItem> = when (kind) {
+    suspend fun load(kind: SourceKind, path: String, inner: String, showHidden: Boolean): List<BrowserItem> =
+        loadRaw(kind, path, inner, showHidden).let { if (kind == SourceKind.ARCHIVE || kind == SourceKind.TRASH) it else withApkInfo(it) }
+
+    /** Читает манифесты APK в списке; не больше [MAX_APK_INSPECT], чтобы папка с тысячами APK открывалась быстро. */
+    private suspend fun withApkInfo(items: List<BrowserItem>): List<BrowserItem> {
+        var budget = MAX_APK_INSPECT
+        return items.map { item ->
+            val entry = item.entry
+            if (entry.isDirectory || entry.category != FileCategory.APK || budget <= 0) return@map item
+            budget--
+            item.copy(apk = apkInspector.inspect(entry.path, entry.lastModified))
+        }
+    }
+
+    private suspend fun loadRaw(kind: SourceKind, path: String, inner: String, showHidden: Boolean): List<BrowserItem> = when (kind) {
         SourceKind.FOLDER -> provider.list(path, showHidden)
             .filterNot { trash.isInTrash(it.path) }
             .map { BrowserItem(it) }
@@ -107,5 +126,6 @@ class BrowserSourceLoader @Inject constructor(
 
     companion object {
         const val LARGE_FILE_BYTES = 100L * 1024 * 1024
+        private const val MAX_APK_INSPECT = 200
     }
 }

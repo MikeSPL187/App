@@ -70,6 +70,8 @@ import io.quietfiles.core.designsystem.icon.QfIcons
 import io.quietfiles.core.designsystem.theme.MonoTextStyle
 import io.quietfiles.core.designsystem.theme.QfTheme
 import io.quietfiles.core.model.FileEntry
+import io.quietfiles.core.model.StorageVolumeInfo
+import io.quietfiles.feature.browser.volumeLabel
 import io.quietfiles.core.model.FileNames
 import io.quietfiles.core.storage.MediaIndex
 
@@ -292,37 +294,54 @@ private fun Results(state: SearchUiState, formatters: Formatters, onOpen: (FileE
                     if (state.truncated) stringResource(R.string.search_truncated) else "",
             )
         }
-        items(state.results, key = { it.path }) { entry ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-                    .clickable(role = Role.Button) { onOpen(entry) }
-                    .padding(horizontal = 12.dp, vertical = 10.dp),
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
-                verticalAlignment = Alignment.Top,
-            ) {
-                FileTile(entry.category, path = entry.path)
-                Column(Modifier.weight(1f)) {
-                    Text(highlighted(entry.name, state.filters.query, highlight), style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    Text(
-                        FileNames.parentOf(entry.path).orEmpty(),
-                        style = MonoTextStyle.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
-                        maxLines = 1,
-                        overflow = TextOverflow.StartEllipsis,
-                    )
-                    Text(
-                        (if (entry.isDirectory) "" else formatters.size.format(entry.size) + " · ") + formatters.date.short(entry.lastModified),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        state.groups.forEach { group ->
+            if (state.groups.size > 1 || group.volume?.isPrimary == false) {
+                item(key = "volume:" + (group.volume?.id ?: "other")) {
+                    SectionLabel(
+                        (group.volume?.let { volumeLabel(it) } ?: stringResource(R.string.search_other_location)) +
+                            stringResource(R.string.search_group_count, group.entries.size),
                     )
                 }
-                IconButton(onClick = { onOpenLocation(entry) }) {
-                    Icon(QfIcons.FolderOpen, contentDescription = stringResource(R.string.search_open_location), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            items(group.entries, key = { it.path }) { entry ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp)
+                        .clickable(role = Role.Button) { onOpen(entry) }
+                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(14.dp),
+                    verticalAlignment = Alignment.Top,
+                ) {
+                    FileTile(entry.category, path = entry.path)
+                    Column(Modifier.weight(1f)) {
+                        Text(highlighted(entry.name, state.filters.query, highlight), style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(
+                            relativeParent(entry.path, group.volume),
+                            style = MonoTextStyle.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
+                            maxLines = 1,
+                            overflow = TextOverflow.StartEllipsis,
+                        )
+                        Text(
+                            (if (entry.isDirectory) "" else formatters.size.format(entry.size) + " · ") + formatters.date.short(entry.lastModified),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    IconButton(onClick = { onOpenLocation(entry) }) {
+                        Icon(QfIcons.FolderOpen, contentDescription = stringResource(R.string.search_open_location), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
                 }
             }
         }
     }
+}
+
+/** Путь к папке внутри хранилища: «/Download/Telegram» вместо «/storage/emulated/0/Download/Telegram». */
+private fun relativeParent(path: String, volume: StorageVolumeInfo?): String {
+    val parent = FileNames.parentOf(path).orEmpty()
+    val root = volume?.rootPath?.trimEnd('/') ?: return parent
+    return parent.removePrefix(root).ifEmpty { "/" }
 }
 
 /** Подсветка совпадения без учёта регистра и «ё». */

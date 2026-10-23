@@ -11,9 +11,11 @@ import io.quietfiles.core.data.repository.SearchHistoryRepository
 import io.quietfiles.core.data.repository.SettingsRepository
 import io.quietfiles.core.model.FileCategory
 import io.quietfiles.core.model.FileEntry
+import io.quietfiles.core.model.StorageVolumeInfo
 import io.quietfiles.core.storage.FileIntents
 import io.quietfiles.core.storage.MediaIndex
 import io.quietfiles.core.storage.StorageProvider
+import io.quietfiles.core.storage.StorageVolumes
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.ensureActive
@@ -77,7 +79,22 @@ data class SearchUiState(
     val searching: Boolean = false,
     val truncated: Boolean = false,
     val history: List<String> = emptyList(),
+    /** Результаты по хранилищам (F6.4); внутренняя память первой. */
+    val groups: List<ResultGroup> = emptyList(),
 )
+
+/** Результаты одного хранилища. [volume] = `null` — путь вне известных томов. */
+data class ResultGroup(val volume: StorageVolumeInfo?, val entries: List<FileEntry>)
+
+/** Группирует найденное по томам, сохраняя порядок внутри группы и порядок томов. */
+internal fun groupByVolume(results: List<FileEntry>, volumes: List<StorageVolumeInfo>): List<ResultGroup> {
+    fun volumeOf(path: String) = volumes
+        .filter { path == it.rootPath || path.startsWith(it.rootPath.trimEnd('/') + "/") }
+        .maxByOrNull { it.rootPath.length }
+    val byVolume = results.groupBy { volumeOf(it.path) }
+    return (volumes.map { it as StorageVolumeInfo? } + null)
+        .mapNotNull { v -> byVolume[v]?.let { ResultGroup(v, it) } }
+}
 
 sealed interface SearchEvent {
     data class Launch(val intent: android.content.Intent) : SearchEvent
@@ -92,6 +109,7 @@ class SearchViewModel @Inject constructor(
     private val provider: StorageProvider,
     private val history: SearchHistoryRepository,
     private val settings: SettingsRepository,
+    private val volumes: StorageVolumes,
 ) : ViewModel() {
 
     private val folder = savedStateHandle.toRoute<SearchRoute>().folder
@@ -102,7 +120,7 @@ class SearchViewModel @Inject constructor(
     val eventFlow: Flow<SearchEvent> = events.receiveAsFlow()
 
     val state: StateFlow<SearchUiState> = kotlinx.coroutines.flow.combine(filters, results, history.recent) { f, (items, searching, truncated), recent ->
-        SearchUiState(folder, f, items, searching, truncated, recent)
+        SearchUiState(folder, f, items, searching, truncated, recent, groupByVolume(items, volumes.current()))
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SearchUiState(folder, filters.value))
 
     init {

@@ -39,4 +39,7 @@
         <item quantity="one">%d found</item>
         <item quantity="other">%d found</item>
     </plurals>
+
+    <string name="search_other_location">Other locations</string>
+    <string name="search_group_count">"&#160;· %1$d"</string>
 </resources>

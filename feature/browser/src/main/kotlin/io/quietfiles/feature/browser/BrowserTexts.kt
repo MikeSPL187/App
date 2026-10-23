@@ -11,6 +11,7 @@ import io.quietfiles.core.model.FileEntry
 import io.quietfiles.core.model.FileNames
 import io.quietfiles.core.model.StorageVolumeInfo
 import io.quietfiles.core.model.VolumeKind
+import io.quietfiles.core.storage.ApkStatus
 import io.quietfiles.core.common.R as CommonR
 
 @Composable
@@ -61,6 +62,15 @@ fun itemMeta(item: BrowserItem, kind: SourceKind, formatters: Formatters): Strin
     } else {
         entry.extension.takeIf { it.isNotEmpty() }?.let { parts += it.uppercase() }
         if (kind != SourceKind.ARCHIVE || entry.size > 0) parts += formatters.size.format(entry.size)
+        item.apk?.let { apk ->
+            apk.versionName?.let { parts += stringResource(R.string.meta_apk_version, it) }
+            when (apk.status) {
+                ApkStatus.INSTALLED -> parts += stringResource(R.string.meta_apk_installed)
+                ApkStatus.UPDATE -> parts += stringResource(R.string.meta_apk_update)
+                ApkStatus.OLDER -> parts += stringResource(R.string.meta_apk_older)
+                ApkStatus.UNKNOWN -> Unit
+            }
+        }
     }
     date?.let { parts += it }
     if (kind.isLibrary || kind == SourceKind.FAVORITES) {

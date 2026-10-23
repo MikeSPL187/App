@@ -41,4 +41,7 @@
         <item quantity="many">Найдено %d</item>
         <item quantity="other">Найдено %d</item>
     </plurals>
+
+    <string name="search_other_location">Другие места</string>
+    <string name="search_group_count">"&#160;· %1$d"</string>
 </resources>

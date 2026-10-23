@@ -235,7 +235,7 @@ fun BrowserScreen(
                     state = state,
                     formatters = formatters,
                     onOpen = viewModel::open,
-                    onLongPress = { viewModel.toggleSelection(it.entry.path) },
+                    onLongPress = { viewModel.longPress(it.entry.path) },
                     onMore = { overlay = Overlay.ItemActions(it) },
                     onRequestAccess = onRequestAccess,
                     onRetry = viewModel::refresh,

@@ -174,4 +174,10 @@
         <item quantity="one">Select %d file</item>
         <item quantity="other">Select %d files</item>
     </plurals>
+
+    <string name="action_install">Install</string>
+    <string name="meta_apk_version">v%1$s</string>
+    <string name="meta_apk_installed">installed</string>
+    <string name="meta_apk_update">update</string>
+    <string name="meta_apk_older">older than installed</string>
 </resources>

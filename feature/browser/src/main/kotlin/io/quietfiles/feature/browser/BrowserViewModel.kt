@@ -294,13 +294,29 @@ class BrowserViewModel @Inject constructor(
 
     // ---- Выбор ----
 
-    fun toggleSelection(path: String) = selection.update { if (path in it) it - path else it + path }
+    /** Последний элемент, отмеченный вручную: от него считается диапазон (F4.4). */
+    private var selectionAnchor: String? = null
+
+    fun toggleSelection(path: String) {
+        selection.update { if (path in it) it - path else it + path }
+        selectionAnchor = path.takeIf { it in selection.value }
+    }
+
+    /** Долгое нажатие: начинает выбор, а при уже выбранных элементах отмечает диапазон до нажатого. */
+    fun longPress(path: String) {
+        val order = state.value.items.map { it.entry.path }
+        val range = rangeSelection(order, selection.value, selectionAnchor, path)
+        if (range == null) toggleSelection(path) else selection.value = range
+        if (range != null) selectionAnchor = path
+    }
 
     fun selectAll() {
+        selectionAnchor = null
         selection.value = state.value.items.map { it.entry.path }.toSet()
     }
 
     fun clearSelection() {
+        selectionAnchor = null
         selection.value = emptySet()
     }
 
@@ -532,6 +548,18 @@ class BrowserViewModel @Inject constructor(
     }
 
     companion object {
+        /**
+         * Выбор диапазона: если что-то уже выбрано и нажат невыбранный элемент, добавляются все
+         * элементы между опорным и нажатым. `null` — диапазона нет, это обычное переключение.
+         */
+        internal fun rangeSelection(order: List<String>, selected: Set<String>, anchor: String?, target: String): Set<String>? {
+            if (selected.isEmpty() || target in selected) return null
+            val from = order.indexOf(anchor?.takeIf { it in selected } ?: order.lastOrNull { it in selected })
+            val to = order.indexOf(target)
+            if (from < 0 || to < 0) return null
+            return selected + order.subList(minOf(from, to), maxOf(from, to) + 1)
+        }
+
         fun archiveBaseName(name: String): String {
             val lower = name.lowercase()
             val doubleExt = listOf(".tar.gz", ".tar.bz2", ".tar.xz")
