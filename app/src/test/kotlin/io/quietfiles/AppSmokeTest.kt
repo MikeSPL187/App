@@ -322,7 +322,7 @@ class AppSmokeTest {
         scenario = ActivityScenario.launch(MainActivity::class.java)
         waitForText("Внутренняя память")
         // Главная показывает сумму безопасных пунктов, как только поиск закончится (F2.3).
-        compose.waitUntil(TIMEOUT_MS) { compose.onAllNodes(hasText("Можно освободить", substring = true)).fetchSemanticsNodes().isNotEmpty() }
+        waitForBackground { compose.onAllNodes(hasText("Можно освободить", substring = true)).fetchSemanticsNodes().isNotEmpty() }
         snapshot("40_home_can_free")
 
         clickText("Инструменты")
@@ -334,7 +334,7 @@ class AppSmokeTest {
         waitForText("Оригинал")
         snapshot("42_cleanup_duplicates")
         compose.onNode(hasText("В корзину", substring = true)).performClick()
-        compose.waitUntil(TIMEOUT_MS) { !copy.exists() }
+        waitForBackground { !copy.exists() }
         check(File(root, "DCIM/Camera/IMG_2026.jpg").exists()) { "original must stay" }
         waitForText("Рекомендации")
 
@@ -364,7 +364,7 @@ class AppSmokeTest {
         snapshot("44_batch_rename")
         clickText("Переименовать 2")
         val dir = File(Environment.getExternalStorageDirectory(), "Download")
-        compose.waitUntil(TIMEOUT_MS) { File(dir, "Квартал 01.jpg").exists() && File(dir, "Квартал 02.pdf").exists() }
+        waitForBackground { File(dir, "Квартал 01.jpg").exists() && File(dir, "Квартал 02.pdf").exists() }
         waitForText("Квартал 02.pdf")
     }
 
@@ -400,7 +400,7 @@ class AppSmokeTest {
         compose.onAllNodesWithText("В архив").onLast().performClick()
         waitForImages()
         snapshot("48_compress_done")
-        compose.waitUntil(TIMEOUT_MS) { File(root, "Documents/План.zip").exists() }
+        waitForBackground { File(root, "Documents/План.zip").exists() }
     }
 
     @Test
@@ -485,6 +485,20 @@ class AppSmokeTest {
         }
     }
 
+    /**
+     * Ждёт результата фоновой работы (очередь операций, поиск лишнего): двигает лупер и часы,
+     * чтобы она доходила до главного потока. Запас по времени — для медленных машин CI.
+     */
+    private fun waitForBackground(condition: () -> Boolean) {
+        val deadline = System.currentTimeMillis() + BACKGROUND_TIMEOUT_MS
+        while (!condition()) {
+            check(System.currentTimeMillis() < deadline) { "background work did not finish in $BACKGROUND_TIMEOUT_MS ms" }
+            Thread.sleep(50)
+            shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(50))
+            compose.waitForIdle()
+        }
+    }
+
     private fun clickText(text: String) {
         waitForText(text)
         compose.onAllNodesWithText(text).onFirst().performClick()
@@ -525,6 +539,7 @@ class AppSmokeTest {
     private companion object {
         const val TIMEOUT_MS = 5_000L
         const val IMAGE_WAIT_STEPS = 30
+        const val BACKGROUND_TIMEOUT_MS = 30_000L
         const val CONFIG_YAML = """# Домашний сервер
 server:
   host: 192.168.1.50
