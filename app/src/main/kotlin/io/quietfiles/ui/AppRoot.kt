@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -51,7 +52,6 @@ import androidx.core.graphics.drawable.IconCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -92,6 +92,9 @@ import io.quietfiles.feature.cleaner.FolderAnalysisRoute
 import io.quietfiles.feature.cleaner.ToolLink
 import io.quietfiles.feature.cleaner.cleanerScreens
 import io.quietfiles.feature.home.HomeRoute
+import io.quietfiles.feature.network.ConnectionRoute
+import io.quietfiles.feature.network.NetworkRoute
+import io.quietfiles.feature.network.networkScreens
 import io.quietfiles.feature.home.homeScreen
 import io.quietfiles.feature.search.SearchRoute
 import io.quietfiles.feature.search.searchScreen
@@ -105,6 +108,7 @@ private data class TopLevel(val route: Any, val routeClass: KClass<*>, val label
 private val TopLevels = listOf(
     TopLevel(HomeRoute, HomeRoute::class, R.string.nav_home, QfIcons.Home),
     TopLevel(StorageRootRoute, StorageRootRoute::class, R.string.nav_browse, QfIcons.Folder),
+    TopLevel(NetworkRoute, NetworkRoute::class, R.string.nav_network, QfIcons.Cloud),
     TopLevel(CleanerRoute, CleanerRoute::class, R.string.nav_tools, QfIcons.Tools),
 )
 
@@ -235,24 +239,27 @@ fun AppRoot(
     val destination = backStack?.destination
     val fullScreen = listOf(
         SearchRoute::class, SettingsRoute::class, EditorRoute::class, PhotoRoute::class,
-        VideoRoute::class, MusicRoute::class, MusicQueueRoute::class,
+        VideoRoute::class, MusicRoute::class, MusicQueueRoute::class, ConnectionRoute::class,
     ).any { destination?.hasRoute(it) == true }
     val showNav = !fullScreen && !selectionMode
     val openMusic: () -> Unit = { nav.navigate(MusicRoute) { launchSingleTop = true } }
 
     // Окна обзора (F1.5): место запоминается, только пока пользователь в разделе «Обзор».
     // Раздел меняют кнопки навигации, а корни разделов на экране это подтверждают.
-    var browseSection by rememberSaveable { mutableStateOf(false) }
+    // Текущий раздел нижней навигации: вложенные экраны (папка сервера из «Сети») остаются в своём разделе.
+    var section by rememberSaveable { mutableIntStateOf(0) }
     LaunchedEffect(destination) {
-        when {
-            destination?.hasRoute(StorageRootRoute::class) == true -> browseSection = true
-            destination?.hasRoute(HomeRoute::class) == true || destination?.hasRoute(CleanerRoute::class) == true -> browseSection = false
-        }
+        TopLevels.indexOfFirst { destination?.hasRoute(it.routeClass) == true }.takeIf { it >= 0 }?.let { section = it }
     }
+    val browseSection = TopLevels[section].route == StorageRootRoute
     val inBrowse by rememberUpdatedState(browseSection)
     val goTo: (Any) -> Unit = { route ->
-        browseSection = route == StorageRootRoute
-        nav.navigateTopLevel(route)
+        val index = TopLevels.indexOfFirst { it.route == route }
+        // Повторное нажатие на раздел возвращает к его началу.
+        if (index != section || !nav.popBackStack(route, inclusive = false)) {
+            section = index
+            nav.navigateTopLevel(route)
+        }
     }
     val windowsController = WindowsController(
         count = windows.windows.size,
@@ -278,7 +285,7 @@ fun AppRoot(
                             AnimatedVisibility(visible = showNav) {
                                 NavigationBar {
                                     TopLevels.forEach { item ->
-                                        val selected = destination?.hierarchy?.any { it.hasRoute(item.routeClass) } == true
+                                        val selected = TopLevels[section] == item
                                         NavigationBarItem(
                                             selected = selected,
                                             onClick = { goTo(item.route) },
@@ -297,7 +304,7 @@ fun AppRoot(
                         NavigationRail(Modifier.padding(top = 8.dp)) {
                             Spacer(Modifier.padding(top = 8.dp))
                             TopLevels.forEach { item ->
-                                val selected = destination?.hierarchy?.any { it.hasRoute(item.routeClass) } == true
+                                val selected = TopLevels[section] == item
                                 NavigationRailItem(
                                     selected = selected,
                                     onClick = { goTo(item.route) },
@@ -335,7 +342,7 @@ fun AppRoot(
             onSelect = { window ->
                 showWindows = false
                 viewModel.selectWindow(window.id)
-                browseSection = true
+                section = TopLevels.indexOfFirst { it.route == StorageRootRoute }
                 nav.openPlace(window.place)
             },
             onClose = { window ->
@@ -348,7 +355,7 @@ fun AppRoot(
             onNew = {
                 showWindows = false
                 viewModel.openWindow()
-                browseSection = true
+                section = TopLevels.indexOfFirst { it.route == StorageRootRoute }
                 nav.openPlace(WindowPlace.Root)
             },
             onDismiss = { showWindows = false },
@@ -390,6 +397,7 @@ private fun AppNavHost(
             onPinShortcut = { pinFolderShortcut(context, it) },
             onShowOperations = onShowOperations,
             onSelectionModeChange = onSelectionModeChange,
+            onEditConnection = { nav.navigate(ConnectionRoute(it)) },
         )
         searchScreen(
             onBack = { nav.popBackStack() },
@@ -417,6 +425,11 @@ private fun AppNavHost(
                     )
                 }
             },
+        )
+        networkScreens(
+            onNavigate = { nav.navigate(it) },
+            onBack = { nav.popBackStack() },
+            onOpenFolder = { nav.navigate(BrowseRoute(SourceKind.FOLDER, it)) },
         )
         cleanerScreens(
             onNavigate = { nav.navigate(it) },

@@ -19,12 +19,14 @@ fun volumeLabel(volume: StorageVolumeInfo, short: Boolean = false): String = whe
     VolumeKind.INTERNAL -> stringResource(if (short) R.string.volume_internal_short else R.string.volume_internal)
     VolumeKind.SD_CARD -> volume.label.ifBlank { stringResource(R.string.volume_sd) }
     VolumeKind.USB -> volume.label.ifBlank { stringResource(R.string.volume_usb) }
+    VolumeKind.NETWORK -> volume.label
 }
 
 fun volumeIcon(volume: StorageVolumeInfo): ImageVector = when (volume.kind) {
     VolumeKind.INTERNAL -> QfIcons.Storage
     VolumeKind.SD_CARD -> QfIcons.SdCard
     VolumeKind.USB -> QfIcons.Usb
+    VolumeKind.NETWORK -> QfIcons.Server
 }
 
 @Composable

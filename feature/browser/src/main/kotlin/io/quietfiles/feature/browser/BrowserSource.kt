@@ -5,6 +5,7 @@ import io.quietfiles.core.model.FileCategory
 import io.quietfiles.core.model.FileEntry
 import io.quietfiles.core.model.FileNames
 import io.quietfiles.core.model.TrashItem
+import io.quietfiles.core.model.network.NetworkPaths
 import io.quietfiles.core.operations.ArchiveEntry
 import io.quietfiles.core.operations.ArchivePasswords
 import io.quietfiles.core.operations.ArchiveTools
@@ -71,7 +72,12 @@ class BrowserSourceLoader @Inject constructor(
             .sortedByDescending { it.size }
             .map { BrowserItem(it) }
         SourceKind.FAVORITES -> favorites.favorites.first().mapNotNull { fav ->
-            provider.stat(fav.path)?.let { BrowserItem(it) }
+            // Сервер может быть выключен: его избранное показываем по сохранённой записи, без подключения.
+            if (NetworkPaths.isNetwork(fav.path)) {
+                BrowserItem(FileEntry(fav.path, fav.name, fav.isDirectory, 0, 0))
+            } else {
+                provider.stat(fav.path)?.let { BrowserItem(it) }
+            }
         }
         SourceKind.TRASH -> trash.items.first().map { item ->
             BrowserItem(

@@ -98,4 +98,5 @@
         <item quantity="many">ещё %d мин</item>
         <item quantity="other">ещё %d мин</item>
     </plurals>
+    <string name="video_network_open_with">Чтобы открыть файл в другом приложении, скопируйте его на телефон</string>
 </resources>

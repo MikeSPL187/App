@@ -1,5 +1,8 @@
 package io.quietfiles.feature.player.common
 
+import kotlinx.coroutines.runBlocking
+import io.quietfiles.core.storage.StorageProvider
+import io.quietfiles.core.model.network.NetworkPaths
 import android.media.MediaMetadataRetriever
 import android.os.Build
 import android.util.LruCache
@@ -26,7 +29,10 @@ data class AudioInfo(
 )
 
 @Singleton
-class AudioInfoReader @Inject constructor(@IoDispatcher private val io: CoroutineDispatcher) {
+class AudioInfoReader @Inject constructor(
+    @IoDispatcher private val io: CoroutineDispatcher,
+    private val provider: StorageProvider,
+) {
 
     private val cache = LruCache<String, AudioInfo>(CACHE_SIZE)
 
@@ -46,7 +52,7 @@ class AudioInfoReader @Inject constructor(@IoDispatcher private val io: Coroutin
         retriever(path) { r ->
             val sampleRate = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) r.extractInt(MediaMetadataRetriever.METADATA_KEY_SAMPLERATE) else 0
             val bits = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) r.extractInt(MediaMetadataRetriever.METADATA_KEY_BITS_PER_SAMPLE) else 0
-            val probed = runCatching { File(path).inputStream().use(AudioHeaderProbe::probe) }.getOrNull()
+            val probed = runCatching { openStream(path).use(AudioHeaderProbe::probe) }.getOrNull()
             val stream = when {
                 probed != null -> probed
                 sampleRate > 0 -> AudioStreamInfo(sampleRate, bits, 0)
@@ -65,22 +71,35 @@ class AudioInfoReader @Inject constructor(@IoDispatcher private val io: Coroutin
         }
         return info ?: AudioInfo(
             durationMs = 0, title = null, artist = null, album = null,
-            stream = runCatching { File(path).inputStream().use(AudioHeaderProbe::probe) }.getOrNull(),
+            stream = runCatching { openStream(path).use(AudioHeaderProbe::probe) }.getOrNull(),
             folderCover = folderCover(path), hasEmbeddedCover = false,
         )
     }
 
     private inline fun <T> retriever(path: String, block: (MediaMetadataRetriever) -> T): T? {
         val r = MediaMetadataRetriever()
+        var remote: StorageMediaDataSource? = null
         return try {
-            r.setDataSource(path)
+            if (NetworkPaths.isNetwork(path)) {
+                val size = runBlocking { provider.stat(path)?.size } ?: return null
+                remote = StorageMediaDataSource(provider, path, size)
+                r.setDataSource(remote)
+            } else {
+                r.setDataSource(path)
+            }
             block(r)
         } catch (e: RuntimeException) {
             null
+        } catch (e: java.io.IOException) {
+            null
         } finally {
             runCatching { r.release() }
+            runCatching { remote?.close() }
         }
     }
+
+    private fun openStream(path: String): java.io.InputStream =
+        if (NetworkPaths.isNetwork(path)) provider.openRead(path) else File(path).inputStream()
 
     private fun MediaMetadataRetriever.extractInt(key: Int): Int = extractMetadata(key)?.toIntOrNull() ?: 0
 
@@ -91,6 +110,7 @@ class AudioInfoReader @Inject constructor(@IoDispatcher private val io: Coroutin
 
         /** Обложка альбома в папке: cover.jpg, folder.png и т. п. без учёта регистра. */
         fun folderCover(path: String): File? {
+            if (NetworkPaths.isNetwork(path)) return null
             val dir = File(path).parentFile ?: return null
             val files = dir.listFiles { f -> f.isFile && FileNames.extension(f.name).lowercase() in COVER_EXTENSIONS } ?: return null
             return COVER_NAMES.firstNotNullOfOrNull { name ->

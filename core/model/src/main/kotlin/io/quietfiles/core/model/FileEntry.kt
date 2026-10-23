@@ -27,7 +27,8 @@ data class StorageSpace(val total: Long, val free: Long) {
     val usedFraction: Float get() = if (total <= 0) 0f else used.toFloat() / total
 }
 
-enum class VolumeKind { INTERNAL, SD_CARD, USB }
+/** [NETWORK] — сервер из раздела «Сеть»: его корень показывается как том с именем подключения. */
+enum class VolumeKind { INTERNAL, SD_CARD, USB, NETWORK }
 
 /** Подключённый том: внутренняя память, SD-карта или USB-накопитель. */
 data class StorageVolumeInfo(

@@ -248,4 +248,10 @@
         <item quantity="one">At least %d character. The archive can\'t be opened without it, and it can\'t be recovered</item>
         <item quantity="other">At least %d characters. The archive can\'t be opened without it, and it can\'t be recovered</item>
     </plurals>
+    <string name="network_access_denied">The server does not allow access to this folder</string>
+    <string name="network_error_title">Could not open the server</string>
+    <string name="network_error_settings">Connection settings</string>
+    <string name="delete_on_server">Servers have no trash: files are deleted right away.</string>
+    <string name="download_title">Opening from the server</string>
+    <string name="download_progress">%1$s of %2$s</string>
 </resources>

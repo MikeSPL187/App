@@ -92,4 +92,5 @@
         <item quantity="one">%d min left</item>
         <item quantity="other">%d min left</item>
     </plurals>
+    <string name="video_network_open_with">Copy the file to the phone to open it in another app</string>
 </resources>

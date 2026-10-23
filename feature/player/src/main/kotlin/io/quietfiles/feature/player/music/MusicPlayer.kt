@@ -1,5 +1,8 @@
 package io.quietfiles.feature.player.music
 
+import io.quietfiles.feature.player.common.StorageDataSource
+import io.quietfiles.core.storage.StorageProvider
+import io.quietfiles.core.model.network.NetworkPaths
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -79,6 +82,7 @@ class MusicPlayer @Inject constructor(
     private val positions: PlaybackPositions,
     private val sleepTimer: SleepTimer,
     private val audioInfo: AudioInfoReader,
+    private val provider: StorageProvider,
 ) {
     private val _state = MutableStateFlow(MusicState())
     val state: StateFlow<MusicState> = _state.asStateFlow()
@@ -100,6 +104,7 @@ class MusicPlayer @Inject constructor(
     }
 
     private fun ensurePlayer(): ExoPlayer = exo ?: ExoPlayer.Builder(context)
+        .setMediaSourceFactory(StorageDataSource.mediaSourceFactory(context, provider))
         .setAudioAttributes(AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.AUDIO_CONTENT_TYPE_MUSIC).build(), true)
         .setHandleAudioBecomingNoisy(true)
         .setWakeMode(C.WAKE_MODE_LOCAL)
@@ -133,6 +138,7 @@ class MusicPlayer @Inject constructor(
     }
 
     private fun folderAudio(entry: FileEntry): List<FileEntry> {
+        if (NetworkPaths.isNetwork(entry.path)) return listOf(entry)
         val dir = File(entry.path).parentFile ?: return listOf(entry)
         val files = dir.listFiles { f -> f.isFile && !f.isHidden && FileTypes.categoryOf(f.name) == FileCategory.AUDIO } ?: return listOf(entry)
         return files.map { FileEntry(it.path, it.name, false, it.length(), it.lastModified()) }

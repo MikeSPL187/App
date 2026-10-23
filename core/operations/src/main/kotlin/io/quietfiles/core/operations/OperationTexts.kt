@@ -2,6 +2,7 @@ package io.quietfiles.core.operations
 
 import android.content.Context
 import io.quietfiles.core.model.FileNames
+import io.quietfiles.core.model.network.RemoteProblem
 import io.quietfiles.core.storage.StorageException
 
 /** Заголовки операций: «Копирование 3 объектов», «Распаковка Архив.zip». */
@@ -29,6 +30,8 @@ object ErrorMessages {
         is StorageException.AlreadyExists -> context.getString(R.string.op_error_exists, FileNames.nameOf(error.path))
         is StorageException.AccessDenied -> context.getString(R.string.op_error_access, FileNames.nameOf(error.path))
         is StorageException.InvalidName -> context.getString(R.string.op_error_invalid_name)
+        is StorageException.Remote -> remote(context, error.problem)
+        is StorageException.NotSupported -> context.getString(R.string.op_error_not_supported)
         is StorageException.NoSpace, is OperationException.NotEnoughSpace -> context.getString(R.string.op_error_no_space)
         is OperationException.SelfCopy -> context.getString(R.string.op_error_self_copy)
         is OperationException.SameLocation -> context.getString(R.string.op_error_same_location)
@@ -44,5 +47,14 @@ object ErrorMessages {
             context.getString(R.string.op_error_io)
         }
         else -> context.getString(R.string.op_error_io)
+    }
+
+    fun remote(context: Context, problem: RemoteProblem): String = when (problem) {
+        RemoteProblem.Unreachable -> context.getString(R.string.op_error_remote_unreachable)
+        RemoteProblem.AuthFailed, RemoteProblem.NeedsLogin -> context.getString(R.string.op_error_remote_login)
+        RemoteProblem.Smb1Required -> context.getString(R.string.op_error_remote_smb1)
+        is RemoteProblem.UnknownHostKey, is RemoteProblem.UntrustedCertificate -> context.getString(R.string.op_error_remote_trust)
+        is RemoteProblem.HostKeyChanged, is RemoteProblem.CertificateChanged -> context.getString(R.string.op_error_remote_changed)
+        is RemoteProblem.Protocol -> context.getString(R.string.op_error_remote_protocol, problem.message)
     }
 }

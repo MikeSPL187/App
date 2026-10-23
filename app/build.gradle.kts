@@ -64,6 +64,7 @@ dependencies {
     implementation(project(":feature:viewer"))
     implementation(project(":feature:player"))
     implementation(project(":feature:cleaner"))
+    implementation(project(":feature:network"))
     implementation(libs.coil.gif)
 
     implementation(libs.androidx.core.ktx)
@@ -86,6 +87,8 @@ dependencies {
     testImplementation(libs.truth)
     testImplementation(libs.androidx.exifinterface)
     testImplementation(libs.hilt.android.testing)
+    testImplementation(libs.sshd.core)
+    testImplementation(libs.sshd.sftp)
     kspTest(libs.hilt.compiler)
     testImplementation(platform(libs.compose.bom))
     testImplementation(libs.compose.ui.test.junit4)

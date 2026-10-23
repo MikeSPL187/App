@@ -148,6 +148,9 @@ class RemoteSessions internal constructor(
         return (session ?: error("Session closed")) to result
     }
 
+    /** Папка, с которой начинается обзор сервера: подключается, если сессии ещё нет. */
+    fun startPath(id: Long): String = use(id) { it.startPath }
+
     /**
      * Проверка перед сохранением (кнопка «Проверить и подключить», макет 09): подключается с данными формы,
      * читает начальную папку и закрывает сессию. Возвращает null, если всё хорошо.

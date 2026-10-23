@@ -20,6 +20,7 @@ import coil3.compose.AsyncImage
 import io.quietfiles.core.designsystem.icon.QfIcons
 import io.quietfiles.core.designsystem.theme.QfTheme
 import io.quietfiles.core.model.FileCategory
+import io.quietfiles.core.model.network.NetworkPaths
 import java.io.File
 
 /**
@@ -37,7 +38,8 @@ fun FileTile(
 ) {
     val colors = QfTheme.extended.of(category)
     val shape = RoundedCornerShape(cornerRadius)
-    val wantsThumbnail = showThumbnail && path != null &&
+    // Миниатюры с сервера не строим: каждая — это загрузка файла целиком по сети.
+    val wantsThumbnail = showThumbnail && path != null && !NetworkPaths.isNetwork(path) &&
         (category == FileCategory.IMAGE || category == FileCategory.VIDEO)
     var thumbnailFailed by remember(path) { mutableStateOf(false) }
     Box(

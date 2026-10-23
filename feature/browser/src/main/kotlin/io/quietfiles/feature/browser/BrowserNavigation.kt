@@ -13,6 +13,7 @@ fun NavGraphBuilder.browserScreens(
     onPinShortcut: (FileEntry) -> Unit,
     onShowOperations: () -> Unit,
     onSelectionModeChange: (Boolean) -> Unit,
+    onEditConnection: (Long) -> Unit = {},
 ) {
     composable<StorageRootRoute> {
         StorageRootScreen(onOpen = onOpen, onSearch = { onSearch(null) })
@@ -25,6 +26,7 @@ fun NavGraphBuilder.browserScreens(
             onPinShortcut = onPinShortcut,
             onShowOperations = onShowOperations,
             onSelectionModeChange = onSelectionModeChange,
+            onEditConnection = onEditConnection,
         )
     }
 }

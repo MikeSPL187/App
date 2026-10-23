@@ -21,6 +21,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -302,6 +303,7 @@ fun DeleteDialog(
     retentionDays: Int,
     onDismiss: () -> Unit,
     onConfirm: (forever: Boolean) -> Unit,
+    onServer: Boolean = false,
 ) {
     var skipTrash by remember { mutableStateOf(forever) }
     val permanent = inTrash || skipTrash
@@ -318,6 +320,7 @@ fun DeleteDialog(
                         else -> pluralStringResource(R.plurals.delete_trash_message, count, count, retentionDays)
                     },
                 )
+                if (onServer) Text(stringResource(R.string.delete_on_server), color = MaterialTheme.colorScheme.error)
                 if (!inTrash && !forever) {
                     Row(
                         modifier = Modifier.fillMaxWidth().clickable(role = Role.Checkbox) { skipTrash = !skipTrash },
@@ -425,4 +428,30 @@ private fun Property(label: String, value: String, mono: Boolean = false) {
             Text(value, style = if (mono) MonoTextStyle.copy(color = MaterialTheme.colorScheme.onSurface) else MaterialTheme.typography.bodyLarge)
         }
     }
+}
+
+/** Копирование файла с сервера перед открытием. */
+@Composable
+fun DownloadDialog(state: DownloadState, formatters: Formatters, onCancel: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = {},
+        title = { Text(stringResource(R.string.download_title)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text(state.name, maxLines = 2, overflow = TextOverflow.MiddleEllipsis)
+                if (state.total > 0) {
+                    LinearProgressIndicator(progress = { (state.done.toFloat() / state.total).coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth())
+                    Text(
+                        stringResource(R.string.download_progress, formatters.size.format(state.done), formatters.size.format(state.total)),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                } else {
+                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = { TextButton(onClick = onCancel) { Text(stringResource(R.string.action_cancel)) } },
+    )
 }

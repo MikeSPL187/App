@@ -5,6 +5,7 @@ import io.quietfiles.core.model.ConflictChoice
 import io.quietfiles.core.model.ConflictDecision
 import io.quietfiles.core.model.FileEntry
 import io.quietfiles.core.model.FileNames
+import io.quietfiles.core.model.network.NetworkPaths
 import io.quietfiles.core.storage.StorageException
 import io.quietfiles.core.storage.StorageProvider
 import kotlinx.coroutines.CancellationException
@@ -309,9 +310,11 @@ class FileOperationExecutor @Inject constructor(
         return bytes to items
     }
 
-    private fun sameVolume(a: String, b: String) =
-        io.quietfiles.core.storage.LocalStorageProvider.volumeRootOf(a) ==
+    private fun sameVolume(a: String, b: String): Boolean {
+        if (NetworkPaths.isNetwork(a) || NetworkPaths.isNetwork(b)) return NetworkPaths.connectionIdOf(a) == NetworkPaths.connectionIdOf(b)
+        return io.quietfiles.core.storage.LocalStorageProvider.volumeRootOf(a) ==
             io.quietfiles.core.storage.LocalStorageProvider.volumeRootOf(b)
+    }
 
     // ---- Удаление и корзина ----
 
@@ -346,9 +349,14 @@ class FileOperationExecutor @Inject constructor(
         for (path in paths) {
             control.checkpoint()
             try {
-                val entry = provider.stat(path) ?: throw StorageException.NotFound(path)
-                val size = measure(entry, control).first
-                ids += trash.moveToTrash(path, size, entry.isDirectory)
+                if (NetworkPaths.isNetwork(path)) {
+                    // Корзины на сервере нет: интерфейс предупреждает, что удаление окончательное.
+                    provider.delete(path)
+                } else {
+                    val entry = provider.stat(path) ?: throw StorageException.NotFound(path)
+                    val size = measure(entry, control).first
+                    ids += trash.moveToTrash(path, size, entry.isDirectory)
+                }
                 changed += path
             } catch (e: CancellationException) {
                 throw e

@@ -60,4 +60,11 @@
     <string name="op_error_archive_unsafe">В архиве есть небезопасные пути, он не распакован</string>
     <string name="op_error_io">Ошибка чтения или записи</string>
     <string name="op_error_wrong_password">Неверный пароль архива</string>
+    <string name="op_error_not_supported">Это хранилище не поддерживает действие</string>
+    <string name="op_error_remote_unreachable">Сервер не отвечает</string>
+    <string name="op_error_remote_login">Сервер не принял имя пользователя или пароль</string>
+    <string name="op_error_remote_smb1">Сервер поддерживает только SMB1</string>
+    <string name="op_error_remote_trust">Проверьте ключ или сертификат сервера в настройках подключения</string>
+    <string name="op_error_remote_changed">Ключ или сертификат сервера изменился — подключение заблокировано</string>
+    <string name="op_error_remote_protocol">Ошибка сервера: %1$s</string>
 </resources>

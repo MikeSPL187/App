@@ -35,6 +35,16 @@ object QfIcons {
     val Folder by lazy { stroke("Folder", "M3.5 7.5a2 2 0 0 1 2-2h3.8l2 2h7.2a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z") }
     val FolderOpen by lazy { stroke("FolderOpen", "M3.5 17V7.5a2 2 0 0 1 2-2h3.8l2 2h6.2a2 2 0 0 1 2 2v1 M3.5 17l2.2-6a1.5 1.5 0 0 1 1.4-1H20a1 1 0 0 1 .95 1.3L19 17.5a1.5 1.5 0 0 1-1.4 1H5a1.5 1.5 0 0 1-1.5-1.5z") }
     val Cloud by lazy { stroke("Cloud", "M7.5 18.5a4.5 4.5 0 0 1-.4-9A6 6 0 0 1 18.3 10a4.3 4.3 0 0 1-.8 8.5z") }
+
+    // Сеть (макеты 08, 09)
+    val Server by lazy { stroke("Server", "M4 5h16v6H4z M4 13h16v6H4z M7.5 8h.01 M7.5 16h.01") }
+    val Terminal by lazy { stroke("Terminal", "M4 5h16v14H4z M7.5 10l3 2.5-3 2.5 M12.5 15.5h4") }
+    val Globe by lazy { stroke("Globe", "M12 3a9 9 0 1 1 0 18a9 9 0 0 1 0-18z M3.5 12h17 M12 3c2.6 2.8 2.6 15.2 0 18 M12 3c-2.6 2.8-2.6 15.2 0 18") }
+    val Laptop by lazy { stroke("Laptop", "M5 6a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v9H5z M3 19h18 M5 15l-2 4 M19 15l2 4") }
+    val Qr by lazy { stroke("Qr", "M4 4h6v6H4z M14 4h6v6h-6z M4 14h6v6H4z M14 14h2.5v2.5H14z M17.5 17.5H20V20h-2.5z M14 19.5h1.5 M19.5 14v1.5") }
+    val Wifi by lazy { stroke("Wifi", "M3 9.5a13 13 0 0 1 18 0 M6 13a8.5 8.5 0 0 1 12 0 M9 16.5a4 4 0 0 1 6 0 M12 19.5h.01") }
+    val Key by lazy { stroke("Key", "M14.5 4a5 5 0 1 1-4.3 7.6L4 17.8V20h2.5v-2h2v-2h2l1.2-1.2A5 5 0 0 1 14.5 4z M16 8h.01") }
+    val Dot by lazy { filled("Dot", "M12 9a3 3 0 1 1 0 6a3 3 0 0 1 0-6z") }
     val Tools by lazy { stroke("Tools", "M14.5 5.5a4 4 0 0 0-5 5L4.5 15.5a2.1 2.1 0 0 0 3 3l5-5a4 4 0 0 0 5-5l-2.4 2.4-2.6-.4-.4-2.6z") }
     val Search by lazy { stroke("Search", "M11 4a7 7 0 1 0 0 14a7 7 0 1 0 0-14z M20 20l-4.3-4.3") }
     val Settings by lazy { stroke("Settings", "M4 7h9 M17 7h3 M15 5v4 M4 12h3 M11 12h9 M9 10v4 M4 17h11 M19 17h1 M17 15v4") }

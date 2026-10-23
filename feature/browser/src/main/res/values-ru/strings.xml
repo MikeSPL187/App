@@ -270,4 +270,10 @@
         <item quantity="many">Не короче %d символов. Без пароля архив не открыть — восстановить его нельзя</item>
         <item quantity="other">Не короче %d символа. Без пароля архив не открыть — восстановить его нельзя</item>
     </plurals>
+    <string name="network_access_denied">Сервер не разрешает доступ к этой папке</string>
+    <string name="network_error_title">Не удалось открыть сервер</string>
+    <string name="network_error_settings">Настройки подключения</string>
+    <string name="delete_on_server">На сервере нет корзины: файлы удалятся сразу.</string>
+    <string name="download_title">Открываем с сервера</string>
+    <string name="download_progress">%1$s из %2$s</string>
 </resources>

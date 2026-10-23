@@ -48,4 +48,11 @@
     <string name="op_error_archive_unsafe">The archive contains unsafe paths and was not extracted</string>
     <string name="op_error_io">Read or write error</string>
     <string name="op_error_wrong_password">Wrong archive password</string>
+    <string name="op_error_not_supported">This storage does not support the action</string>
+    <string name="op_error_remote_unreachable">The server does not respond</string>
+    <string name="op_error_remote_login">The server did not accept the user name or password</string>
+    <string name="op_error_remote_smb1">The server only supports SMB1</string>
+    <string name="op_error_remote_trust">Check the server key or certificate in the connection settings</string>
+    <string name="op_error_remote_changed">The server key or certificate has changed — the connection is blocked</string>
+    <string name="op_error_remote_protocol">Server error: %1$s</string>
 </resources>

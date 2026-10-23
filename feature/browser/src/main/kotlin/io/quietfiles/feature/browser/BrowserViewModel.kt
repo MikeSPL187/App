@@ -60,6 +60,18 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
+import io.quietfiles.core.model.network.Connection
+import io.quietfiles.core.model.network.NetworkPaths
+import io.quietfiles.core.model.network.RemoteProblem
+import io.quietfiles.core.model.VolumeKind
+import io.quietfiles.core.network.ConnectionsRepository
+import io.quietfiles.core.model.FileCategory
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
 
 /** Позиция в истории экрана: папка, место внутри архива или библиотечный раздел. */
@@ -73,6 +85,9 @@ sealed interface LoadState {
     data object NoAccess : LoadState
     data object NotFound : LoadState
     data class Error(val message: String) : LoadState
+
+    /** Сервер не открылся; [fixInSettings] — помогут правка подключения или проверка ключа (F16.6). */
+    data class Network(val message: String, val connectionId: Long, val fixInSettings: Boolean) : LoadState
 
     /** Архив защищён паролем (F5.11); [wrong] — введённый пароль не подошёл. */
     data class NeedsPassword(val archivePath: String, val wrong: Boolean) : LoadState
@@ -110,6 +125,9 @@ data class BrowserUiState(
     val canPaste: Boolean get() = location.kind == SourceKind.FOLDER && clipboard != null
 }
 
+/** Файл с сервера копируется во временную папку, чтобы открыть его просмотрщиком (F16.7). */
+data class DownloadState(val name: String, val done: Long, val total: Long)
+
 /** Свойства файла или группы файлов; размер папок считается в фоне. */
 data class PropertiesState(
     val entries: List<FileEntry>,
@@ -123,6 +141,9 @@ sealed interface BrowserEvent {
 
     /** Открыть файл: экран сначала предлагает его встроенным просмотрщикам, потом другим приложениям. */
     data class OpenFile(val entry: FileEntry, val siblings: List<FileEntry>, val readOnly: Boolean, val asText: Boolean = false) : BrowserEvent
+
+    /** Открыть временную копию файла с сервера в другом приложении. */
+    data class OpenExternally(val entry: FileEntry) : BrowserEvent
     data class Message(val text: String) : BrowserEvent
     data object ShowOperations : BrowserEvent
     data class OpenRoute(val route: BrowseRoute) : BrowserEvent
@@ -157,12 +178,22 @@ class BrowserViewModel @Inject constructor(
     private val locationStripper: LocationStripper,
     private val batchRenamer: BatchRenamer,
     private val passwords: ArchivePasswords,
+    connectionsRepository: ConnectionsRepository,
 ) : ViewModel() {
+
+    /** Имена серверов для заголовка и хлебных крошек (корень подключения — как том). */
+    private val connections = connectionsRepository.connections
+        .map { list -> list.associateBy { it.id } }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
     private val route = savedStateHandle.toRoute<BrowseRoute>()
     private val history = MutableStateFlow(listOf(Location(route.kind, route.path, route.inner)))
     private val selection = MutableStateFlow<Set<String>>(emptySet())
     private val reload = MutableStateFlow(0)
+
+    private val _download = MutableStateFlow<DownloadState?>(null)
+    val download: StateFlow<DownloadState?> = _download
+    private var downloadJob: Job? = null
 
     private val _properties = MutableStateFlow<PropertiesState?>(null)
     val properties: StateFlow<PropertiesState?> = _properties
@@ -200,17 +231,17 @@ class BrowserViewModel @Inject constructor(
         .onStart { emit(LoadState.Loading) }
 
     val state: StateFlow<BrowserUiState> = combine(
-        combine(location, history.map { it.size > 1 }, load, prefs) { loc, up, ld, pr -> Quad(loc, up, ld, pr) },
+        combine(location, history.map { it.size > 1 }, load, prefs, connections) { loc, up, ld, pr, conns -> Quad(loc, up, ld, pr, conns) },
         settings,
         selection,
         clipboard.content,
         favoritesRepository.paths,
-    ) { (loc, up, ld, pr), s, sel, clip, favs ->
+    ) { (loc, up, ld, pr, conns), s, sel, clip, favs ->
         val sorted = (ld as? LoadState.Ready)?.let { LoadState.Ready(it.items.sortedWith(itemComparator(pr.sort))) } ?: ld
         BrowserUiState(
             location = loc,
             canGoUp = up,
-            volume = if (loc.kind == SourceKind.FOLDER) volumes.volumeFor(loc.path) else null,
+            volume = if (loc.kind == SourceKind.FOLDER) volumeOf(loc.path, conns) else null,
             load = sorted,
             sort = pr.sort,
             viewMode = pr.viewMode,
@@ -218,7 +249,8 @@ class BrowserViewModel @Inject constructor(
             selection = sel,
             clipboard = clip,
             favorites = favs,
-            useTrash = s.useTrash,
+            // На серверах корзины нет: удаление всегда окончательное и всегда с подтверждением.
+            useTrash = s.useTrash && !NetworkPaths.isNetwork(loc.path),
             confirmDelete = s.confirmDelete,
             trashRetentionDays = s.trashRetentionDays,
             tapIconToSelect = s.tapIconToSelect,
@@ -233,12 +265,26 @@ class BrowserViewModel @Inject constructor(
         ),
     )
 
-    private data class Quad(val a: Location, val b: Boolean, val c: LoadState, val d: FolderPrefs)
+    private data class Quad(val a: Location, val b: Boolean, val c: LoadState, val d: FolderPrefs, val e: Map<Long, Connection>)
+
+    private fun volumeOf(path: String, connections: Map<Long, Connection>): StorageVolumeInfo? {
+        val id = NetworkPaths.connectionIdOf(path) ?: return volumes.volumeFor(path)
+        val connection = connections[id] ?: return null
+        return StorageVolumeInfo(
+            id = "net-$id",
+            kind = VolumeKind.NETWORK,
+            label = connection.displayName,
+            rootPath = NetworkPaths.rootOf(id),
+            isPrimary = false,
+            isRemovable = false,
+        )
+    }
 
     private fun Flow<Unit>.takeIfTrash(loc: Location): Flow<Unit> = if (loc.kind == SourceKind.TRASH) this else emptyFlow()
 
     private suspend fun loadState(loc: Location, showHidden: Boolean): LoadState {
-        if (loc.kind == SourceKind.FOLDER && !StorageAccess.hasAllFilesAccess()) return LoadState.NoAccess
+        val network = NetworkPaths.connectionIdOf(loc.path).takeIf { loc.kind == SourceKind.FOLDER }
+        if (loc.kind == SourceKind.FOLDER && network == null && !StorageAccess.hasAllFilesAccess()) return LoadState.NoAccess
         return try {
             LoadState.Ready(loader.load(loc.kind, loc.path, loc.inner, showHidden))
         } catch (e: StorageException.NotFound) {
@@ -247,8 +293,11 @@ class BrowserViewModel @Inject constructor(
             LoadState.NeedsPassword(e.path, wrong = false)
         } catch (e: OperationException.WrongPassword) {
             LoadState.NeedsPassword(e.path, wrong = true)
+        } catch (e: StorageException.Remote) {
+            val fix = e.problem !is RemoteProblem.Unreachable && e.problem !is RemoteProblem.Protocol
+            LoadState.Network(ErrorMessages.remote(context, e.problem), e.connectionId, fix)
         } catch (e: StorageException.AccessDenied) {
-            LoadState.NoAccess
+            if (network != null) LoadState.Error(context.getString(R.string.network_access_denied)) else LoadState.NoAccess
         } catch (e: kotlinx.coroutines.CancellationException) {
             throw e
         } catch (e: Exception) {
@@ -282,6 +331,9 @@ class BrowserViewModel @Inject constructor(
             entry.isDirectory -> push(Location(SourceKind.FOLDER, entry.path))
             ArchiveTools.isBrowsableArchive(entry.name) ->
                 push(Location(SourceKind.ARCHIVE, entry.path, ""))
+            // Видео и музыка с сервера играют потоком; остальное открывается временной копией.
+            NetworkPaths.isNetwork(entry.path) && entry.category != FileCategory.VIDEO && entry.category != FileCategory.AUDIO ->
+                openNetworkCopy(entry, external = false)
             else -> {
                 val siblings = state.value.items.map { it.entry }.filterNot { it.isDirectory }
                 events.trySend(BrowserEvent.OpenFile(entry, siblings, readOnly = false))
@@ -655,6 +707,50 @@ class BrowserViewModel @Inject constructor(
         }
     }
 
+    /** Копирует файл с сервера в кэш с прогрессом и открывает копию только для чтения. */
+    fun openNetworkCopy(entry: FileEntry, external: Boolean) {
+        downloadJob?.cancel()
+        downloadJob = viewModelScope.launch {
+            val dir = File(context.cacheDir, NETWORK_OPEN_DIR)
+            val target = File(dir, entry.name)
+            _download.value = DownloadState(entry.name, 0, entry.size)
+            try {
+                withContext(Dispatchers.IO) {
+                    dir.deleteRecursively()
+                    dir.mkdirs()
+                    provider.openRead(entry.path).use { input ->
+                        target.outputStream().use { output ->
+                            val buffer = ByteArray(64 * 1024)
+                            var done = 0L
+                            while (true) {
+                                ensureActive()
+                                val n = input.read(buffer)
+                                if (n < 0) break
+                                output.write(buffer, 0, n)
+                                done += n
+                                _download.value = DownloadState(entry.name, done, entry.size)
+                            }
+                        }
+                    }
+                }
+                val copy = FileEntry(target.path, target.name, false, target.length(), entry.lastModified)
+                events.send(if (external) BrowserEvent.OpenExternally(copy) else BrowserEvent.OpenFile(copy, emptyList(), readOnly = true))
+            } catch (e: CancellationException) {
+                withContext(NonCancellable + Dispatchers.IO) { target.delete() }
+                throw e
+            } catch (e: Exception) {
+                target.delete()
+                message(ErrorMessages.of(context, e))
+            } finally {
+                _download.value = null
+            }
+        }
+    }
+
+    fun cancelDownload() {
+        downloadJob?.cancel()
+    }
+
     private fun launch(intent: Intent) {
         events.trySend(BrowserEvent.Launch(intent))
     }
@@ -684,3 +780,6 @@ class BrowserViewModel @Inject constructor(
         }
     }
 }
+
+/** Временные копии файлов с серверов; в file_paths.xml — та же папка. */
+private const val NETWORK_OPEN_DIR = "net-open"

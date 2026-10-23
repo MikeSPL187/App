@@ -1,5 +1,8 @@
 package io.quietfiles.feature.player.video
 
+import io.quietfiles.feature.player.common.StorageDataSource
+import io.quietfiles.core.storage.StorageProvider
+import io.quietfiles.core.model.network.NetworkPaths
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
@@ -101,6 +104,7 @@ class VideoViewModel @Inject constructor(
     @IoDispatcher private val io: CoroutineDispatcher,
     /** Позиция сохраняется и после закрытия экрана, когда viewModelScope уже отменён. */
     @ApplicationScope private val appScope: CoroutineScope,
+    private val provider: StorageProvider,
 ) : ViewModel() {
 
     private val route = savedStateHandle.toRoute<VideoRoute>()
@@ -110,6 +114,7 @@ class VideoViewModel @Inject constructor(
     val state: StateFlow<VideoUiState> = _state.asStateFlow()
 
     val player: ExoPlayer = ExoPlayer.Builder(context)
+        .setMediaSourceFactory(StorageDataSource.mediaSourceFactory(context, provider))
         .setAudioAttributes(AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.AUDIO_CONTENT_TYPE_MOVIE).build(), true)
         .setHandleAudioBecomingNoisy(true)
         .setSeekBackIncrementMs(PlayerGestures.DOUBLE_TAP_SEEK_MS)
@@ -195,6 +200,7 @@ class VideoViewModel @Inject constructor(
     private fun playlistFor(path: String): List<String> {
         val fromSession = sessionPaths?.filter { FileTypes.categoryOf(FileNames.nameOf(it)) == FileCategory.VIDEO }
         if (!fromSession.isNullOrEmpty() && path in fromSession) return fromSession
+        if (NetworkPaths.isNetwork(path)) return listOf(path)
         val dir = File(path).parentFile ?: return listOf(path)
         return (dir.listFiles { f -> f.isFile && !f.isHidden && FileTypes.categoryOf(f.name) == FileCategory.VIDEO } ?: emptyArray())
             .map { it.path }
@@ -202,15 +208,25 @@ class VideoViewModel @Inject constructor(
             .ifEmpty { listOf(path) }
     }
 
+    /** Соседние файлы — для субтитров рядом с видео; у сервера список просим у него самого. */
+    private suspend fun siblingsOf(path: String): List<String> = withContext(io) {
+        if (NetworkPaths.isNetwork(path)) {
+            val parent = FileNames.parentOf(path) ?: return@withContext emptyList()
+            runCatching { provider.list(parent, includeHidden = false).map { it.path } }.getOrDefault(emptyList())
+        } else {
+            File(path).parentFile?.listFiles()?.map { it.path }.orEmpty()
+        }
+    }
+
     private suspend fun open(path: String, autoPlay: Boolean) {
-        val siblings = withContext(io) { File(path).parentFile?.listFiles()?.map { it.path }.orEmpty() }
+        val siblings = siblingsOf(path)
         val sidecars = SubtitleFinder.find(path, siblings)
         val saved = positions.get(path)
-        val file = File(path)
+        val size = withContext(io) { if (NetworkPaths.isNetwork(path)) runCatching { provider.stat(path)?.size }.getOrNull() ?: 0 else File(path).length() }
         savedStateHandle[KEY_PATH] = path
         _state.update {
             it.copy(
-                path = path, size = file.length(), durationMs = 0, videoWidth = 0, videoHeight = 0, videoCodec = null,
+                path = path, size = size, durationMs = 0, videoWidth = 0, videoHeight = 0, videoCodec = null,
                 subtitles = emptyList(), audioTracks = emptyList(), resumedFrom = saved, error = null, buffering = true,
             )
         }
@@ -319,7 +335,7 @@ class VideoViewModel @Inject constructor(
         val playing = player.playWhenReady
         viewModelScope.launch {
             val path = _state.value.path
-            val siblings = withContext(io) { File(path).parentFile?.listFiles()?.map { it.path }.orEmpty() }
+            val siblings = siblingsOf(path)
             player.setMediaItem(mediaItem(path, SubtitleFinder.find(path, siblings)), position)
             player.prepare()
             player.playWhenReady = playing

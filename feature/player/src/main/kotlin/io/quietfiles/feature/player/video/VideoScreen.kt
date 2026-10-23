@@ -1,5 +1,6 @@
 package io.quietfiles.feature.player.video
 
+import io.quietfiles.core.model.network.NetworkPaths
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -335,7 +336,9 @@ private fun VideoContent(onBack: () -> Unit, onOpenFolder: (String) -> Unit, vie
                 onNext = viewModel::playNext,
                 onOpenWith = {
                     val file = File(state.path)
-                    try {
+                    if (NetworkPaths.isNetwork(state.path)) {
+                        viewModel.messages.tryEmit(context.getString(R.string.video_network_open_with))
+                    } else try {
                         context.startActivity(
                             FileIntents.chooserForView(context, FileEntry(state.path, file.name, false, file.length(), file.lastModified()), openWithTitle),
                         )
@@ -379,7 +382,9 @@ private fun VideoContent(onBack: () -> Unit, onOpenFolder: (String) -> Unit, vie
                 error,
                 onOpenWith = {
                     val file = File(state.path)
-                    try {
+                    if (NetworkPaths.isNetwork(state.path)) {
+                        viewModel.messages.tryEmit(context.getString(R.string.video_network_open_with))
+                    } else try {
                         context.startActivity(FileIntents.view(context, FileEntry(state.path, file.name, false, file.length(), file.lastModified())))
                     } catch (e: ActivityNotFoundException) {
                         controlsVisible = true

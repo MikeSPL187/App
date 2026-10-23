@@ -10,4 +10,6 @@
     <cache-path name="archive_preview" path="archive-preview/" />
     <!-- Копии фото без геоданных для отправки (LocationStripper). -->
     <cache-path name="share" path="share/" />
+    <!-- Временные копии файлов с серверов (F16), чтобы открыть их другим приложением. -->
+    <cache-path name="network" path="net-open/" />
 </paths>

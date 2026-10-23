@@ -72,6 +72,7 @@ import io.quietfiles.core.model.WindowPlace
 import io.quietfiles.core.designsystem.icon.QfIcons
 import io.quietfiles.core.storage.FileIntents
 import io.quietfiles.core.model.FileEntry
+import io.quietfiles.core.model.network.NetworkPaths
 import io.quietfiles.core.model.FileNames
 import io.quietfiles.core.model.SortField
 import io.quietfiles.core.model.ViewMode
@@ -105,10 +106,12 @@ fun BrowserScreen(
     onPinShortcut: (FileEntry) -> Unit,
     onShowOperations: () -> Unit,
     onSelectionModeChange: (Boolean) -> Unit,
+    onEditConnection: (Long) -> Unit = {},
     viewModel: BrowserViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val properties by viewModel.properties.collectAsStateWithLifecycle()
+    val download by viewModel.download.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val snackbar = remember { SnackbarHostState() }
     val formatters = rememberFormatters()
@@ -127,11 +130,18 @@ fun BrowserScreen(
                     snackbar.showSnackbar(noAppMessage)
                 }
                 is BrowserEvent.OpenFile -> if (!fileOpener.open(event.entry, event.siblings, event.readOnly, event.asText)) {
-                    try {
+                    if (NetworkPaths.isNetwork(event.entry.path)) {
+                        viewModel.openNetworkCopy(event.entry, external = true)
+                    } else try {
                         context.startActivity(FileIntents.view(context, event.entry))
                     } catch (e: ActivityNotFoundException) {
                         snackbar.showSnackbar(noAppMessage)
                     }
+                }
+                is BrowserEvent.OpenExternally -> try {
+                    context.startActivity(FileIntents.view(context, event.entry))
+                } catch (e: ActivityNotFoundException) {
+                    snackbar.showSnackbar(noAppMessage)
                 }
                 is BrowserEvent.Message -> snackbar.showSnackbar(event.text)
                 BrowserEvent.ShowOperations -> onShowOperations()
@@ -265,10 +275,13 @@ fun BrowserScreen(
                     onRequestAccess = onRequestAccess,
                     onRetry = viewModel::refresh,
                     onPassword = { path, wrong -> overlay = Overlay.Password(path, PendingArchive.Open, wrong) },
+                    onEditConnection = onEditConnection,
                 )
             }
         }
     }
+
+    download?.let { DownloadDialog(it, formatters, onCancel = viewModel::cancelDownload) }
 
     when (val o = overlay) {
         null -> Unit
@@ -365,6 +378,7 @@ fun BrowserScreen(
             count = o.items.size,
             forever = o.forever,
             inTrash = state.location.kind == SourceKind.TRASH,
+            onServer = NetworkPaths.isNetwork(state.location.path),
             retentionDays = state.trashRetentionDays,
             onDismiss = { overlay = null },
             onConfirm = { forever ->
@@ -635,8 +649,18 @@ private fun Content(
     onRequestAccess: () -> Unit,
     onRetry: () -> Unit,
     onPassword: (archivePath: String, wrong: Boolean) -> Unit,
+    onEditConnection: (Long) -> Unit,
 ) {
     when (val load = state.load) {
+        is LoadState.Network -> Scrollable {
+            EmptyState(
+                QfIcons.Alert,
+                stringResource(R.string.network_error_title),
+                message = load.message,
+                actionLabel = stringResource(if (load.fixInSettings) R.string.network_error_settings else R.string.action_retry),
+                onAction = { if (load.fixInSettings) onEditConnection(load.connectionId) else onRetry() },
+            )
+        }
         is LoadState.NeedsPassword -> Scrollable {
             EmptyState(
                 QfIcons.Lock,

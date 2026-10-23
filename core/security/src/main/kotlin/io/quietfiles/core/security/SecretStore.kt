@@ -20,7 +20,7 @@ class SecretStore internal constructor(
     private val dir: File,
     private val cipher: SecretCipher,
 ) {
-    @Inject constructor(@ApplicationContext context: Context, cipher: KeystoreSecretCipher) :
+    @Inject constructor(@ApplicationContext context: Context, cipher: SecretCipher) :
         this(File(context.noBackupFilesDir, "secrets"), cipher)
 
     private val lock = Any()

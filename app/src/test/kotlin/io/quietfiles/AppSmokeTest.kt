@@ -467,6 +467,72 @@ class AppSmokeTest {
         snapshot("00_onboarding")
     }
 
+    /**
+     * Сеть (F16): подключение к настоящему SFTP-серверу на этой машине, сверка отпечатка ключа (TOFU),
+     * обзор папки сервера, открытие файла копией и статус «В сети» в списке.
+     */
+    @Test
+    fun networkSftpConnectionAndBrowsing() {
+        val serverRoot = java.nio.file.Files.createTempDirectory("sftp").toFile()
+        File(serverRoot, "Проекты").mkdirs()
+        File(serverRoot, "notes.txt").writeText("Заметки с сервера")
+        File(serverRoot, "backup.zip").writeBytes(ByteArray(48_000))
+        val server = org.apache.sshd.server.SshServer.setUpDefaultServer().apply {
+            host = "127.0.0.1"
+            port = 0
+            keyPairProvider = org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider(serverRoot.toPath().resolveSibling("host-${System.nanoTime()}.ser"))
+                .apply { algorithm = "RSA" }
+            setPasswordAuthenticator { user, password, _ -> user == "pi" && password == "raspberry" }
+            subsystemFactories = listOf(org.apache.sshd.sftp.server.SftpSubsystemFactory())
+            fileSystemFactory = org.apache.sshd.common.file.virtualfs.VirtualFileSystemFactory(serverRoot.toPath())
+            start()
+        }
+        try {
+            grantAllFilesAccess()
+            scenario = ActivityScenario.launch(MainActivity::class.java)
+            clickText("Сеть")
+            waitForText("Локальная сеть")
+            snapshot("52_network_empty")
+
+            clickText("Добавить подключение")
+            waitForText("Новое подключение")
+            clickText("SFTP")
+            compose.onNode(hasSetTextAction() and hasText("Адрес сервера")).performTextInput("127.0.0.1")
+            compose.onNode(hasSetTextAction() and hasText("Порт")).performTextReplacement(server.port.toString())
+            compose.onNode(hasSetTextAction() and hasText("Имя пользователя")).performTextInput("pi")
+            compose.onNode(hasSetTextAction() and hasText("Пароль")).performTextInput("raspberry")
+            compose.onNode(hasSetTextAction() and hasText("Название (необязательно)")).performTextInput("Raspberry Pi")
+            compose.waitForIdle()
+            snapshot("53_connection_form")
+
+            compose.onNode(hasScrollAction()).performScrollToNode(hasText("Проверить и подключить"))
+            clickText("Проверить и подключить")
+            // Первое подключение: показываем отпечаток ключа и ждём согласия (F16.4).
+            waitForBackground { compose.onAllNodesWithText("Новый сервер").fetchSemanticsNodes().isNotEmpty() }
+            snapshot("54_trust_host_key")
+            clickText("Доверять и подключить")
+            waitForBackground { compose.onAllNodesWithText("notes.txt").fetchSemanticsNodes().isNotEmpty() }
+            waitForText("Проекты")
+            snapshot("55_network_folder")
+
+            // Текстовый файл с сервера открывается временной копией только для чтения.
+            clickText("notes.txt")
+            waitForBackground { compose.onAllNodesWithText("UTF-8", substring = true).fetchSemanticsNodes().isNotEmpty() }
+            scenario!!.onActivity { check(findEditor(it.window.decorView).text.toString() == "Заметки с сервера") }
+            snapshot("56_network_file_copy")
+            pressBack()
+            waitForText("backup.zip")
+
+            clickText("Сеть")
+            waitForText("Raspberry Pi")
+            snapshot("57_network_list")
+            waitForText("В сети")
+        } finally {
+            server.stop(true)
+            serverRoot.deleteRecursively()
+        }
+    }
+
     /** Данные приходят из Room и файловой системы в фоне, поэтому ждём появления текста. */
     private fun waitForText(text: String) {
         compose.waitUntil(TIMEOUT_MS) { compose.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty() }

@@ -4,6 +4,7 @@
 
     <string name="nav_home">Главная</string>
     <string name="nav_browse">Обзор</string>
+    <string name="nav_network">Сеть</string>
     <string name="nav_tools">Инструменты</string>
 
     <string name="msg_undo">Вернуть</string>
