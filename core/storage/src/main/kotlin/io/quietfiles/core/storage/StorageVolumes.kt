@@ -24,7 +24,19 @@ class StorageVolumes @Inject constructor(
 ) {
     private val storageManager = context.getSystemService(StorageManager::class.java)
 
-    fun current(): List<StorageVolumeInfo> = storageManager.storageVolumes
+    fun current(): List<StorageVolumeInfo> = mounted().ifEmpty { listOf(primaryFallback()) }
+
+    /** Если система не отдала список томов, основное хранилище всё равно доступно по известному пути. */
+    private fun primaryFallback() = StorageVolumeInfo(
+        id = "primary",
+        kind = VolumeKind.INTERNAL,
+        label = "",
+        rootPath = primaryRoot,
+        isPrimary = true,
+        isRemovable = false,
+    )
+
+    private fun mounted(): List<StorageVolumeInfo> = storageManager.storageVolumes
         .filter { it.state == Environment.MEDIA_MOUNTED || it.state == Environment.MEDIA_MOUNTED_READ_ONLY }
         .mapNotNull { volume ->
             val dir = volume.directory ?: return@mapNotNull null

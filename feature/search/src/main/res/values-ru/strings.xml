@@ -32,7 +32,7 @@
     <string name="search_empty_hint">Введите часть имени или выберите тип, дату или размер.</string>
     <string name="search_nothing">Ничего не найдено</string>
     <string name="search_nothing_hint">Проверьте написание или уберите часть фильтров.</string>
-    <string name="search_truncated"> · показаны первые</string>
+    <string name="search_truncated">"&#160;· "показаны первые</string>
     <string name="search_open_location">Открыть расположение</string>
     <string name="search_no_app">Нет приложения, которое может открыть этот файл</string>
     <plurals name="search_found">

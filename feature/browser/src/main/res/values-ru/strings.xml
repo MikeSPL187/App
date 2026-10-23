@@ -153,7 +153,7 @@
     <string name="props_contains_value">%1$s, %2$s</string>
 
     <string name="meta_trash">удалён %1$s · из %2$s</string>
-    <string name="meta_separator"> · </string>
+    <string name="meta_separator">"&#160;· "</string>
 
     <string name="browser_renamed">Переименовано: %1$s</string>
     <string name="browser_favorite_added">Добавлено в избранное</string>

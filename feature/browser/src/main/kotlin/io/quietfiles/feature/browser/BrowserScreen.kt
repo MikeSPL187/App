@@ -394,7 +394,8 @@ private fun BrowserTopBar(
     val bytes = items.filterNot { it.entry.isDirectory }.sumOf { it.entry.size }
     val subtitle = buildList {
         when (loc.kind) {
-            SourceKind.FOLDER -> state.volume?.let { add(volumeLabel(it)) }
+            // В корне тома его имя уже стоит в заголовке.
+            SourceKind.FOLDER -> state.volume?.takeIf { it.rootPath != loc.path }?.let { add(volumeLabel(it)) }
             SourceKind.ARCHIVE -> add(stringResource(R.string.browser_archive))
             else -> Unit
         }

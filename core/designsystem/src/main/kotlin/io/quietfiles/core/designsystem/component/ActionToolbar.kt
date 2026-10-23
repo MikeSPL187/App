@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 data class ToolbarAction(
     val label: String,
@@ -67,6 +69,9 @@ fun FloatingActionToolbar(actions: List<ToolbarAction>, modifier: Modifier = Mod
                         color = if (tint == Color.Unspecified) MaterialTheme.colorScheme.onSurface else tint,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
+                        // Пять действий на узком экране: длинные подписи («Переместить») уменьшаются, а не обрезаются.
+                        modifier = Modifier.padding(horizontal = 3.dp),
+                        autoSize = TextAutoSize.StepBased(minFontSize = 9.sp, maxFontSize = MaterialTheme.typography.labelMedium.fontSize),
                     )
                 }
             }

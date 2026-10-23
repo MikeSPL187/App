@@ -32,7 +32,7 @@
     <string name="search_empty_hint">Type part of a name or choose a type, date or size.</string>
     <string name="search_nothing">Nothing found</string>
     <string name="search_nothing_hint">Check the spelling or remove some filters.</string>
-    <string name="search_truncated"> · showing the first ones</string>
+    <string name="search_truncated">"&#160;· "showing the first ones</string>
     <string name="search_open_location">Open location</string>
     <string name="search_no_app">No app can open this file</string>
     <plurals name="search_found">
