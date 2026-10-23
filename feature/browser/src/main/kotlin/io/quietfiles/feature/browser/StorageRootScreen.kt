@@ -24,6 +24,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +44,10 @@ import io.quietfiles.core.data.repository.Favorite
 import io.quietfiles.core.data.repository.FavoritesRepository
 import io.quietfiles.core.designsystem.component.SectionTitle
 import io.quietfiles.core.designsystem.component.SegmentedBar
+import io.quietfiles.core.designsystem.component.LocalWindows
+import io.quietfiles.core.designsystem.component.WindowsButton
 import io.quietfiles.core.designsystem.component.rememberFormatters
+import io.quietfiles.core.model.WindowPlace
 import io.quietfiles.core.designsystem.icon.QfIcons
 import io.quietfiles.core.model.FileCategory
 import io.quietfiles.core.model.FileNames
@@ -104,12 +108,15 @@ fun StorageRootScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val formatters = rememberFormatters()
+    val windows = LocalWindows.current
+    LaunchedEffect(Unit) { windows?.onPlace(WindowPlace.Root) }
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.browser_title_storage), style = MaterialTheme.typography.headlineMedium) },
                 actions = {
                     IconButton(onClick = onSearch) { Icon(QfIcons.Search, contentDescription = stringResource(R.string.action_search)) }
+                    WindowsButton()
                 },
             )
         },

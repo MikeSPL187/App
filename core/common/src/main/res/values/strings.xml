@@ -25,4 +25,8 @@
     <string name="volume_short_internal">Storage</string>
     <string name="volume_short_sd">SD card</string>
     <string name="volume_short_usb">USB drive</string>
+    <plurals name="windows_open">
+        <item quantity="one">Open windows: %d</item>
+        <item quantity="other">Open windows: %d</item>
+    </plurals>
 </resources>

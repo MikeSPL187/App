@@ -31,4 +31,10 @@
     <string name="volume_short_internal">Память</string>
     <string name="volume_short_sd">SD-карта</string>
     <string name="volume_short_usb">USB-накопитель</string>
+    <plurals name="windows_open">
+        <item quantity="one">Открытые окна: %d</item>
+        <item quantity="few">Открытые окна: %d</item>
+        <item quantity="many">Открытые окна: %d</item>
+        <item quantity="other">Открытые окна: %d</item>
+    </plurals>
 </resources>

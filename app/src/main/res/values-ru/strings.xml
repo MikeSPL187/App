@@ -99,4 +99,8 @@
     <string name="lock_unlock">Разблокировать</string>
     <string name="lock_prompt_title">Разблокировка</string>
     <string name="lock_prompt_subtitle">Подтвердите, что это вы</string>
+    <string name="windows_title">Открытые окна</string>
+    <string name="windows_new">Новое окно</string>
+    <string name="windows_close">Закрыть окно «%1$s»</string>
+    <string name="windows_storages">Хранилища</string>
 </resources>

@@ -66,6 +66,9 @@ import io.quietfiles.core.designsystem.component.SectionLabel
 import io.quietfiles.core.designsystem.component.ToolbarAction
 import io.quietfiles.core.designsystem.component.rememberFormatters
 import io.quietfiles.core.designsystem.component.LocalFileOpener
+import io.quietfiles.core.designsystem.component.LocalWindows
+import io.quietfiles.core.designsystem.component.WindowsButton
+import io.quietfiles.core.model.WindowPlace
 import io.quietfiles.core.designsystem.icon.QfIcons
 import io.quietfiles.core.storage.FileIntents
 import io.quietfiles.core.model.FileEntry
@@ -471,6 +474,9 @@ private fun BrowserTopBar(
         }
     }.joinToString(stringResource(R.string.meta_separator))
     var menu by remember { mutableStateOf(false) }
+    // Окно обзора (F1.5) запоминает, где пользователь сейчас.
+    val windows = LocalWindows.current
+    LaunchedEffect(loc, title) { windows?.onPlace(WindowPlace(loc.kind.name, loc.path, loc.inner, title)) }
 
     TopAppBar(
         title = {
@@ -490,6 +496,7 @@ private fun BrowserTopBar(
             if (loc.kind != SourceKind.TRASH && loc.kind != SourceKind.ARCHIVE) {
                 IconButton(onClick = onSearch) { Icon(QfIcons.Search, contentDescription = stringResource(R.string.action_search)) }
             }
+            WindowsButton()
             Box {
                 IconButton(onClick = { menu = true }) { Icon(QfIcons.More, contentDescription = stringResource(R.string.action_more)) }
                 DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {

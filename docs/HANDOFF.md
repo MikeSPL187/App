@@ -12,26 +12,11 @@
 
 | Что | Статус |
 |---|---|
-| v1.0 целиком (F1–F7, F10, F14, F15, безопасность) | ✅ готово, проверено тестами, CI на GitHub зелёный |
-| v1.1 F12 текстовый редактор (`feature/editor`) | ✅ готово, закоммичено, тесты зелёные |
-| v1.1 F8 просмотр фото (`feature/viewer`) | ⚠️ **написан и закоммичен как черновик, последние правки не проверены** (см. ниже) |
-| v1.1 F9 видеоплеер, F11 музыкальный плеер | ⏳ не начато |
-| v1.1 F13 очистка и анализ | ⏳ не начато |
-| v1.1 прочее: F1.5 вкладки, F5.1 групповое переименование, F5.11 архивы с паролем, F6.6 поиск по содержимому | ⏳ не начато |
+| v1.0 целиком (F1–F7, F10, F14, F15, безопасность) | ✅ готово, см. [`v1.0.md`](v1.0.md) |
+| v1.1 целиком: F8 фото, F9 видео, F11 музыка, F12 редактор, F13 очистка, F1.5 окна, F5.1 групповое переименование, F5.11 архивы с паролем, F6.6 поиск по содержимому | ✅ готово, см. [`v1.1.md`](v1.1.md) (там же отличия от ТЗ) |
+| v1.2 F16 сеть, F17 «Доступ с ПК» | ⏳ не начато |
 
-### Что нужно проверить первым делом (F8)
-
-Последний коммит «WIP: photo viewer» не прогонялся тестами после трёх правок:
-1. общий помощник `core/common/.../VolumePaths.kt` (`displayPath`, `volumeShortName`) — путь «Память/DCIM/Camera» вместо абсолютного; редактор и просмотр фото переведены на него, строки `editor_volume_*` удалены;
-2. фон у миниатюр в ленте просмотра фото;
-3. `Thread.sleep(1_500)` перед снимком `14_photo_viewer` в `AppSmokeTest` — проверить, успевает ли Coil показать фото в Robolectric; если нет, убрать задержку.
-
-Команда проверки:
-```bash
-export ANDROID_HOME=/opt/android-sdk   # или путь к своему SDK
-./gradlew --no-parallel test lintDebug :app:assembleRelease
-```
-Затем посмотреть снимки в `app/build/screenshots/` (особенно `14_photo_viewer.png`, `15_photo_details.png`).
+Всё проверено `test`, `lintDebug` (без замечаний) и `:app:assembleRelease`; на устройстве не запускалось — эмулятора в среде нет.
 
 ## Сборка и окружение (важно)
 
@@ -41,25 +26,41 @@ export ANDROID_HOME=/opt/android-sdk   # или путь к своему SDK
 - Последний прогон в облачной среде убили по памяти (код 137) — запускать с `--no-parallel`, при необходимости `./gradlew --stop` перед прогоном.
 - lint не анализирует тестовые исходники (его анализатор падает на тестах Compose UI) — `lint.ignoreTestSources = true` в convention-плагинах.
 - Эмулятора в облачной среде нет. Визуальная проверка — через `AppSmokeTest` (Robolectric + Hilt, настоящий `MainActivity`, сохраняет PNG всех окон, включая диалоги и листы).
+- Android SDK в новом контейнере может отсутствовать: `cmdline-tools` с dl.google.com, затем `sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools"` в `/opt/android-sdk`.
+- Полный прогон занимает 12–17 минут. **Не правьте модули, пока идёт сборка**: Gradle может подхватить половину изменений.
+
+### Особенности тестов в Robolectric
+
+- Coil: `ImageDecoder` в Robolectric не работает, аппаратные битмапы не рисуются на снимке — в `AppSmokeTest` загрузчик с `imageDecoderEnabled(false)` и `allowHardware(false)`.
+- Тест работает на главном потоке: вместо `Thread.sleep` — `waitForImages()` (сон + `idleFor` лупера), иначе фоновая работа не доходит до экрана.
+- Media3: в тесте подключены фейковые декодеры `ShadowMediaCodecConfig.withAllDefaultSupportedCodecs()` (артефакт `media3-test-utils-robolectric`), тестовые медиафайлы — в `app/src/test/resources/media/`.
+- `AlertDialog` с текстовым полем в Robolectric не становится «idle» — формы с полями делаем нижними листами.
+- «Назад» из теста идёт в диспетчер Activity, а не в окно листа: лист и экран под ним закрываются одним нажатием.
+- Media3: нестабильные API помечаются `@androidx.annotation.OptIn(UnstableApi::class)` — котлиновский `@OptIn` lint не засчитывает.
 
 ## Архитектура (кратко)
 
 ```
-app                 навигация (3 вкладки + рейка от 600 dp), лист операций, онбординг, инструменты,
-                    PickerActivity (GET_CONTENT/PICK), SaveActivity (SEND), блокировка (BiometricPrompt),
-                    подписанные ярлыки папок, FileOpener → встроенные просмотрщики
-feature/home        главная
-feature/browser     обзор, библиотеки, галерея фото/видео, архивы, корзина, выбор, экран выбора файла/папки
-feature/search      поиск
+app                 навигация (3 вкладки + рейка от 600 dp), лист операций, окна (F1.5), онбординг,
+                    PickerActivity, SaveActivity, блокировка, ярлыки, FileOpener → встроенные просмотрщики,
+                    мини-плеер, задачи WorkManager (корзина, индекс содержимого), кэш приложения для очистки
+feature/home        главная («Можно освободить N», кнопка окон)
+feature/browser     обзор, библиотеки, галерея, архивы (пароли), корзина, выбор («Ещё»), групповое переименование
+feature/search      поиск по имени и по содержимому
 feature/settings    настройки
 feature/editor      текстовый редактор (F12)
-feature/viewer      просмотр фото (F8); сюда же логично класть видео и музыку или завести feature/player
-core/model          чистая логика без Android (имена, сортировка, MIME, настройки)
-core/common         диспетчеры, форматирование, DeviceAuth, VolumePaths
-core/designsystem   тема из design/tokens.json, значки QfIcons (stroke-пути из макетов), компоненты, LocalFileOpener
-core/storage        локальная ФС, тома, MediaStore + запасной обход ФС, FileObserver, ApkInspector, LocationStripper
-core/data           Room, DataStore (SettingsRepository)
-core/operations     очередь операций в foreground-сервисе, корзина, архивы, журнал восстановления, импорт
+feature/viewer      просмотр фото (F8)
+feature/player      видео (ViewModel с ExoPlayer и MediaSession) и музыка (MusicPlayer + PlaybackService)
+feature/cleaner     «Инструменты»: очистка (F13), подробности пунктов, анализ папок
+core/model          чистая логика: имена, сортировка, MIME, медиа (время, кодеки, субтитры, FLAC/WAV),
+                    очистка (дубликаты, выбор), переименование, окна, кодировки, извлечение текста (PDF, DOCX)
+core/common         диспетчеры, форматирование, DeviceAuth, VolumePaths, ViewerSessions
+core/designsystem   тема, значки QfIcons, компоненты, LocalFileOpener, LocalWindows, ImmersiveMode
+core/storage        локальная ФС, тома, MediaStore, FileObserver, ApkInspector, LocationStripper
+core/data           Room (quietfiles.db v3: избранное, история, корзина, позиции, история очистки),
+                    content_index.db (FTS4), DataStore (настройки, окна)
+core/operations     очередь операций, корзина, архивы (zip4j, commons-compress, junrar), пароли архивов,
+                    групповое переименование, сканер и исполнитель очистки
 ```
 
 Принципы, которых держались:
@@ -70,13 +71,13 @@ core/operations     очередь операций в foreground-сервисе
 - Перед коммитом: `test`, `lintDebug` без предупреждений, `assembleRelease` (R8).
 - Отклонения от ТЗ записываются в `docs/v1.0.md` (раздел «Отличия»), для 1.1 — завести `docs/v1.1.md`.
 
-## Следующие шаги (v1.1)
+## Следующие шаги (v1.2)
 
-1. Проверить и довести F8 (см. выше), обновить коммит.
-2. F9 видеоплеер и F11 музыка на Media3 (ExoPlayer + `MediaSessionService`), макеты `VideoPlayer`, `VideoSettings`, `MusicPlayer`, `MusicQueue`: жесты, скорость, субтитры SRT, дорожки, PiP, позиции последних 200 файлов в Room, мини-плеер над навигацией, таймер сна, обложки.
-3. F13 очистка (макет `Cleaner`): дубликаты (размер → хэш краёв 64 КБ → SHA-256), установленные APK, кэш, корзина, большие файлы, анализ папок.
-4. F5.1 групповое переименование, F5.11 архивы с паролем (zip AES — понадобится zip4j или аналог; 7z — commons-compress), F6.6 поиск по содержимому (FTS в Room, индексация при зарядке), F1.5 вкладки.
-5. Обновить `docs/` и `README.md`, итоговый отчёт пользователю.
+1. Прогон 1.1 на устройствах по разделу 12 ТЗ (особенно видео, PiP, музыка в фоне, уведомление, гарнитура, очистка кэша системным диалогом).
+2. F16 сеть (SMB 2/3, SFTP, FTP/FTPS, WebDAV) через `StorageProvider`, S1–S5 (Keystore, TOFU, TLS, NSC), раздел «Сеть» в навигации, макеты 08, 09.
+3. Видео из сети: локальный прокси с токеном (S8), позиции уже хранятся по пути.
+4. F17 «Доступ с ПК».
+5. Обновить `docs/` (завести `v1.2.md`) и `README.md`.
 
 ## Договорённости с пользователем
 

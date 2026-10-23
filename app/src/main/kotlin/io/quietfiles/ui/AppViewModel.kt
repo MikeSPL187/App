@@ -7,6 +7,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.quietfiles.R
 import io.quietfiles.core.data.repository.SettingsRepository
+import io.quietfiles.core.data.repository.WindowsRepository
+import io.quietfiles.core.model.OpenWindows
+import io.quietfiles.core.storage.StorageVolumes
+import io.quietfiles.core.model.WindowPlace
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import io.quietfiles.core.model.ConflictChoice
 import io.quietfiles.core.model.ConflictDecision
 import io.quietfiles.core.model.FileNames
@@ -50,7 +56,32 @@ class AppViewModel @Inject constructor(
     val viewerSessions: ViewerSessions,
     /** Музыка играет поверх любого раздела: мини-плеер над навигацией (F11.3). */
     val music: MusicPlayer,
+    private val windowsRepository: WindowsRepository,
+    val volumes: StorageVolumes,
 ) : ViewModel() {
+
+    /** Открытые окна обзора (F1.5). */
+    val windows: StateFlow<OpenWindows> = windowsRepository.windows.stateIn(viewModelScope, SharingStarted.Eagerly, OpenWindows.Initial)
+
+    fun reportPlace(place: WindowPlace) {
+        if (windows.value.current.place != place) viewModelScope.launch { windowsRepository.update { it.moveCurrent(place) } }
+    }
+
+    fun selectWindow(id: Long) {
+        viewModelScope.launch { windowsRepository.update { it.select(id) } }
+    }
+
+    /** Закрывает окно и возвращает место, которое стало текущим. */
+    suspend fun closeWindow(id: Long): WindowPlace {
+        var place = WindowPlace.Root
+        windowsRepository.update { w -> w.close(id).also { place = it.current.place } }
+        return place
+    }
+
+    fun openWindow() {
+        viewModelScope.launch { windowsRepository.update { it.open() } }
+    }
+
 
     val operations: StateFlow<List<OperationSnapshot>> = queue.operations
     val hasActiveOperations: StateFlow<Boolean> = queue.hasActive

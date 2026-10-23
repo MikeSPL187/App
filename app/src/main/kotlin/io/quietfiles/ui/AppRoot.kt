@@ -60,6 +60,9 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.rememberUpdatedState
 import io.quietfiles.core.designsystem.component.FileOpener
 import io.quietfiles.core.designsystem.component.LocalFileOpener
+import io.quietfiles.core.designsystem.component.LocalWindows
+import io.quietfiles.core.designsystem.component.WindowsController
+import io.quietfiles.core.model.WindowPlace
 import io.quietfiles.core.model.FileCategory
 import io.quietfiles.feature.editor.EditorRoute
 import io.quietfiles.feature.editor.editorScreen
@@ -123,6 +126,8 @@ fun AppRoot(
     val hasActive by viewModel.hasActiveOperations.collectAsStateWithLifecycle()
     val music by viewModel.music.state.collectAsStateWithLifecycle()
     val musicActive = music.active
+    val windows by viewModel.windows.collectAsStateWithLifecycle()
+    var showWindows by rememberSaveable { mutableStateOf(false) }
     var showOperations by rememberSaveable { mutableStateOf(false) }
     var selectionMode by remember { mutableStateOf(false) }
     var onboardingVisible by rememberSaveable { mutableStateOf(!settings.onboardingDone && !StorageAccess.hasAllFilesAccess()) }
@@ -235,7 +240,27 @@ fun AppRoot(
     val showNav = !fullScreen && !selectionMode
     val openMusic: () -> Unit = { nav.navigate(MusicRoute) { launchSingleTop = true } }
 
-    CompositionLocalProvider(LocalFileOpener provides fileOpener) {
+    // Окна обзора (F1.5): место запоминается, только пока пользователь в разделе «Обзор».
+    // Раздел меняют кнопки навигации, а корни разделов на экране это подтверждают.
+    var browseSection by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(destination) {
+        when {
+            destination?.hasRoute(StorageRootRoute::class) == true -> browseSection = true
+            destination?.hasRoute(HomeRoute::class) == true || destination?.hasRoute(CleanerRoute::class) == true -> browseSection = false
+        }
+    }
+    val inBrowse by rememberUpdatedState(browseSection)
+    val goTo: (Any) -> Unit = { route ->
+        browseSection = route == StorageRootRoute
+        nav.navigateTopLevel(route)
+    }
+    val windowsController = WindowsController(
+        count = windows.windows.size,
+        onShow = { showWindows = true },
+        onPlace = { place -> if (inBrowse) viewModel.reportPlace(place) },
+    )
+
+    CompositionLocalProvider(LocalFileOpener provides fileOpener, LocalWindows provides windowsController) {
         BoxWithConstraints(Modifier.fillMaxSize()) {
             val wide = maxWidth >= 600.dp
             Scaffold(
@@ -256,7 +281,7 @@ fun AppRoot(
                                         val selected = destination?.hierarchy?.any { it.hasRoute(item.routeClass) } == true
                                         NavigationBarItem(
                                             selected = selected,
-                                            onClick = { nav.navigateTopLevel(item.route) },
+                                            onClick = { goTo(item.route) },
                                             icon = { Icon(item.icon, contentDescription = null) },
                                             label = { Text(stringResource(item.label)) },
                                         )
@@ -275,7 +300,7 @@ fun AppRoot(
                                 val selected = destination?.hierarchy?.any { it.hasRoute(item.routeClass) } == true
                                 NavigationRailItem(
                                     selected = selected,
-                                    onClick = { nav.navigateTopLevel(item.route) },
+                                    onClick = { goTo(item.route) },
                                     icon = { Icon(item.icon, contentDescription = null) },
                                     label = { Text(stringResource(item.label)) },
                                 )
@@ -301,6 +326,33 @@ fun AppRoot(
             }
         }
 
+    }
+
+    if (showWindows) {
+        WindowsSheet(
+            windows = windows,
+            volumeFor = viewModel.volumes::volumeFor,
+            onSelect = { window ->
+                showWindows = false
+                viewModel.selectWindow(window.id)
+                browseSection = true
+                nav.openPlace(window.place)
+            },
+            onClose = { window ->
+                scope.launch {
+                    val wasCurrent = window.id == windows.currentId
+                    val next = viewModel.closeWindow(window.id)
+                    if (wasCurrent && inBrowse) nav.openPlace(next)
+                }
+            },
+            onNew = {
+                showWindows = false
+                viewModel.openWindow()
+                browseSection = true
+                nav.openPlace(WindowPlace.Root)
+            },
+            onDismiss = { showWindows = false },
+        )
     }
 
     if (showOperations) {
@@ -384,6 +436,20 @@ private fun AppNavHost(
             onShowInBrowser = { nav.navigate(BrowseRoute(SourceKind.FOLDER, it)) },
         )
     }
+}
+
+/**
+ * Открывает место окна (F1.5) в разделе «Обзор»: стек раздела начинается заново — со списка хранилищ
+ * и, если окно не на нём, с нужной папки, архива или библиотеки.
+ */
+private fun NavHostController.openPlace(place: WindowPlace) {
+    navigate(StorageRootRoute) {
+        popUpTo(graph.findStartDestination().id)
+        launchSingleTop = true
+    }
+    if (place.kind == WindowPlace.ROOT) return
+    val kind = runCatching { SourceKind.valueOf(place.kind) }.getOrNull() ?: return
+    navigate(BrowseRoute(kind, place.path, place.inner))
 }
 
 /** Переход между разделами без накопления стека: каждый раздел помнит своё состояние. */

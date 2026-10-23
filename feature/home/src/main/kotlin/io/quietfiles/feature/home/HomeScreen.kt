@@ -50,6 +50,7 @@ import io.quietfiles.core.designsystem.component.FileTile
 import io.quietfiles.core.designsystem.component.Formatters
 import io.quietfiles.core.designsystem.component.SectionTitle
 import io.quietfiles.core.designsystem.component.SegmentedBar
+import io.quietfiles.core.designsystem.component.WindowsButton
 import io.quietfiles.core.designsystem.component.rememberFormatters
 import io.quietfiles.core.designsystem.icon.QfIcons
 import io.quietfiles.core.designsystem.theme.QfTheme
@@ -84,6 +85,8 @@ fun HomeScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.home_title), style = MaterialTheme.typography.headlineMedium) },
                 actions = {
+                    // «Открытые окна» со счётчиком — как в макете 01 (F1.5).
+                    WindowsButton()
                     IconButton(onClick = onSettings) {
                         Icon(QfIcons.Settings, contentDescription = stringResource(R.string.home_settings))
                     }

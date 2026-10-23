@@ -420,6 +420,32 @@ class AppSmokeTest {
         snapshot("49_content_search")
     }
 
+    @Test
+    fun windowsKeepTheirPlaces() {
+        grantAllFilesAccess()
+        scenario = ActivityScenario.launch(MainActivity::class.java)
+        clickText("Обзор")
+        clickText("Внутренняя память")
+        clickText("Download")
+        waitForText("photo_2026.jpg")
+
+        // Второе окно — с другой папкой; первое помнит «Download».
+        compose.onNodeWithContentDescription("Открытые окна: 1").performClick()
+        clickText("Новое окно")
+        clickText("Внутренняя память")
+        clickText("Documents")
+        waitForText("План.txt")
+        compose.onNodeWithContentDescription("Открытые окна: 2").performClick()
+        waitForText("Открытые окна")
+        snapshot("50_windows")
+        clickText("Download")
+        waitForText("photo_2026.jpg")
+
+        clickText("Главная")
+        compose.onNodeWithContentDescription("Открытые окна: 2").assertExists()
+        snapshot("51_home_windows")
+    }
+
     private fun copyResource(name: String, target: File) {
         target.parentFile!!.mkdirs()
         javaClass.classLoader!!.getResourceAsStream(name)!!.use { input -> target.outputStream().use { input.copyTo(it) } }
