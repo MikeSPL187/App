@@ -24,7 +24,7 @@ import io.quietfiles.core.storage.StorageProvider
 import io.quietfiles.core.storage.StorageVolumes
 import io.quietfiles.core.common.displayPath
 import io.quietfiles.feature.viewer.R
-import io.quietfiles.feature.viewer.ViewerSessions
+import io.quietfiles.core.common.ViewerSessions
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel

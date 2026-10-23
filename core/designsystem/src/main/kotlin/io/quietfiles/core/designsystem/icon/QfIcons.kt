@@ -97,6 +97,29 @@ object QfIcons {
     val Usb by lazy { stroke("Usb", "M12 3v14 M12 3l-2 3h4z M8 9v3l4 3 M16 8v3l-4 3 M7 8h2v1H7z M15 7h2v1h-2z M12 17a2 2 0 1 1 0 4a2 2 0 0 1 0-4z") }
     val Phone by lazy { stroke("Phone", "M8 3h8a1.5 1.5 0 0 1 1.5 1.5v15A1.5 1.5 0 0 1 16 21H8a1.5 1.5 0 0 1-1.5-1.5v-15A1.5 1.5 0 0 1 8 3z M11 18h2") }
 
+    // Плееры (макеты 20–23)
+    val Sun by lazy { stroke("Sun", "M12 8a4 4 0 1 1 0 8a4 4 0 0 1 0-8z M12 2.5v2 M12 19.5v2 M2.5 12h2 M19.5 12h2 M5.3 5.3l1.4 1.4 M17.3 17.3l1.4 1.4 M5.3 18.7l1.4-1.4 M17.3 6.7l1.4-1.4", width = 1.9f) }
+    val Volume by lazy { stroke("Volume", "M4 9.5h3.5L12 5.5v13l-4.5-4H4z M15.5 9a4 4 0 0 1 0 6 M18 6.5a7.5 7.5 0 0 1 0 11", width = 1.9f) }
+    val VolumeOff by lazy { stroke("VolumeOff", "M4 9.5h3.5L12 5.5v13l-4.5-4H4z M16 10l4 4 M20 10l-4 4", width = 1.9f) }
+    val Rewind by lazy { stroke("Rewind", "M5 12a7 7 0 1 0 2.1-5 M7 3.5V7h3.5", width = 1.6f) }
+    val Forward by lazy { stroke("Forward", "M19 12a7 7 0 1 1-2.1-5 M17 3.5V7h-3.5", width = 1.6f) }
+    val Subtitles by lazy { stroke("Subtitles", "M4 6h16v12H4z M10.5 10.5a2 2 0 1 0 0 3 M16.5 10.5a2 2 0 1 0 0 3") }
+    val AudioTrack by lazy { stroke("AudioTrack", "M4 10v4 M8 7v10 M12 4v16 M16 8v8 M20 11v2") }
+    val PictureInPicture by lazy { stroke("PictureInPicture", "M3 5h18v14H3z M12 12h7v5h-7z") }
+    val Fit by lazy { stroke("Fit", "M4 9V4h5 M15 4h5v5 M20 15v5h-5 M9 20H4v-5") }
+    val ScreenRotation by lazy { stroke("ScreenRotation", "M4 12a8 8 0 1 0 2.4-5.7L4 8.6 M4 4v4.6h4.6") }
+    val PauseFilled by lazy { filled("PauseFilled", "M7.2 5h3a1.2 1.2 0 0 1 1.2 1.2v11.6a1.2 1.2 0 0 1-1.2 1.2h-3A1.2 1.2 0 0 1 6 17.8V6.2A1.2 1.2 0 0 1 7.2 5z M15 5h1.8A1.2 1.2 0 0 1 18 6.2v11.6a1.2 1.2 0 0 1-1.2 1.2H15a1.2 1.2 0 0 1-1.2-1.2V6.2A1.2 1.2 0 0 1 15 5z") }
+    val SkipNext by lazy { filled("SkipNext", "M6 6l9 6-9 6z M17.2 6h1.6v12h-1.6z") }
+    val SkipPrevious by lazy { filled("SkipPrevious", "M18 6l-9 6 9 6z M5.2 6h1.6v12H5.2z") }
+    val Shuffle by lazy { stroke("Shuffle", "M4 7h3.5l9 10H20 M4 17h3.5l2.5-2.8 M14 9.8L16.5 7H20 M17.5 4.5L20 7l-2.5 2.5 M17.5 14.5L20 17l-2.5 2.5") }
+    val Repeat by lazy { stroke("Repeat", "M5 11V9.5A2.5 2.5 0 0 1 7.5 7H19 M16.5 4.5L19 7l-2.5 2.5 M19 13v1.5a2.5 2.5 0 0 1-2.5 2.5H5 M7.5 19.5L5 17l2.5-2.5") }
+    val Equalizer by lazy { stroke("Equalizer", "M6 4v16 M12 4v16 M18 4v16 M3.5 14h5 M9.5 8h5 M15.5 16h5") }
+    val Queue by lazy { stroke("Queue", "M4 6h12 M4 12h12 M4 18h8 M18 14v6 M15.5 17.5L18 20l2.5-2.5") }
+    val DragHandle by lazy { stroke("DragHandle", "M5 9h14 M5 15h14", width = 2f) }
+    val Heart by lazy { stroke("Heart", "M12 19.5s-7.5-4.4-7.5-10A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 7.5 2.5c0 5.6-7.5 10-7.5 10z") }
+    val HeartFilled by lazy { filled("HeartFilled", "M12 19.5s-7.5-4.4-7.5-10A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 7.5 2.5c0 5.6-7.5 10-7.5 10z") }
+    val Playing by lazy { filled("Playing", "M6.5 9h0a1.5 1.5 0 0 1 1.5 1.5v7A1.5 1.5 0 0 1 6.5 19h0A1.5 1.5 0 0 1 5 17.5v-7A1.5 1.5 0 0 1 6.5 9z M12 5h0a1.5 1.5 0 0 1 1.5 1.5v11A1.5 1.5 0 0 1 12 19h0a1.5 1.5 0 0 1-1.5-1.5v-11A1.5 1.5 0 0 1 12 5z M17.5 11h0a1.5 1.5 0 0 1 1.5 1.5v5a1.5 1.5 0 0 1-1.5 1.5h0a1.5 1.5 0 0 1-1.5-1.5v-5a1.5 1.5 0 0 1 1.5-1.5z") }
+
     // Категории файлов
     val Image by lazy { stroke("Image", "M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z M4 16l4.5-4.5 4 4 2.5-2.5 5 5 M15.5 8.5h.01") }
     val Video by lazy { stroke("Video", "M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z M10 9.2v5.6l4.6-2.8z") }

@@ -19,6 +19,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTouchInput
 import androidx.test.core.app.ActivityScenario
+import androidx.media3.test.utils.robolectric.ShadowMediaCodecConfig
 import androidx.test.core.app.ApplicationProvider
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
@@ -61,7 +62,10 @@ class AppSmokeTest {
     private val compose = createEmptyComposeRule()
 
     @get:Rule
-    val rules: TestRule = RuleChain.outerRule(hilt).around(compose)
+    val rules: TestRule = RuleChain.outerRule(hilt)
+        // Фейковые декодеры Media3: в Robolectric нет настоящих MediaCodec, а плееру нужно «играть».
+        .around(ShadowMediaCodecConfig.withAllDefaultSupportedCodecs())
+        .around(compose)
 
     @Inject lateinit var settings: SettingsRepository
 
@@ -250,6 +254,57 @@ class AppSmokeTest {
         clickText("YAML · UTF-8 · CRLF")
         waitForText("Кодировка")
         snapshot("22_editor_params")
+    }
+
+    @Test
+    fun videoAndMusicPlayers() {
+        val root = Environment.getExternalStorageDirectory()
+        copyResource("media/sample.mp4", File(root, "Movies/Отпуск_2026_01.mp4"))
+        copyResource("media/sample.mp4", File(root, "Movies/Отпуск_2026_02.mp4"))
+        copyResource("media/sample.srt", File(root, "Movies/Отпуск_2026_01.srt"))
+        copyResource("media/sample.flac", File(root, "Music/Альбом/Утро_live.flac"))
+        copyResource("media/sample.wav", File(root, "Music/Альбом/Демо_v3.wav"))
+        copyResource("media/cover.jpg", File(root, "Music/Альбом/cover.jpg"))
+        grantAllFilesAccess()
+        scenario = ActivityScenario.launch(MainActivity::class.java)
+        clickText("Обзор")
+        clickText("Внутренняя память")
+        clickText("Movies")
+        clickText("Отпуск_2026_01.mp4")
+        waitForText("Далее: Отпуск_2026_02.mp4")
+        waitForImages()
+        snapshot("30_video_player")
+        compose.onNodeWithContentDescription("Субтитры").performClick()
+        waitForText("Настройки воспроизведения")
+        waitForText("Загрузить файл субтитров")
+        snapshot("31_video_settings")
+        // «Назад» из теста приходит в Activity, а не в окно листа, — закрывается сразу плеер.
+        pressBack()
+        waitForText("Отпуск_2026_02.mp4")
+        pressBack()
+
+        clickText("Music")
+        clickText("Альбом")
+        clickText("Утро_live.flac")
+        waitForText("Сейчас играет")
+        waitForText("FLAC · 24 бит / 96 кГц")
+        waitForImages()
+        snapshot("32_music_player")
+        clickText("Очередь · 2")
+        waitForText("Демо_v3.wav")
+        snapshot("33_music_queue")
+        pressBack()
+        waitForText("Сейчас играет")
+        pressBack()
+        // Музыка в очереди — над навигацией появляется мини-плеер.
+        waitForText("Утро_live")
+        compose.onNodeWithContentDescription("Открыть плеер").assertExists()
+        snapshot("34_mini_player")
+    }
+
+    private fun copyResource(name: String, target: File) {
+        target.parentFile!!.mkdirs()
+        javaClass.classLoader!!.getResourceAsStream(name)!!.use { input -> target.outputStream().use { input.copyTo(it) } }
     }
 
     private fun findEditor(view: android.view.View): io.quietfiles.feature.editor.ui.CodeEditText {

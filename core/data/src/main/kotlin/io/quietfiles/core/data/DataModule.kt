@@ -13,6 +13,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.quietfiles.core.data.db.FavoriteDao
 import io.quietfiles.core.data.db.FolderPrefDao
+import io.quietfiles.core.data.db.PlaybackPositionDao
 import io.quietfiles.core.data.db.QfDatabase
 import io.quietfiles.core.data.db.SearchHistoryDao
 import io.quietfiles.core.data.db.TrashDao
@@ -35,4 +36,5 @@ object DataModule {
     @Provides fun searchHistory(db: QfDatabase): SearchHistoryDao = db.searchHistory()
     @Provides fun folderPrefs(db: QfDatabase): FolderPrefDao = db.folderPrefs()
     @Provides fun trash(db: QfDatabase): TrashDao = db.trash()
+    @Provides fun playbackPositions(db: QfDatabase): PlaybackPositionDao = db.playbackPositions()
 }

@@ -60,6 +60,7 @@ dependencies {
     implementation(project(":feature:settings"))
     implementation(project(":feature:editor"))
     implementation(project(":feature:viewer"))
+    implementation(project(":feature:player"))
     implementation(libs.coil.gif)
 
     implementation(libs.androidx.core.ktx)
@@ -78,6 +79,7 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
+    testImplementation(libs.media3.test.utils.robolectric)
     testImplementation(libs.truth)
     testImplementation(libs.androidx.exifinterface)
     testImplementation(libs.hilt.android.testing)

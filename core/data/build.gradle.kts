@@ -6,6 +6,8 @@ plugins {
 
 android {
     namespace = "io.quietfiles.core.data"
+    // Схемы Room нужны тесту миграций.
+    sourceSets.getByName("test").assets.directories.add("$projectDir/schemas")
 }
 
 room {
@@ -21,4 +23,5 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.datastore.preferences)
     testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.room.testing)
 }

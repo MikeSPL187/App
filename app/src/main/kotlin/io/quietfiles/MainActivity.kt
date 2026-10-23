@@ -15,6 +15,7 @@ import io.quietfiles.security.AppLock
 import io.quietfiles.security.LockGate
 import io.quietfiles.security.SecureWindow
 import io.quietfiles.core.operations.OperationService
+import io.quietfiles.feature.player.music.MusicPlayer
 import io.quietfiles.integration.ShortcutSigner
 import io.quietfiles.ui.AppRoot
 import io.quietfiles.ui.LaunchRequest
@@ -27,7 +28,7 @@ class MainActivity : FragmentActivity() {
     @Inject lateinit var settingsRepository: SettingsRepository
     @Inject lateinit var appLock: AppLock
 
-    /** Что открыть по внешнему запросу: ярлык папки или уведомление об операциях. */
+    /** Что открыть по внешнему запросу: ярлык папки, уведомление об операциях или о музыке. */
     private val launchRequest = mutableStateOf<LaunchRequest?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +61,7 @@ class MainActivity : FragmentActivity() {
         when {
             intent.getBooleanExtra(OperationService.EXTRA_SHOW_OPERATIONS, false) ->
                 launchRequest.value = LaunchRequest.ShowOperations
+            intent.action == MusicPlayer.ACTION_OPEN_PLAYER -> launchRequest.value = LaunchRequest.OpenPlayer
             intent.action == ACTION_OPEN_FOLDER -> {
                 // Ярлык на рабочем столе. Принимаем только наш подписанный ярлык и только существующую папку.
                 val path = intent.getStringExtra(EXTRA_PATH)

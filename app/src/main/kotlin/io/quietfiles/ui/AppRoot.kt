@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -37,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -63,6 +65,11 @@ import io.quietfiles.feature.editor.EditorRoute
 import io.quietfiles.feature.editor.editorScreen
 import io.quietfiles.feature.viewer.photo.PhotoRoute
 import io.quietfiles.feature.viewer.viewerScreens
+import io.quietfiles.feature.player.MusicQueueRoute
+import io.quietfiles.feature.player.MusicRoute
+import io.quietfiles.feature.player.music.MiniPlayer
+import io.quietfiles.feature.player.playerScreens
+import io.quietfiles.feature.player.video.VideoRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import io.quietfiles.MainActivity
@@ -110,6 +117,8 @@ fun AppRoot(
     val snackbar = remember { SnackbarHostState() }
     val operations by viewModel.operations.collectAsStateWithLifecycle()
     val hasActive by viewModel.hasActiveOperations.collectAsStateWithLifecycle()
+    val music by viewModel.music.state.collectAsStateWithLifecycle()
+    val musicActive = music.active
     var showOperations by rememberSaveable { mutableStateOf(false) }
     var selectionMode by remember { mutableStateOf(false) }
     var onboardingVisible by rememberSaveable { mutableStateOf(!settings.onboardingDone && !StorageAccess.hasAllFilesAccess()) }
@@ -137,6 +146,14 @@ fun AppRoot(
                     val photos = siblings.filter { it.category == FileCategory.IMAGE }.map { it.path }
                     nav.navigate(PhotoRoute(entry.path, viewModel.viewerSessions.put(photos)))
                 }
+                entry.category == FileCategory.VIDEO -> {
+                    val videos = siblings.filter { it.category == FileCategory.VIDEO }.map { it.path }
+                    nav.navigate(VideoRoute(entry.path, viewModel.viewerSessions.put(videos)))
+                }
+                entry.category == FileCategory.AUDIO -> {
+                    viewModel.music.open(entry, siblings)
+                    nav.navigate(MusicRoute)
+                }
                 else -> return@FileOpener false
             }
             true
@@ -156,6 +173,7 @@ fun AppRoot(
         when (launchRequest) {
             LaunchRequest.ShowOperations -> showOperations = true
             is LaunchRequest.OpenFolder -> nav.navigate(BrowseRoute(SourceKind.FOLDER, launchRequest.path))
+            LaunchRequest.OpenPlayer -> if (musicActive) nav.navigate(MusicRoute) { launchSingleTop = true }
             null -> Unit
         }
         if (launchRequest != null) onLaunchRequestHandled()
@@ -206,9 +224,12 @@ fun AppRoot(
 
     val backStack by nav.currentBackStackEntryAsState()
     val destination = backStack?.destination
-    val fullScreen = listOf(SearchRoute::class, SettingsRoute::class, EditorRoute::class, PhotoRoute::class)
-        .any { destination?.hasRoute(it) == true }
+    val fullScreen = listOf(
+        SearchRoute::class, SettingsRoute::class, EditorRoute::class, PhotoRoute::class,
+        VideoRoute::class, MusicRoute::class, MusicQueueRoute::class,
+    ).any { destination?.hasRoute(it) == true }
     val showNav = !fullScreen && !selectionMode
+    val openMusic: () -> Unit = { nav.navigate(MusicRoute) { launchSingleTop = true } }
 
     CompositionLocalProvider(LocalFileOpener provides fileOpener) {
         BoxWithConstraints(Modifier.fillMaxSize()) {
@@ -219,6 +240,9 @@ fun AppRoot(
                 bottomBar = {
                     if (!wide) {
                         Column {
+                            AnimatedVisibility(visible = musicActive && showNav) {
+                                MiniPlayer(onOpen = openMusic, modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 8.dp))
+                            }
                             AnimatedVisibility(visible = hasActive && !showOperations) {
                                 OperationsPill(operations) { showOperations = true }
                             }
@@ -262,9 +286,10 @@ fun AppRoot(
                             onShowOperations = { showOperations = true },
                             onSelectionModeChange = { selectionMode = it },
                         )
-                        if (wide && hasActive && !showOperations) {
-                            Box(Modifier.navigationBarsPadding()) {
-                                OperationsPill(operations) { showOperations = true }
+                        if (wide && (hasActive && !showOperations || musicActive && showNav)) {
+                            Column(Modifier.align(Alignment.BottomCenter).navigationBarsPadding().widthIn(max = 560.dp)) {
+                                if (musicActive && showNav) MiniPlayer(onOpen = openMusic, modifier = Modifier.padding(12.dp))
+                                if (hasActive && !showOperations) OperationsPill(operations) { showOperations = true }
                             }
                         }
                     }
@@ -317,6 +342,13 @@ private fun AppNavHost(
         viewerScreens(
             onBack = { nav.popBackStack() },
             onOpenFolder = { nav.navigate(BrowseRoute(SourceKind.FOLDER, it)) },
+        )
+        playerScreens(
+            onBack = { nav.popBackStack() },
+            onOpenFolder = { nav.navigate(BrowseRoute(SourceKind.FOLDER, it)) },
+            onOpenQueue = { nav.navigate(MusicQueueRoute) { launchSingleTop = true } },
+            // Из очереди в плеер — назад, если пришли из него, иначе вперёд.
+            onOpenMusic = { if (!nav.popBackStack(MusicRoute, inclusive = false)) nav.navigate(MusicRoute) },
         )
         editorScreen(
             onBack = { nav.popBackStack() },

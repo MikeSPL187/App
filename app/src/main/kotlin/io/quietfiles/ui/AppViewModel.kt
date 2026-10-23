@@ -16,7 +16,8 @@ import io.quietfiles.core.model.OperationStatus
 import io.quietfiles.core.operations.OperationQueue
 import io.quietfiles.core.operations.OperationRequest
 import io.quietfiles.core.operations.destinationPath
-import io.quietfiles.feature.viewer.ViewerSessions
+import io.quietfiles.core.common.ViewerSessions
+import io.quietfiles.feature.player.music.MusicPlayer
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,6 +29,7 @@ import javax.inject.Inject
 sealed interface LaunchRequest {
     data object ShowOperations : LaunchRequest
     data class OpenFolder(val path: String) : LaunchRequest
+    data object OpenPlayer : LaunchRequest
 }
 
 /** Сообщение внизу экрана после операции: «2 объекта в корзине · Вернуть». */
@@ -46,6 +48,8 @@ class AppViewModel @Inject constructor(
     private val settings: SettingsRepository,
     /** Списки соседних файлов для просмотрщиков: открываются из любого раздела. */
     val viewerSessions: ViewerSessions,
+    /** Музыка играет поверх любого раздела: мини-плеер над навигацией (F11.3). */
+    val music: MusicPlayer,
 ) : ViewModel() {
 
     val operations: StateFlow<List<OperationSnapshot>> = queue.operations

@@ -1,4 +1,4 @@
-package io.quietfiles.feature.viewer
+package io.quietfiles.core.common
 
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -1,5 +1,6 @@
 package io.quietfiles.core.data.db
 
+import androidx.room.AutoMigration
 import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Entity
@@ -46,6 +47,33 @@ data class TrashEntity(
     val size: Long,
     val deletedAt: Long,
 )
+
+/** Место, где остановили видео или длинную запись (F9.5), для последних 200 файлов. */
+@Entity(tableName = "playback_positions", indices = [Index("updatedAt")])
+data class PlaybackPositionEntity(
+    @PrimaryKey val path: String,
+    val positionMs: Long,
+    val durationMs: Long,
+    val updatedAt: Long,
+)
+
+@Dao
+interface PlaybackPositionDao {
+    @Query("SELECT * FROM playback_positions WHERE path = :path")
+    suspend fun get(path: String): PlaybackPositionEntity?
+
+    @Upsert
+    suspend fun upsert(entity: PlaybackPositionEntity)
+
+    @Query("DELETE FROM playback_positions WHERE path = :path")
+    suspend fun delete(path: String)
+
+    @Query("DELETE FROM playback_positions WHERE path NOT IN (SELECT path FROM playback_positions ORDER BY updatedAt DESC LIMIT :keep)")
+    suspend fun trim(keep: Int)
+
+    @Query("SELECT COUNT(*) FROM playback_positions")
+    suspend fun count(): Int
+}
 
 @Dao
 interface FavoriteDao {
@@ -114,13 +142,18 @@ interface TrashDao {
 }
 
 @Database(
-    entities = [FavoriteEntity::class, SearchHistoryEntity::class, FolderPrefEntity::class, TrashEntity::class],
-    version = 1,
+    entities = [
+        FavoriteEntity::class, SearchHistoryEntity::class, FolderPrefEntity::class, TrashEntity::class,
+        PlaybackPositionEntity::class,
+    ],
+    version = 2,
     exportSchema = true,
+    autoMigrations = [AutoMigration(from = 1, to = 2)],
 )
 abstract class QfDatabase : RoomDatabase() {
     abstract fun favorites(): FavoriteDao
     abstract fun searchHistory(): SearchHistoryDao
     abstract fun folderPrefs(): FolderPrefDao
     abstract fun trash(): TrashDao
+    abstract fun playbackPositions(): PlaybackPositionDao
 }

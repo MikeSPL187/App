@@ -1,8 +1,6 @@
 package io.quietfiles.feature.viewer.photo
 
-import android.app.Activity
 import android.content.ActivityNotFoundException
-import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -40,7 +38,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -62,15 +59,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import io.quietfiles.core.designsystem.component.ImmersiveMode
 import io.quietfiles.core.designsystem.component.rememberFormatters
 import io.quietfiles.core.designsystem.icon.QfIcons
 import io.quietfiles.core.model.FileEntry
@@ -302,30 +297,6 @@ private fun ThumbnailStrip(state: PhotoUiState, onSelect: (Int) -> Unit) {
                     .semantics { contentDescription = label },
             ) { PhotoImage(photo, state.versions[photo.path], full = false) }
         }
-    }
-}
-
-/** Полноэкранный режим: без интерфейса прячем и системные панели. */
-@Composable
-private fun ImmersiveMode(hidden: Boolean) {
-    val activity: Activity = LocalActivity.current ?: return
-    val controller = remember(activity) { WindowCompat.getInsetsController(activity.window, activity.window.decorView) }
-    // Белые значки системных панелей на чёрном фоне; при выходе возвращаем как было.
-    DisposableEffect(controller) {
-        val lightStatus = controller.isAppearanceLightStatusBars
-        val lightNavigation = controller.isAppearanceLightNavigationBars
-        controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        controller.isAppearanceLightStatusBars = false
-        controller.isAppearanceLightNavigationBars = false
-        onDispose {
-            controller.show(WindowInsetsCompat.Type.systemBars())
-            controller.isAppearanceLightStatusBars = lightStatus
-            controller.isAppearanceLightNavigationBars = lightNavigation
-        }
-    }
-    DisposableEffect(hidden) {
-        if (hidden) controller.hide(WindowInsetsCompat.Type.systemBars()) else controller.show(WindowInsetsCompat.Type.systemBars())
-        onDispose { }
     }
 }
 

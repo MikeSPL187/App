@@ -1,4 +1,4 @@
-package io.quietfiles.feature.viewer
+package io.quietfiles.core.common
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
