@@ -52,4 +52,6 @@
     <string name="privacy_2">Files are shown and changed only when you ask. They leave the device only when you share them with another app.</string>
     <string name="privacy_3">“All files access” is used to show and manage files in every folder. You can revoke it in system settings at any time.</string>
     <string name="privacy_4">Settings, favorites and search history are stored in the app and removed when you uninstall it.</string>
+    <string name="settings_tap_icon">Select by tapping the icon</string>
+    <string name="settings_tap_icon_hint">Otherwise selection starts with a long press</string>
 </resources>

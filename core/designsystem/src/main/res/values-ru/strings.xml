@@ -2,4 +2,5 @@
 <resources>
     <string name="ds_file_actions">Действия с файлом</string>
     <string name="ds_new_badge">Новый</string>
+    <string name="ds_select">Выбрать</string>
 </resources>

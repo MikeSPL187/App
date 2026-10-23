@@ -15,6 +15,8 @@ data class UserSettings(
     val useTrash: Boolean = true,
     val trashRetentionDays: Int = 30,
     val confirmDelete: Boolean = true,
+    /** Касание значка файла выбирает его (F4.1). */
+    val tapIconToSelect: Boolean = true,
     /** Вход по отпечатку, лицу или PIN-коду устройства (F14, S11). */
     val appLock: Boolean = false,
     /** Не показывать содержимое в списке недавних и на снимках экрана (FLAG_SECURE). */

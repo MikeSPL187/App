@@ -2,4 +2,5 @@
 <resources>
     <string name="ds_file_actions">File actions</string>
     <string name="ds_new_badge">New</string>
+    <string name="ds_select">Select</string>
 </resources>

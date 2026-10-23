@@ -33,6 +33,7 @@ class SettingsRepository @Inject constructor(
         val useTrash = booleanPreferencesKey("use_trash")
         val trashDays = intPreferencesKey("trash_retention_days")
         val confirmDelete = booleanPreferencesKey("confirm_delete")
+        val tapIcon = booleanPreferencesKey("tap_icon_to_select")
         val appLock = booleanPreferencesKey("app_lock")
         val secureScreen = booleanPreferencesKey("secure_screen")
         val stripLocation = booleanPreferencesKey("strip_location_on_share")
@@ -55,6 +56,7 @@ class SettingsRepository @Inject constructor(
             useTrash = p[Keys.useTrash] ?: d.useTrash,
             trashRetentionDays = p[Keys.trashDays] ?: d.trashRetentionDays,
             confirmDelete = p[Keys.confirmDelete] ?: d.confirmDelete,
+            tapIconToSelect = p[Keys.tapIcon] ?: d.tapIconToSelect,
             appLock = p[Keys.appLock] ?: d.appLock,
             secureScreen = p[Keys.secureScreen] ?: d.secureScreen,
             stripLocationOnShare = p[Keys.stripLocation] ?: d.stripLocationOnShare,
@@ -92,6 +94,9 @@ class SettingsRepository @Inject constructor(
     }
     suspend fun setConfirmDelete(enabled: Boolean) {
         store.edit { it[Keys.confirmDelete] = enabled }
+    }
+    suspend fun setTapIconToSelect(enabled: Boolean) {
+        store.edit { it[Keys.tapIcon] = enabled }
     }
     suspend fun setAppLock(enabled: Boolean) {
         store.edit { it[Keys.appLock] = enabled }

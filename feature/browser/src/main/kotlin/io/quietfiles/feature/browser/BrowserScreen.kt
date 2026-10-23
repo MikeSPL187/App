@@ -679,6 +679,10 @@ private fun ItemRow(
         onClick = { onOpen(item) },
         onLongClick = { onLongPress(item) },
         onMoreClick = { onMore(item) },
+        // Вне выбора долгое нажатие на невыбранный элемент — это ровно переключение; в выборе касание переключает.
+        onTileClick = if (state.tapIconToSelect || state.selectionMode) {
+            { if (state.selectionMode) onOpen(item) else onLongPress(item) }
+        } else null,
     )
 }
 

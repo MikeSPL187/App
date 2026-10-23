@@ -3,6 +3,7 @@ package io.quietfiles.core.designsystem.component
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -58,6 +59,8 @@ fun FileListItem(
     onClick: () -> Unit,
     onLongClick: (() -> Unit)? = null,
     onMoreClick: (() -> Unit)? = null,
+    /** Касание значка: выбор без долгого нажатия (F4.1). `null` — значок ведёт себя как вся строка. */
+    onTileClick: (() -> Unit)? = null,
 ) {
     val colors = MaterialTheme.colorScheme
     Row(
@@ -74,7 +77,18 @@ fun FileListItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        FileTile(category = category, path = path, size = if (compact) 36.dp else 40.dp)
+        FileTile(
+            category = category,
+            path = path,
+            size = if (compact) 36.dp else 40.dp,
+            modifier = if (onTileClick != null) {
+                Modifier.clip(MaterialTheme.shapes.medium).clickable(
+                    onClickLabel = stringResource(R.string.ds_select),
+                    role = Role.Checkbox,
+                    onClick = onTileClick,
+                )
+            } else Modifier,
+        )
         Column(modifier = Modifier.weight(1f).padding(vertical = 8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(

@@ -188,6 +188,9 @@ fun SettingsScreen(
                     SwitchRow(stringResource(R.string.settings_confirm_delete), null, s.confirmDelete) {
                         viewModel.update { setConfirmDelete(it) }
                     }
+                    SwitchRow(stringResource(R.string.settings_tap_icon), stringResource(R.string.settings_tap_icon_hint), s.tapIconToSelect) {
+                        viewModel.update { setTapIconToSelect(it) }
+                    }
                 }
             }
 

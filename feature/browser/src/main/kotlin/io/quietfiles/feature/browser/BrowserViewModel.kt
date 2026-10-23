@@ -85,6 +85,7 @@ data class BrowserUiState(
     val useTrash: Boolean,
     val confirmDelete: Boolean,
     val trashRetentionDays: Int,
+    val tapIconToSelect: Boolean = true,
 ) {
     val items: List<BrowserItem> get() = (load as? LoadState.Ready)?.items.orEmpty()
     val selectedItems: List<BrowserItem> get() = items.filter { it.entry.path in selection }
@@ -198,6 +199,7 @@ class BrowserViewModel @Inject constructor(
             useTrash = s.useTrash,
             confirmDelete = s.confirmDelete,
             trashRetentionDays = s.trashRetentionDays,
+            tapIconToSelect = s.tapIconToSelect,
         )
     }.stateIn(
         viewModelScope,
