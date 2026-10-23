@@ -76,6 +76,7 @@ import io.quietfiles.core.model.ViewMode
 /** Что открыто поверх экрана. */
 private sealed interface Overlay {
     data class ItemActions(val item: BrowserItem) : Overlay
+    data class BatchRename(val items: List<BrowserItem>) : Overlay
     data object Sort : Overlay
     data class Name(val mode: NameMode, val target: List<BrowserItem> = emptyList()) : Overlay
     data class Delete(val items: List<BrowserItem>, val forever: Boolean) : Overlay
@@ -210,7 +211,13 @@ fun BrowserScreen(
                         onExtract = { intoFolder ->
                             viewModel.extract(state.location.path, state.selectedItems.mapNotNull { it.archivePath }, intoFolder)
                         },
+                        onRename = {
+                            val items = state.selectedItems
+                            overlay = if (items.size == 1) Overlay.Name(NameMode.RENAME, items) else Overlay.BatchRename(items)
+                        },
+                        onProperties = { viewModel.showProperties(state.selectedItems.map { it.entry }) },
                     ),
+                    moreLabel = stringResource(R.string.action_more),
                 )
                 state.canPaste -> state.clipboard?.let { clip ->
                     PasteBar(
@@ -287,6 +294,15 @@ fun BrowserScreen(
                     ItemAction.DELETE_FOREVER -> overlay = Overlay.Delete(list, forever = true)
                 }
             },
+        )
+        is Overlay.BatchRename -> BatchRenameSheet(
+            entries = o.items.map { it.entry },
+            folderNames = state.items.map { it.entry.name }.toSet(),
+            onRename = { previews ->
+                overlay = null
+                viewModel.batchRename(previews)
+            },
+            onDismiss = { overlay = null },
         )
         Overlay.Sort -> SortSheet(
             sort = state.sort,
@@ -734,6 +750,8 @@ private fun selectionActions(
     onRestore: () -> Unit,
     onDeleteForever: () -> Unit,
     onExtract: (intoFolder: Boolean) -> Unit,
+    onRename: () -> Unit,
+    onProperties: () -> Unit,
 ): List<ToolbarAction> = when (state.location.kind) {
     SourceKind.TRASH -> listOf(
         ToolbarAction(stringResource(R.string.action_restore), QfIcons.Restore, onClick = onRestore),
@@ -753,6 +771,9 @@ private fun selectionActions(
         ToolbarAction(stringResource(R.string.action_share), QfIcons.Share, enabled = state.selectedItems.any { !it.entry.isDirectory }, onClick = onShare),
         ToolbarAction(stringResource(R.string.action_compress), QfIcons.Compress, onClick = onCompress),
         ToolbarAction(stringResource(R.string.action_delete), QfIcons.Trash, destructive = true, onClick = onDelete),
+        // В «Ещё» (F4.3): переименование — одного файла или группы (F5.1), свойства.
+        ToolbarAction(stringResource(R.string.action_rename), QfIcons.Rename, enabled = state.location.kind == SourceKind.FOLDER, onClick = onRename),
+        ToolbarAction(stringResource(R.string.action_properties), QfIcons.Info, onClick = onProperties),
     )
 }
 

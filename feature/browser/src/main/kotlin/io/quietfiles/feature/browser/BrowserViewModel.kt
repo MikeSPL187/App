@@ -14,6 +14,7 @@ import io.quietfiles.core.data.repository.FolderPrefsRepository
 import io.quietfiles.core.data.repository.SettingsRepository
 import io.quietfiles.core.model.FileEntry
 import io.quietfiles.core.model.FileNames
+import io.quietfiles.core.model.RenamePreview
 import io.quietfiles.core.model.ListDensity
 import io.quietfiles.core.model.SortField
 import io.quietfiles.core.model.SortOrder
@@ -24,6 +25,7 @@ import io.quietfiles.core.operations.ArchiveTools
 import io.quietfiles.core.operations.ClipboardContent
 import io.quietfiles.core.operations.ErrorMessages
 import io.quietfiles.core.operations.FileClipboard
+import io.quietfiles.core.operations.BatchRenamer
 import io.quietfiles.core.operations.OperationQueue
 import io.quietfiles.core.operations.OperationRequest
 import io.quietfiles.core.operations.TrashManager
@@ -138,6 +140,7 @@ class BrowserViewModel @Inject constructor(
     private val archives: ArchiveTools,
     private val mediaIndex: MediaIndex,
     private val locationStripper: LocationStripper,
+    private val batchRenamer: BatchRenamer,
 ) : ViewModel() {
 
     private val route = savedStateHandle.toRoute<BrowseRoute>()
@@ -465,6 +468,21 @@ class BrowserViewModel @Inject constructor(
             } catch (e: Exception) {
                 message(ErrorMessages.of(context, e))
             }
+            refresh()
+        }
+        clearSelection()
+    }
+
+    /** Групповое переименование (F5.1) по готовому предпросмотру. */
+    fun batchRename(previews: List<RenamePreview>) {
+        viewModelScope.launch {
+            val result = batchRenamer.rename(previews)
+            result.renamed.forEach { (from, to) -> favoritesRepository.onMoved(from, to, FileNames.nameOf(to)) }
+            mediaIndex.notifyChanged(result.renamed.flatMap { listOf(it.first, it.second) })
+            message(
+                result.error?.let { ErrorMessages.of(context, it) }
+                    ?: context.resources.getQuantityString(R.plurals.browser_batch_renamed, result.renamed.size, result.renamed.size),
+            )
             refresh()
         }
         clearSelection()

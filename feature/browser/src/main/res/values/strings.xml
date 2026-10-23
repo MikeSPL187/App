@@ -194,4 +194,42 @@
     <string name="extract_bomb_confirm">Extract</string>
     <string name="browser_share_location_failed">Couldn’t remove location from the photo, so it wasn’t shared. You can turn this off in Settings.</string>
     <string name="action_open_as_text">Open as text</string>
+    <string name="batch_rename_template">Name template</string>
+    <string name="batch_rename_tag_name">Name</string>
+    <string name="batch_rename_tag_number">Number</string>
+    <string name="batch_rename_tag_date">Date</string>
+    <string name="batch_rename_start">Start at</string>
+    <string name="batch_rename_step">Step</string>
+    <string name="batch_rename_digits">Digits</string>
+    <string name="batch_rename_find">Find</string>
+    <string name="batch_rename_replace">Replace with</string>
+    <string name="batch_rename_match_case">Match case</string>
+    <string name="batch_rename_regex">Regular expression</string>
+    <string name="batch_rename_case_keep">Keep</string>
+    <string name="batch_rename_case_lower">abc</string>
+    <string name="batch_rename_case_upper">ABC</string>
+    <string name="batch_rename_case_title">Abc</string>
+    <string name="batch_rename_preview">Preview</string>
+    <string name="batch_rename_fix_problems">Fix names with problems</string>
+    <string name="batch_rename_problem_empty">Empty name</string>
+    <string name="batch_rename_problem_invalid">Invalid characters or name too long</string>
+    <string name="batch_rename_problem_duplicate">Several files would get this name</string>
+    <string name="batch_rename_problem_exists">A file with this name already exists</string>
+    <string name="batch_rename_problem_pattern">Invalid regular expression</string>
+    <plurals name="batch_rename_title">
+        <item quantity="one">Rename %d item</item>
+        <item quantity="other">Rename %d items</item>
+    </plurals>
+    <plurals name="batch_rename_action">
+        <item quantity="one">Rename %d</item>
+        <item quantity="other">Rename %d</item>
+    </plurals>
+    <plurals name="batch_rename_more">
+        <item quantity="one">and %d more</item>
+        <item quantity="other">and %d more</item>
+    </plurals>
+    <plurals name="browser_batch_renamed">
+        <item quantity="one">%d item renamed</item>
+        <item quantity="other">%d items renamed</item>
+    </plurals>
 </resources>

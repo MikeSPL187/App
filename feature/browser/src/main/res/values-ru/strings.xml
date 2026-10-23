@@ -206,4 +206,50 @@
     <string name="extract_bomb_confirm">Распаковать</string>
     <string name="browser_share_location_failed">Не удалось убрать геоданные из фото, поэтому оно не отправлено. Это можно отключить в настройках.</string>
     <string name="action_open_as_text">Открыть как текст</string>
+    <string name="batch_rename_template">Шаблон имени</string>
+    <string name="batch_rename_tag_name">Имя</string>
+    <string name="batch_rename_tag_number">Номер</string>
+    <string name="batch_rename_tag_date">Дата</string>
+    <string name="batch_rename_start">Начать с</string>
+    <string name="batch_rename_step">Шаг</string>
+    <string name="batch_rename_digits">Цифр</string>
+    <string name="batch_rename_find">Найти</string>
+    <string name="batch_rename_replace">Заменить на</string>
+    <string name="batch_rename_match_case">С учётом регистра</string>
+    <string name="batch_rename_regex">Регулярное выражение</string>
+    <string name="batch_rename_case_keep">Как есть</string>
+    <string name="batch_rename_case_lower">абв</string>
+    <string name="batch_rename_case_upper">АБВ</string>
+    <string name="batch_rename_case_title">Абв</string>
+    <string name="batch_rename_preview">Предпросмотр</string>
+    <string name="batch_rename_fix_problems">Исправьте имена с ошибками</string>
+    <string name="batch_rename_problem_empty">Пустое имя</string>
+    <string name="batch_rename_problem_invalid">Недопустимые символы или слишком длинное имя</string>
+    <string name="batch_rename_problem_duplicate">Такое имя получится у нескольких файлов</string>
+    <string name="batch_rename_problem_exists">В папке уже есть файл с таким именем</string>
+    <string name="batch_rename_problem_pattern">Ошибка в регулярном выражении</string>
+    <plurals name="batch_rename_title">
+        <item quantity="one">Переименовать %d объект</item>
+        <item quantity="few">Переименовать %d объекта</item>
+        <item quantity="many">Переименовать %d объектов</item>
+        <item quantity="other">Переименовать %d объекта</item>
+    </plurals>
+    <plurals name="batch_rename_action">
+        <item quantity="one">Переименовать %d</item>
+        <item quantity="few">Переименовать %d</item>
+        <item quantity="many">Переименовать %d</item>
+        <item quantity="other">Переименовать %d</item>
+    </plurals>
+    <plurals name="batch_rename_more">
+        <item quantity="one">и ещё %d</item>
+        <item quantity="few">и ещё %d</item>
+        <item quantity="many">и ещё %d</item>
+        <item quantity="other">и ещё %d</item>
+    </plurals>
+    <plurals name="browser_batch_renamed">
+        <item quantity="one">Переименован %d объект</item>
+        <item quantity="few">Переименовано %d объекта</item>
+        <item quantity="many">Переименовано %d объектов</item>
+        <item quantity="other">Переименовано %d объекта</item>
+    </plurals>
 </resources>

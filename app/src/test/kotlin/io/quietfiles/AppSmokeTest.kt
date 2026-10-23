@@ -13,6 +13,7 @@ import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
@@ -340,6 +341,30 @@ class AppSmokeTest {
         clickText("Память")
         waitForText("DCIM")
         snapshot("43_folder_analysis")
+    }
+
+    @Test
+    fun batchRenameFromSelection() {
+        grantAllFilesAccess()
+        scenario = ActivityScenario.launch(MainActivity::class.java)
+        clickText("Обзор")
+        clickText("Внутренняя память")
+        clickText("Download")
+        waitForText("photo_2026.jpg")
+        compose.onAllNodesWithText("photo_2026.jpg").onFirst().performTouchInput { longClick() }
+        clickText("Отчёт за квартал.pdf")
+        // Переименование — в «Ещё» панели выбора (F4.3).
+        clickText("Ещё")
+        clickText("Переименовать")
+        waitForText("Переименовать 2 объекта")
+        compose.onNode(hasSetTextAction() and hasText("Шаблон имени")).performTextReplacement("Квартал {n}")
+        compose.onNode(hasSetTextAction() and hasText("Цифр")).performTextReplacement("2")
+        waitForText("Квартал 02.pdf")
+        snapshot("44_batch_rename")
+        clickText("Переименовать 2")
+        val dir = File(Environment.getExternalStorageDirectory(), "Download")
+        compose.waitUntil(TIMEOUT_MS) { File(dir, "Квартал 01.jpg").exists() && File(dir, "Квартал 02.pdf").exists() }
+        waitForText("Квартал 02.pdf")
     }
 
     private fun copyResource(name: String, target: File) {
