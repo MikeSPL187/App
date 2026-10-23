@@ -57,6 +57,7 @@ import io.quietfiles.core.data.repository.SettingsRepository
 import io.quietfiles.core.designsystem.icon.QfIcons
 import io.quietfiles.core.model.ListDensity
 import io.quietfiles.core.model.ThemeMode
+import io.quietfiles.core.common.DeviceAuth
 import io.quietfiles.core.model.UserSettings
 import io.quietfiles.core.model.ViewMode
 import io.quietfiles.core.storage.StorageAccess
@@ -74,7 +75,7 @@ data object SettingsRoute
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val repository: SettingsRepository,
-    @ApplicationContext context: Context,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
     val settings: StateFlow<UserSettings> = repository.settings
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UserSettings())
@@ -84,6 +85,8 @@ class SettingsViewModel @Inject constructor(
     val version: String = runCatching {
         context.packageManager.getPackageInfo(context.packageName, 0).versionName
     }.getOrNull().orEmpty()
+
+    fun lockAvailable(): Boolean = DeviceAuth.isAvailable(context)
 
     fun refreshAccess() {
         hasAccess.value = StorageAccess.hasAllFilesAccess()
@@ -107,6 +110,7 @@ fun SettingsScreen(
     val context = LocalContext.current
     var retentionDialog by remember { mutableStateOf(false) }
     var licenses by remember { mutableStateOf(false) }
+    var privacy by remember { mutableStateOf(false) }
     LifecycleResumeEffect(viewModel) {
         viewModel.refreshAccess()
         onPauseOrDispose { }
@@ -187,6 +191,25 @@ fun SettingsScreen(
                 }
             }
 
+            item { GroupTitle(stringResource(R.string.settings_group_privacy)) }
+            item {
+                Group {
+                    val lockAvailable = remember { viewModel.lockAvailable() }
+                    SwitchRow(
+                        stringResource(R.string.settings_app_lock),
+                        stringResource(if (lockAvailable) R.string.settings_app_lock_hint else R.string.settings_app_lock_unavailable),
+                        s.appLock && lockAvailable,
+                        enabled = lockAvailable,
+                    ) { viewModel.update { setAppLock(it) } }
+                    SwitchRow(stringResource(R.string.settings_secure_screen), stringResource(R.string.settings_secure_screen_hint), s.secureScreen) {
+                        viewModel.update { setSecureScreen(it) }
+                    }
+                    SwitchRow(stringResource(R.string.settings_strip_location), stringResource(R.string.settings_strip_location_hint), s.stripLocationOnShare) {
+                        viewModel.update { setStripLocationOnShare(it) }
+                    }
+                }
+            }
+
             item { GroupTitle(stringResource(R.string.settings_group_access)) }
             item {
                 Group {
@@ -207,6 +230,7 @@ fun SettingsScreen(
             item {
                 Group {
                     ValueRow(stringResource(R.string.settings_version), viewModel.version, onClick = null)
+                    ValueRow(stringResource(R.string.settings_privacy_policy), null) { privacy = true }
                     ValueRow(stringResource(R.string.settings_licenses), null) { licenses = true }
                 }
             }
@@ -224,6 +248,7 @@ fun SettingsScreen(
         )
     }
     if (licenses) LicensesDialog { licenses = false }
+    if (privacy) PrivacyDialog { privacy = false }
 }
 
 @Composable
@@ -259,12 +284,12 @@ private fun Block(content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun SwitchRow(title: String, subtitle: String?, checked: Boolean, onChange: (Boolean) -> Unit) {
+private fun SwitchRow(title: String, subtitle: String?, checked: Boolean, enabled: Boolean = true, onChange: (Boolean) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-            .clickable(role = Role.Switch) { onChange(!checked) }
+            .clickable(enabled = enabled, role = Role.Switch) { onChange(!checked) }
             .heightIn(min = 60.dp)
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -274,7 +299,7 @@ private fun SwitchRow(title: String, subtitle: String?, checked: Boolean, onChan
             Text(title, style = MaterialTheme.typography.bodyLarge)
             if (subtitle != null) Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        Switch(checked = checked, onCheckedChange = null)
+        Switch(checked = checked, onCheckedChange = null, enabled = enabled)
     }
 }
 
@@ -340,6 +365,23 @@ private fun LicensesDialog(onDismiss: () -> Unit) {
                         Text(name, style = MaterialTheme.typography.bodyLarge)
                         Text(license, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.settings_close)) } },
+    )
+}
+
+/** Короткая политика: приложение ничего не собирает и не передаёт (раздел 7 ТЗ). */
+@Composable
+private fun PrivacyDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.settings_privacy_policy)) },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                listOf(R.string.privacy_1, R.string.privacy_2, R.string.privacy_3, R.string.privacy_4).forEach {
+                    Text(stringResource(it), style = MaterialTheme.typography.bodyMedium)
                 }
             }
         },

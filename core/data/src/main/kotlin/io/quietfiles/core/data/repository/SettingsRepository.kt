@@ -33,7 +33,9 @@ class SettingsRepository @Inject constructor(
         val useTrash = booleanPreferencesKey("use_trash")
         val trashDays = intPreferencesKey("trash_retention_days")
         val confirmDelete = booleanPreferencesKey("confirm_delete")
-        val crashReports = booleanPreferencesKey("crash_reports")
+        val appLock = booleanPreferencesKey("app_lock")
+        val secureScreen = booleanPreferencesKey("secure_screen")
+        val stripLocation = booleanPreferencesKey("strip_location_on_share")
         val onboarding = booleanPreferencesKey("onboarding_done")
     }
 
@@ -53,7 +55,9 @@ class SettingsRepository @Inject constructor(
             useTrash = p[Keys.useTrash] ?: d.useTrash,
             trashRetentionDays = p[Keys.trashDays] ?: d.trashRetentionDays,
             confirmDelete = p[Keys.confirmDelete] ?: d.confirmDelete,
-            crashReports = p[Keys.crashReports] ?: d.crashReports,
+            appLock = p[Keys.appLock] ?: d.appLock,
+            secureScreen = p[Keys.secureScreen] ?: d.secureScreen,
+            stripLocationOnShare = p[Keys.stripLocation] ?: d.stripLocationOnShare,
             onboardingDone = p[Keys.onboarding] ?: d.onboardingDone,
         )
     }
@@ -89,8 +93,14 @@ class SettingsRepository @Inject constructor(
     suspend fun setConfirmDelete(enabled: Boolean) {
         store.edit { it[Keys.confirmDelete] = enabled }
     }
-    suspend fun setCrashReports(enabled: Boolean) {
-        store.edit { it[Keys.crashReports] = enabled }
+    suspend fun setAppLock(enabled: Boolean) {
+        store.edit { it[Keys.appLock] = enabled }
+    }
+    suspend fun setSecureScreen(enabled: Boolean) {
+        store.edit { it[Keys.secureScreen] = enabled }
+    }
+    suspend fun setStripLocationOnShare(enabled: Boolean) {
+        store.edit { it[Keys.stripLocation] = enabled }
     }
     suspend fun setOnboardingDone() {
         store.edit { it[Keys.onboarding] = true }

@@ -38,4 +38,18 @@
     <string name="settings_group_about">About</string>
     <string name="settings_version">Version</string>
     <string name="settings_licenses">Open source licenses</string>
+
+    <string name="settings_group_privacy">Security and privacy</string>
+    <string name="settings_app_lock">App lock</string>
+    <string name="settings_app_lock_hint">Fingerprint, face or device PIN when you open the app</string>
+    <string name="settings_app_lock_unavailable">Set up a screen lock on the device first</string>
+    <string name="settings_secure_screen">Hide content in recent apps</string>
+    <string name="settings_secure_screen_hint">Also blocks screenshots of the app</string>
+    <string name="settings_strip_location">Remove location when sharing</string>
+    <string name="settings_strip_location_hint">Photos are sent without GPS coordinates; the originals stay as they are</string>
+    <string name="settings_privacy_policy">Privacy policy</string>
+    <string name="privacy_1">Quiet Files works only on your device. It has no internet access, no ads, no analytics and no crash reporting.</string>
+    <string name="privacy_2">Files are shown and changed only when you ask. They leave the device only when you share them with another app.</string>
+    <string name="privacy_3">“All files access” is used to show and manage files in every folder. You can revoke it in system settings at any time.</string>
+    <string name="privacy_4">Settings, favorites and search history are stored in the app and removed when you uninstall it.</string>
 </resources>

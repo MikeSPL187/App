@@ -202,6 +202,7 @@
     <string name="media_yesterday">Вчера</string>
 
     <string name="extract_bomb_title">Всё равно распаковать?</string>
-    <string name="extract_bomb_message">После распаковки архив займёт %1$s — в %2$d раз больше самого архива. Такие архивы могут заполнить всю память.</string>
+    <string name="extract_bomb_message">После распаковки архив займёт %1$s (сжатие ×%2$d). Такие архивы могут заполнить всю память.</string>
     <string name="extract_bomb_confirm">Распаковать</string>
+    <string name="browser_share_location_failed">Не удалось убрать геоданные из фото, поэтому оно не отправлено. Это можно отключить в настройках.</string>
 </resources>

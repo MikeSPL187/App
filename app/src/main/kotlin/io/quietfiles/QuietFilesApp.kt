@@ -24,6 +24,8 @@ import dagger.hilt.android.HiltAndroidApp
 import io.quietfiles.core.data.repository.SettingsRepository
 import io.quietfiles.core.operations.OperationService
 import io.quietfiles.core.operations.TrashManager
+import io.quietfiles.core.storage.LocationStripper
+import io.quietfiles.security.AppLock
 import kotlinx.coroutines.flow.first
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -32,12 +34,14 @@ import javax.inject.Inject
 class QuietFilesApp : Application(), Configuration.Provider, SingletonImageLoader.Factory {
 
     @Inject lateinit var workerFactory: HiltWorkerFactory
+    @Inject lateinit var appLock: AppLock
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
 
     override fun onCreate() {
         super.onCreate()
+        appLock.attach()
         OperationService.ensureChannel(this)
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             TrashPurgeWorker.NAME,
@@ -60,15 +64,20 @@ class QuietFilesApp : Application(), Configuration.Provider, SingletonImageLoade
         .build()
 }
 
-/** Раз в сутки удаляет из корзины то, что лежит дольше выбранного срока (F5.7). */
+/**
+ * Раз в сутки удаляет из корзины то, что лежит дольше выбранного срока (F5.7),
+ * и старые копии фото без геоданных, подготовленные для отправки.
+ */
 @HiltWorker
 class TrashPurgeWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val trash: TrashManager,
     private val settings: SettingsRepository,
+    private val locationStripper: LocationStripper,
 ) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
+        runCatching { locationStripper.cleanup() }
         val days = settings.settings.first().trashRetentionDays
         return runCatching { trash.purgeExpired(days) }.fold({ Result.success() }, { Result.retry() })
     }

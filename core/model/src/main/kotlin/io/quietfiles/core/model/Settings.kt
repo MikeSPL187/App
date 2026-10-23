@@ -15,7 +15,12 @@ data class UserSettings(
     val useTrash: Boolean = true,
     val trashRetentionDays: Int = 30,
     val confirmDelete: Boolean = true,
-    val crashReports: Boolean = false,
+    /** Вход по отпечатку, лицу или PIN-коду устройства (F14, S11). */
+    val appLock: Boolean = false,
+    /** Не показывать содержимое в списке недавних и на снимках экрана (FLAG_SECURE). */
+    val secureScreen: Boolean = false,
+    /** Убирать GPS-координаты из фото при отправке (F14, «Конфиденциальность»). */
+    val stripLocationOnShare: Boolean = true,
     val onboardingDone: Boolean = false,
 ) {
     companion object {

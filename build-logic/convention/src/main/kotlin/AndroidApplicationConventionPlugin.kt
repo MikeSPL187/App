@@ -11,6 +11,8 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             configureKotlinAndroid(this)
             defaultConfig.targetSdk = Sdk.TARGET
             testOptions.unitTests.isIncludeAndroidResources = true
+            // Тесты lint не проверяет: анализатор Kotlin в lint падает на тестах Compose UI, а правила lint про код приложения.
+            lint.ignoreTestSources = true
         }
     }
 }

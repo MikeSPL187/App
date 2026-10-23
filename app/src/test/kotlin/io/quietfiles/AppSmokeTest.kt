@@ -8,7 +8,11 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.longClick
+import androidx.compose.ui.test.hasScrollAction
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTouchInput
 import androidx.test.core.app.ActivityScenario
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -138,6 +142,13 @@ class AppSmokeTest {
 
         clickText("Поиск файлов")
         snapshot("10_search")
+        pressBack()
+
+        waitForText("Поиск файлов")
+        compose.onNodeWithContentDescription("Настройки").performClick()
+        waitForText("Безопасность и конфиденциальность")
+        compose.onNode(hasScrollAction()).performScrollToNode(hasText("Удалять геоданные при отправке"))
+        snapshot("13_settings")
     }
 
     @Test

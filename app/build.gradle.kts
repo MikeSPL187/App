@@ -68,6 +68,8 @@ dependencies {
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
     implementation(libs.androidx.work.runtime)
+    implementation(libs.androidx.biometric)
+    implementation(libs.androidx.lifecycle.process)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.compose.material3.windowsize)
 

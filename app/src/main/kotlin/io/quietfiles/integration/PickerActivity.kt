@@ -5,7 +5,7 @@ import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
@@ -15,9 +15,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.quietfiles.R
 import io.quietfiles.core.data.repository.SettingsRepository
 import io.quietfiles.core.designsystem.theme.QfTheme
+import io.quietfiles.security.AppLock
+import io.quietfiles.security.LockGate
+import io.quietfiles.security.SecureWindow
 import io.quietfiles.core.model.FileNames
 import io.quietfiles.core.model.FileTypes
-import io.quietfiles.core.model.UserSettings
 import io.quietfiles.core.storage.FileIntents
 import io.quietfiles.feature.browser.picker.PickerConfig
 import io.quietfiles.feature.browser.picker.PickerMode
@@ -30,9 +32,10 @@ import javax.inject.Inject
  * Отдаёт content-URI нашего FileProvider с правом только на чтение и только на выбранные файлы.
  */
 @AndroidEntryPoint
-class PickerActivity : ComponentActivity() {
+class PickerActivity : FragmentActivity() {
 
     @Inject lateinit var settingsRepository: SettingsRepository
+    @Inject lateinit var appLock: AppLock
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -40,14 +43,19 @@ class PickerActivity : ComponentActivity() {
         val config = configFrom(intent)
         setResult(Activity.RESULT_CANCELED)
         setContent {
-            val settings by settingsRepository.settings.collectAsStateWithLifecycle(initialValue = UserSettings())
-            QfTheme(themeMode = settings.themeMode, dynamicColor = settings.dynamicColor) {
-                PickerScreen(
-                    config = remember { config },
-                    onPicked = ::deliver,
-                    onCancel = ::finish,
-                    onRequestAccess = { openAllFilesSettings(this) },
-                )
+            // Ждём настоящие настройки: иначе до их загрузки файлы были бы видны в обход блокировки.
+            val settings by settingsRepository.settings.collectAsStateWithLifecycle(initialValue = null)
+            val s = settings ?: return@setContent
+            QfTheme(themeMode = s.themeMode, dynamicColor = s.dynamicColor) {
+                SecureWindow(s.secureScreen)
+                LockGate(enabled = s.appLock, appLock = appLock) {
+                    PickerScreen(
+                        config = remember { config },
+                        onPicked = ::deliver,
+                        onCancel = ::finish,
+                        onRequestAccess = { openAllFilesSettings(this) },
+                    )
+                }
             }
         }
     }

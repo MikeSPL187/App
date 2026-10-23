@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -44,10 +45,12 @@ import io.quietfiles.core.designsystem.component.EmptyState
 import io.quietfiles.core.designsystem.component.rememberFormatters
 import io.quietfiles.core.designsystem.icon.QfIcons
 import io.quietfiles.core.designsystem.theme.QfTheme
+import io.quietfiles.security.AppLock
+import io.quietfiles.security.LockGate
+import io.quietfiles.security.SecureWindow
 import io.quietfiles.core.model.FileNames
 import io.quietfiles.core.model.OperationSnapshot
 import io.quietfiles.core.model.OperationStatus
-import io.quietfiles.core.model.UserSettings
 import io.quietfiles.core.operations.ImportItem
 import io.quietfiles.core.operations.OperationQueue
 import io.quietfiles.core.operations.OperationRequest
@@ -75,9 +78,10 @@ import javax.inject.Inject
  * только пока жива активити, получившая их.
  */
 @AndroidEntryPoint
-class SaveActivity : ComponentActivity() {
+class SaveActivity : FragmentActivity() {
 
     @Inject lateinit var settingsRepository: SettingsRepository
+    @Inject lateinit var appLock: AppLock
 
     private val viewModel: SaveViewModel by viewModels()
 
@@ -86,9 +90,13 @@ class SaveActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         viewModel.prepare(SharedContent.from(intent, setOf(FileIntents.authority(this))))
         setContent {
-            val settings by settingsRepository.settings.collectAsStateWithLifecycle(initialValue = UserSettings())
-            QfTheme(themeMode = settings.themeMode, dynamicColor = settings.dynamicColor) {
-                SaveRoot(viewModel, onClose = ::finish, onRequestAccess = { openAllFilesSettings(this) })
+            val settings by settingsRepository.settings.collectAsStateWithLifecycle(initialValue = null)
+            val s = settings ?: return@setContent
+            QfTheme(themeMode = s.themeMode, dynamicColor = s.dynamicColor) {
+                SecureWindow(s.secureScreen)
+                LockGate(enabled = s.appLock, appLock = appLock) {
+                    SaveRoot(viewModel, onClose = ::finish, onRequestAccess = { openAllFilesSettings(this) })
+                }
             }
         }
     }

@@ -40,4 +40,18 @@
     <string name="settings_group_about">О приложении</string>
     <string name="settings_version">Версия</string>
     <string name="settings_licenses">Лицензии открытого ПО</string>
+
+    <string name="settings_group_privacy">Безопасность и конфиденциальность</string>
+    <string name="settings_app_lock">Блокировка приложения</string>
+    <string name="settings_app_lock_hint">Отпечаток, лицо или PIN-код устройства при входе</string>
+    <string name="settings_app_lock_unavailable">Сначала включите блокировку экрана на устройстве</string>
+    <string name="settings_secure_screen">Скрывать содержимое в недавних</string>
+    <string name="settings_secure_screen_hint">Заодно запрещает снимки экрана приложения</string>
+    <string name="settings_strip_location">Удалять геоданные при отправке</string>
+    <string name="settings_strip_location_hint">Фото уходят без GPS-координат, оригиналы не меняются</string>
+    <string name="settings_privacy_policy">Политика конфиденциальности</string>
+    <string name="privacy_1">Тихие файлы работают только на вашем устройстве. У приложения нет доступа в интернет, рекламы, аналитики и отчётов о сбоях.</string>
+    <string name="privacy_2">Файлы показываются и меняются только по вашей команде. Устройство они покидают, только когда вы сами ими делитесь.</string>
+    <string name="privacy_3">«Доступ ко всем файлам» нужен, чтобы показывать и упорядочивать файлы во всех папках. Его можно отозвать в настройках системы в любой момент.</string>
+    <string name="privacy_4">Настройки, избранное и история поиска хранятся в приложении и удаляются вместе с ним.</string>
 </resources>

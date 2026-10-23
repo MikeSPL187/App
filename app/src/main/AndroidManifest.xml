@@ -8,8 +8,10 @@
         tools:ignore="ScopedStorage" />
     <!-- Установка APK из файлового менеджера по нажатию пользователя. -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <!-- Ярлык папки на рабочем столе для лаунчеров, не поддерживающих ShortcutManager. -->
-    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <!-- WorkManager добавляет его для сетевых условий; задачи приложения сеть не используют. -->
+    <uses-permission
+        android:name="android.permission.ACCESS_NETWORK_STATE"
+        tools:node="remove" />
 
     <!-- Видим приложения, которые умеют открывать и принимать файлы (выбор «Открыть в…», «Поделиться»). -->
     <queries>

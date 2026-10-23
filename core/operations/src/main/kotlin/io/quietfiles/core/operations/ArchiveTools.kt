@@ -90,6 +90,8 @@ class ArchiveTools @Inject constructor(
 
         // Защита от «zip-бомб» (F10.3): заявленный размер должен помещаться, а фактическая запись
         // не может съесть память целиком, даже если заголовки архива лгут о размерах.
+        // getAllocatableBytes работает только для внутренних томов приложения, а распаковывают и на SD-карты.
+        @Suppress("UsableSpace")
         val free = destRoot.usableSpace
         if (free > 0 && total > free) throw OperationException.NotEnoughSpace(total, free)
         val budget = WriteBudget(if (free > 0) (free - SPACE_RESERVE).coerceAtLeast(0) else Long.MAX_VALUE)

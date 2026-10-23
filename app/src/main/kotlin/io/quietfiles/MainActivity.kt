@@ -2,7 +2,7 @@ package io.quietfiles
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
@@ -11,6 +11,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import io.quietfiles.core.data.repository.SettingsRepository
 import io.quietfiles.core.designsystem.theme.QfTheme
+import io.quietfiles.security.AppLock
+import io.quietfiles.security.LockGate
+import io.quietfiles.security.SecureWindow
 import io.quietfiles.core.operations.OperationService
 import io.quietfiles.integration.ShortcutSigner
 import io.quietfiles.ui.AppRoot
@@ -19,9 +22,10 @@ import java.io.File
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
     @Inject lateinit var settingsRepository: SettingsRepository
+    @Inject lateinit var appLock: AppLock
 
     /** Что открыть по внешнему запросу: ярлык папки или уведомление об операциях. */
     private val launchRequest = mutableStateOf<LaunchRequest?>(null)
@@ -34,11 +38,14 @@ class MainActivity : ComponentActivity() {
             val settings by settingsRepository.settings.collectAsStateWithLifecycle(initialValue = null)
             val s = settings ?: return@setContent
             QfTheme(themeMode = s.themeMode, dynamicColor = s.dynamicColor) {
-                AppRoot(
-                    settings = s,
-                    launchRequest = launchRequest.value,
-                    onLaunchRequestHandled = { launchRequest.value = null },
-                )
+                SecureWindow(s.secureScreen)
+                LockGate(enabled = s.appLock, appLock = appLock) {
+                    AppRoot(
+                        settings = s,
+                        launchRequest = launchRequest.value,
+                        onLaunchRequestHandled = { launchRequest.value = null },
+                    )
+                }
             }
         }
     }

@@ -28,6 +28,7 @@ import io.quietfiles.core.operations.OperationQueue
 import io.quietfiles.core.operations.OperationRequest
 import io.quietfiles.core.operations.TrashManager
 import io.quietfiles.core.storage.FileIntents
+import io.quietfiles.core.storage.LocationStripper
 import io.quietfiles.core.storage.MediaIndex
 import io.quietfiles.core.storage.StorageAccess
 import io.quietfiles.core.storage.StorageException
@@ -132,6 +133,7 @@ class BrowserViewModel @Inject constructor(
     private val trash: TrashManager,
     private val archives: ArchiveTools,
     private val mediaIndex: MediaIndex,
+    private val locationStripper: LocationStripper,
 ) : ViewModel() {
 
     private val route = savedStateHandle.toRoute<BrowseRoute>()
@@ -499,8 +501,17 @@ class BrowserViewModel @Inject constructor(
             message(context.getString(R.string.browser_share_folders))
             return
         }
-        launch(FileIntents.share(context, files, context.getString(R.string.browser_share_title)))
         clearSelection()
+        viewModelScope.launch {
+            val strip = settingsRepository.settings.first().stripLocationOnShare
+            val prepared = try {
+                if (strip) files.map { it.copy(path = locationStripper.forSharing(it.path)) } else files
+            } catch (e: Exception) {
+                message(context.getString(R.string.browser_share_location_failed))
+                return@launch
+            }
+            this@BrowserViewModel.launch(FileIntents.share(context, prepared, context.getString(R.string.browser_share_title)))
+        }
     }
 
     fun openWith(entry: FileEntry) =

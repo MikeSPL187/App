@@ -102,4 +102,10 @@
     <string name="save_progress">Сохраняем в «%1$s»…</string>
     <string name="save_done">Сохранено в «%1$s»</string>
     <string name="save_failed">Часть файлов не сохранена</string>
+
+    <string name="lock_title">Тихие файлы заблокированы</string>
+    <string name="lock_message">Разблокируйте отпечатком, лицом или PIN-кодом устройства, чтобы увидеть файлы.</string>
+    <string name="lock_unlock">Разблокировать</string>
+    <string name="lock_prompt_title">Разблокировка</string>
+    <string name="lock_prompt_subtitle">Подтвердите, что это вы</string>
 </resources>

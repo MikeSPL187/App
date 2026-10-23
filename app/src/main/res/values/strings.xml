@@ -94,4 +94,10 @@
     <string name="save_progress">Saving to “%1$s”…</string>
     <string name="save_done">Saved to “%1$s”</string>
     <string name="save_failed">Some files weren’t saved</string>
+
+    <string name="lock_title">Quiet Files is locked</string>
+    <string name="lock_message">Unlock with your fingerprint, face or device PIN to see your files.</string>
+    <string name="lock_unlock">Unlock</string>
+    <string name="lock_prompt_title">Unlock Quiet Files</string>
+    <string name="lock_prompt_subtitle">Confirm it’s you</string>
 </resources>
