@@ -10,8 +10,8 @@ android {
 
     defaultConfig {
         applicationId = "io.quietfiles"
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 3
+        versionName = "1.2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
