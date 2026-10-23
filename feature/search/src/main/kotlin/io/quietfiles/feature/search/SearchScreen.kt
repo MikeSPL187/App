@@ -163,6 +163,7 @@ fun SearchScreen(
                 }
             }
             Filters(state.filters, viewModel)
+            if (state.filters.content) IndexStatus(state, onIndexNow = viewModel::indexNow)
             if (state.searching) LinearProgressIndicator(Modifier.fillMaxWidth())
             if (state.filters.isEmpty) {
                 History(state.history, onPick = { query = it; viewModel.setQuery(it) }, onRemove = viewModel::removeHistory, onClear = viewModel::clearHistory)
@@ -186,6 +187,12 @@ private fun Filters(filters: SearchFilters, viewModel: SearchViewModel) {
         modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
+        FilterChip(
+            selected = filters.content,
+            onClick = { viewModel.setContent(!filters.content) },
+            label = { Text(stringResource(R.string.filter_content)) },
+            leadingIcon = { Icon(if (filters.content) QfIcons.Check else QfIcons.Text, null, Modifier.size(18.dp)) },
+        )
         MenuChip(
             label = if (filters.type == TypeFilter.ANY) stringResource(R.string.filter_type) else typeLabel(filters.type),
             selected = filters.type != TypeFilter.ANY,
@@ -204,6 +211,39 @@ private fun Filters(filters: SearchFilters, viewModel: SearchViewModel) {
             options = SizeFilter.entries.map { it to sizeLabel(it) },
             onSelect = viewModel::setSize,
         )
+    }
+}
+
+/** Состояние индекса содержимого (F6.6): сколько файлов и как обновить. */
+@Composable
+private fun IndexStatus(state: SearchUiState, onIndexNow: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth().padding(start = 20.dp, end = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            when {
+                !state.indexingEnabled -> stringResource(R.string.search_index_disabled)
+                state.indexedFiles == 0 -> stringResource(R.string.search_index_empty)
+                else -> pluralStringResource(R.plurals.search_index_count, state.indexedFiles, state.indexedFiles)
+            },
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        if (state.indexingEnabled) TextButton(onClick = onIndexNow) { Text(stringResource(R.string.search_index_now)) }
+    }
+}
+
+/** Отрывок из индекса: совпадение между \u0001 и \u0002 подсвечено, переносы строк — пробелы. */
+internal fun snippetText(snippet: String, color: androidx.compose.ui.graphics.Color): AnnotatedString = buildAnnotatedString {
+    var marked = false
+    snippet.replace('\n', ' ').forEach { c ->
+        when (c) {
+            '\u0001' -> marked = true
+            '\u0002' -> marked = false
+            else -> if (marked) withStyle(SpanStyle(background = color)) { append(c) } else append(c)
+        }
     }
 }
 
@@ -325,7 +365,15 @@ private fun Results(state: SearchUiState, formatters: Formatters, onOpen: (FileE
                 ) {
                     FileTile(entry.category, path = entry.path)
                     Column(Modifier.weight(1f)) {
-                        Text(highlighted(entry.name, state.filters.query, highlight), style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(if (state.filters.content) AnnotatedString(entry.name) else highlighted(entry.name, state.filters.query, highlight), style = MaterialTheme.typography.bodyLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        state.snippets[entry.path]?.let { snippet ->
+                            Text(
+                                snippetText(snippet, highlight),
+                                style = MaterialTheme.typography.bodyMedium,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
                         Text(
                             relativeParent(entry.path, group.volume),
                             style = MonoTextStyle.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),

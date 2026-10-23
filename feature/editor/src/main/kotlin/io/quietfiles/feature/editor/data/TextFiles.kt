@@ -6,10 +6,10 @@ import io.quietfiles.core.common.IoDispatcher
 import io.quietfiles.core.model.FileNames
 import io.quietfiles.core.storage.MediaIndex
 import io.quietfiles.core.storage.StorageException
-import io.quietfiles.feature.editor.text.Detection
-import io.quietfiles.feature.editor.text.Encodings
+import io.quietfiles.core.model.text.Detection
+import io.quietfiles.core.model.text.Encodings
 import io.quietfiles.feature.editor.text.LineEnding
-import io.quietfiles.feature.editor.text.TextEncoding
+import io.quietfiles.core.model.text.TextEncoding
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable

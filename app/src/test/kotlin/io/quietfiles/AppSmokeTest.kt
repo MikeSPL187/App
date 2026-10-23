@@ -69,6 +69,7 @@ class AppSmokeTest {
         .around(compose)
 
     @Inject lateinit var settings: SettingsRepository
+    @Inject lateinit var contentIndex: io.quietfiles.core.data.index.ContentIndex
 
     private var scenario: ActivityScenario<MainActivity>? = null
 
@@ -400,6 +401,23 @@ class AppSmokeTest {
         waitForImages()
         snapshot("48_compress_done")
         compose.waitUntil(TIMEOUT_MS) { File(root, "Documents/План.zip").exists() }
+    }
+
+    @Test
+    fun searchInsideFiles() {
+        val root = Environment.getExternalStorageDirectory()
+        File(root, "Documents/Встречи").mkdirs()
+        File(root, "Documents/Встречи/планёрка.txt").writeText("Повестка: обсудить бюджет на ноябрь и сроки отчёта.")
+        File(root, "Documents/Встречи/прочее.txt").writeText("Список покупок")
+        grantAllFilesAccess()
+        // В приложении индекс строит WorkManager на зарядке; в тесте — напрямую.
+        runBlocking { contentIndex.update() }
+        scenario = ActivityScenario.launch(MainActivity::class.java)
+        clickText("Поиск файлов")
+        compose.onNode(hasSetTextAction()).performTextInput("бюджет ноябрь")
+        clickText("В содержимом")
+        waitForText("планёрка.txt")
+        snapshot("49_content_search")
     }
 
     private fun copyResource(name: String, target: File) {

@@ -191,6 +191,9 @@ fun SettingsScreen(
                     SwitchRow(stringResource(R.string.settings_built_in_viewers), stringResource(R.string.settings_built_in_viewers_hint), s.builtInViewers) {
                         viewModel.update { setBuiltInViewers(it) }
                     }
+                    SwitchRow(stringResource(R.string.settings_content_index), stringResource(R.string.settings_content_index_hint), s.contentIndexing) {
+                        viewModel.update { setContentIndexing(it) }
+                    }
                     SwitchRow(stringResource(R.string.settings_tap_icon), stringResource(R.string.settings_tap_icon_hint), s.tapIconToSelect) {
                         viewModel.update { setTapIconToSelect(it) }
                     }

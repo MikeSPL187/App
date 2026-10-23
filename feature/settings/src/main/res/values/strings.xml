@@ -56,4 +56,6 @@
     <string name="settings_tap_icon_hint">Otherwise selection starts with a long press</string>
     <string name="settings_built_in_viewers">Built-in viewers</string>
     <string name="settings_built_in_viewers_hint">Open text files here; otherwise another app is offered</string>
+    <string name="settings_content_index">Search inside files</string>
+    <string name="settings_content_index_hint">The text of documents, PDF and DOCX is indexed while charging and stays on the device</string>
 </resources>

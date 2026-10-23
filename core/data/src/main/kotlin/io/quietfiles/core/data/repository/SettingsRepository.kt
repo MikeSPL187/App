@@ -35,6 +35,7 @@ class SettingsRepository @Inject constructor(
         val confirmDelete = booleanPreferencesKey("confirm_delete")
         val tapIcon = booleanPreferencesKey("tap_icon_to_select")
         val builtInViewers = booleanPreferencesKey("built_in_viewers")
+        val contentIndexing = booleanPreferencesKey("content_indexing")
         val editorFontSize = intPreferencesKey("editor_font_size")
         val editorWrap = booleanPreferencesKey("editor_wrap")
         val editorLineNumbers = booleanPreferencesKey("editor_line_numbers")
@@ -62,6 +63,7 @@ class SettingsRepository @Inject constructor(
             confirmDelete = p[Keys.confirmDelete] ?: d.confirmDelete,
             tapIconToSelect = p[Keys.tapIcon] ?: d.tapIconToSelect,
             builtInViewers = p[Keys.builtInViewers] ?: d.builtInViewers,
+            contentIndexing = p[Keys.contentIndexing] ?: d.contentIndexing,
             editorFontSize = p[Keys.editorFontSize] ?: d.editorFontSize,
             editorWrap = p[Keys.editorWrap] ?: d.editorWrap,
             editorLineNumbers = p[Keys.editorLineNumbers] ?: d.editorLineNumbers,
@@ -103,6 +105,10 @@ class SettingsRepository @Inject constructor(
     suspend fun setConfirmDelete(enabled: Boolean) {
         store.edit { it[Keys.confirmDelete] = enabled }
     }
+    suspend fun setContentIndexing(enabled: Boolean) {
+        store.edit { it[Keys.contentIndexing] = enabled }
+    }
+
     suspend fun setBuiltInViewers(enabled: Boolean) {
         store.edit { it[Keys.builtInViewers] = enabled }
     }

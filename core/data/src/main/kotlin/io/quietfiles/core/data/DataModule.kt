@@ -12,6 +12,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.quietfiles.core.data.db.CleanupHistoryDao
+import io.quietfiles.core.data.index.ContentIndexDao
+import io.quietfiles.core.data.index.ContentIndexDatabase
 import io.quietfiles.core.data.db.FavoriteDao
 import io.quietfiles.core.data.db.FolderPrefDao
 import io.quietfiles.core.data.db.PlaybackPositionDao
@@ -27,6 +29,16 @@ object DataModule {
     @Singleton
     fun database(@ApplicationContext context: Context): QfDatabase =
         Room.databaseBuilder(context, QfDatabase::class.java, "quietfiles.db").build()
+
+    /** Индекс содержимого (F6.6) — своя база, вне резервных копий (см. backup_rules.xml). */
+    @Provides
+    @Singleton
+    fun contentIndexDatabase(@ApplicationContext context: Context): ContentIndexDatabase =
+        Room.databaseBuilder(context, ContentIndexDatabase::class.java, "content_index.db")
+            .fallbackToDestructiveMigration(dropAllTables = true)
+            .build()
+
+    @Provides fun contentIndex(db: ContentIndexDatabase): ContentIndexDao = db.index()
 
     @Provides
     @Singleton

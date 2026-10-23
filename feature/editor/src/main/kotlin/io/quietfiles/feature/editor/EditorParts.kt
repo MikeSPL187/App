@@ -51,7 +51,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.quietfiles.core.designsystem.icon.QfIcons
 import io.quietfiles.core.model.UserSettings
 import io.quietfiles.feature.editor.text.LineEnding
-import io.quietfiles.feature.editor.text.TextEncoding
+import io.quietfiles.core.model.text.TextEncoding
 import io.quietfiles.feature.editor.ui.EditorColors
 
 /** Большой файл только для чтения: строки подгружаются страницами по мере прокрутки (F12.1). */

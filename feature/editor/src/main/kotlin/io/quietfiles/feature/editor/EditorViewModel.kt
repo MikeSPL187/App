@@ -21,11 +21,11 @@ import io.quietfiles.feature.editor.data.OpenedText
 import io.quietfiles.feature.editor.data.TextFiles
 import io.quietfiles.feature.editor.data.UnencodableTextException
 import io.quietfiles.feature.editor.text.EditHistory
-import io.quietfiles.feature.editor.text.Encodings
+import io.quietfiles.core.model.text.Encodings
 import io.quietfiles.feature.editor.text.Language
 import io.quietfiles.feature.editor.text.LineEnding
 import io.quietfiles.feature.editor.text.SearchQuery
-import io.quietfiles.feature.editor.text.TextEncoding
+import io.quietfiles.core.model.text.TextEncoding
 import io.quietfiles.feature.editor.text.TextSearch
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job

@@ -22,7 +22,14 @@ import coil3.video.VideoFrameDecoder
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.HiltAndroidApp
+import io.quietfiles.core.common.ApplicationScope
+import io.quietfiles.core.data.index.ContentIndex
 import io.quietfiles.core.data.repository.SettingsRepository
+import io.quietfiles.integration.ContentIndexing
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import io.quietfiles.core.operations.OperationService
 import io.quietfiles.core.operations.TrashManager
 import io.quietfiles.core.storage.LocationStripper
@@ -36,6 +43,10 @@ class QuietFilesApp : Application(), Configuration.Provider, SingletonImageLoade
 
     @Inject lateinit var workerFactory: HiltWorkerFactory
     @Inject lateinit var appLock: AppLock
+    @Inject lateinit var settingsRepository: SettingsRepository
+    @Inject lateinit var contentIndexing: ContentIndexing
+    @Inject lateinit var contentIndex: ContentIndex
+    @Inject @ApplicationScope lateinit var appScope: CoroutineScope
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder().setWorkerFactory(workerFactory).build()
@@ -49,6 +60,17 @@ class QuietFilesApp : Application(), Configuration.Provider, SingletonImageLoade
             ExistingPeriodicWorkPolicy.KEEP,
             PeriodicWorkRequestBuilder<TrashPurgeWorker>(1, TimeUnit.DAYS).build(),
         )
+        // Поиск по содержимому (F6.6): выключили — индекс удаляется, а не просто перестаёт обновляться.
+        appScope.launch {
+            settingsRepository.settings.map { it.contentIndexing }.distinctUntilChanged().collect { enabled ->
+                if (enabled) {
+                    contentIndexing.schedule()
+                } else {
+                    contentIndexing.cancel()
+                    runCatching { contentIndex.clear() }
+                }
+            }
+        }
     }
 
     /** Миниатюры: кэш на диске ограничен 200 МБ (раздел 8 ТЗ), кадры видео через MediaMetadataRetriever. */

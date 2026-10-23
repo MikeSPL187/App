@@ -17,6 +17,8 @@ data class UserSettings(
     val confirmDelete: Boolean = true,
     /** Открывать фото, видео, музыку и текст встроенными просмотрщиками (F14). */
     val builtInViewers: Boolean = true,
+    /** Поиск по содержимому (F6.6): индексировать текст документов на зарядке. */
+    val contentIndexing: Boolean = true,
     /** Редактор (F12.6): размер шрифта в sp, перенос строк, номера строк. */
     val editorFontSize: Int = 14,
     val editorWrap: Boolean = true,

@@ -44,4 +44,14 @@
 
     <string name="search_other_location">Другие места</string>
     <string name="search_group_count">"&#160;· %1$d"</string>
+    <string name="filter_content">В содержимом</string>
+    <string name="search_index_disabled">Поиск по содержимому выключен в настройках</string>
+    <string name="search_index_empty">Индекс ещё не построен: он обновляется на зарядке</string>
+    <string name="search_index_now">Обновить сейчас</string>
+    <plurals name="search_index_count">
+        <item quantity="one">В индексе %d файл · обновляется на зарядке</item>
+        <item quantity="few">В индексе %d файла · обновляется на зарядке</item>
+        <item quantity="many">В индексе %d файлов · обновляется на зарядке</item>
+        <item quantity="other">В индексе %d файла · обновляется на зарядке</item>
+    </plurals>
 </resources>

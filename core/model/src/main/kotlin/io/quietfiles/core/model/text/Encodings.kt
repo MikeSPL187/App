@@ -1,4 +1,4 @@
-package io.quietfiles.feature.editor.text
+package io.quietfiles.core.model.text
 
 import java.nio.charset.Charset
 

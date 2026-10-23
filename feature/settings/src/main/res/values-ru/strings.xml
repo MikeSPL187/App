@@ -58,4 +58,6 @@
     <string name="settings_tap_icon_hint">Иначе выбор начинается долгим нажатием</string>
     <string name="settings_built_in_viewers">Встроенные просмотрщики</string>
     <string name="settings_built_in_viewers_hint">Открывать текстовые файлы здесь, а не в другом приложении</string>
+    <string name="settings_content_index">Поиск по содержимому</string>
+    <string name="settings_content_index_hint">Индекс текста документов, PDF и DOCX строится на зарядке и хранится только на устройстве</string>
 </resources>

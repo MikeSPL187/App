@@ -42,4 +42,12 @@
 
     <string name="search_other_location">Other locations</string>
     <string name="search_group_count">"&#160;· %1$d"</string>
+    <string name="filter_content">Inside files</string>
+    <string name="search_index_disabled">Searching inside files is off in Settings</string>
+    <string name="search_index_empty">The index isn\'t built yet: it updates while charging</string>
+    <string name="search_index_now">Update now</string>
+    <plurals name="search_index_count">
+        <item quantity="one">%d file indexed · updates while charging</item>
+        <item quantity="other">%d files indexed · updates while charging</item>
+    </plurals>
 </resources>

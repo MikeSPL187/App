@@ -1,8 +1,8 @@
 package io.quietfiles.feature.editor.data
 
 import com.google.common.truth.Truth.assertThat
-import io.quietfiles.feature.editor.text.Encodings
-import io.quietfiles.feature.editor.text.TextEncoding
+import io.quietfiles.core.model.text.Encodings
+import io.quietfiles.core.model.text.TextEncoding
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder

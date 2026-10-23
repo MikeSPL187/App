@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import io.quietfiles.core.data.index.ContentIndex
+import io.quietfiles.core.data.index.ContentIndexScheduler
 import io.quietfiles.core.data.repository.SearchHistoryRepository
 import io.quietfiles.core.data.repository.SettingsRepository
 import io.quietfiles.core.model.FileCategory
@@ -68,8 +70,10 @@ data class SearchFilters(
     val type: TypeFilter = TypeFilter.ANY,
     val date: DateFilter = DateFilter.ANY,
     val size: SizeFilter = SizeFilter.ANY,
+    /** Искать в тексте файлов, а не в именах (F6.6). */
+    val content: Boolean = false,
 ) {
-    val isEmpty: Boolean get() = query.isBlank() && type == TypeFilter.ANY && date == DateFilter.ANY && size == SizeFilter.ANY
+    val isEmpty: Boolean get() = query.isBlank() && (content || (type == TypeFilter.ANY && date == DateFilter.ANY && size == SizeFilter.ANY))
 }
 
 data class SearchUiState(
@@ -81,6 +85,11 @@ data class SearchUiState(
     val history: List<String> = emptyList(),
     /** Результаты по хранилищам (F6.4); внутренняя память первой. */
     val groups: List<ResultGroup> = emptyList(),
+    /** Отрывки текста для поиска по содержимому: путь → фрагмент с совпадением между \u0001 и \u0002. */
+    val snippets: Map<String, String> = emptyMap(),
+    /** Сколько файлов в индексе содержимого; 0 — индекс ещё не строился. */
+    val indexedFiles: Int = 0,
+    val indexingEnabled: Boolean = true,
 )
 
 /** Результаты одного хранилища. [volume] = `null` — путь вне известных томов. */
@@ -111,17 +120,26 @@ class SearchViewModel @Inject constructor(
     private val history: SearchHistoryRepository,
     private val settings: SettingsRepository,
     private val volumes: StorageVolumes,
+    private val contentIndex: ContentIndex,
+    private val indexScheduler: ContentIndexScheduler,
 ) : ViewModel() {
 
     private val folder = savedStateHandle.toRoute<SearchRoute>().folder
     private val filters = MutableStateFlow(SearchFilters(scope = if (folder != null) SearchScope.FOLDER else SearchScope.EVERYWHERE))
     private val results = MutableStateFlow(Triple<List<FileEntry>, Boolean, Boolean>(emptyList(), false, false))
+    private val snippets = MutableStateFlow<Map<String, String>>(emptyMap())
 
     private val events = Channel<SearchEvent>(Channel.BUFFERED)
     val eventFlow: Flow<SearchEvent> = events.receiveAsFlow()
 
-    val state: StateFlow<SearchUiState> = kotlinx.coroutines.flow.combine(filters, results, history.recent) { f, (items, searching, truncated), recent ->
-        SearchUiState(folder, f, items, searching, truncated, recent, groupByVolume(items, volumes.current()))
+    val state: StateFlow<SearchUiState> = kotlinx.coroutines.flow.combine(
+        kotlinx.coroutines.flow.combine(filters, results, history.recent, ::Triple),
+        snippets,
+        contentIndex.indexedCount,
+        settings.settings,
+    ) { (f, r, recent), snips, indexed, s ->
+        val (items, searching, truncated) = r
+        SearchUiState(folder, f, items, searching, truncated, recent, groupByVolume(items, volumes.current()), snips, indexed, s.contentIndexing)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SearchUiState(folder, filters.value))
 
     init {
@@ -135,6 +153,10 @@ class SearchViewModel @Inject constructor(
     fun setType(type: TypeFilter) = filters.update { it.copy(type = type) }
     fun setDate(date: DateFilter) = filters.update { it.copy(date = date) }
     fun setSize(size: SizeFilter) = filters.update { it.copy(size = size) }
+    fun setContent(content: Boolean) = filters.update { it.copy(content = content) }
+
+    /** Построить или обновить индекс содержимого сейчас, не дожидаясь зарядки. */
+    fun indexNow() = indexScheduler.indexNow()
 
     fun submit() {
         val q = filters.value.query
@@ -161,6 +183,11 @@ class SearchViewModel @Inject constructor(
         }
         results.update { it.copy(second = true) }
         val after = modifiedAfter(f.date)
+        if (f.content) {
+            searchContent(f, after)
+            return
+        }
+        snippets.value = emptyMap()
         val items = when {
             f.scope == SearchScope.FOLDER && folder != null -> walk(folder, f, after)
             else -> runCatching {
@@ -168,6 +195,21 @@ class SearchViewModel @Inject constructor(
             }.getOrDefault(emptyList())
         }
         results.value = Triple(items, false, items.size >= LIMIT)
+    }
+
+    /** Поиск по тексту (F6.6): индекс находит файлы, остальные фильтры применяются к ним. */
+    private suspend fun searchContent(f: SearchFilters, after: Long) {
+        val hits = contentIndex.search(f.query, limit = LIMIT)
+        val scopeRoot = folder?.takeIf { f.scope == SearchScope.FOLDER }?.trimEnd('/')?.plus("/")
+        val entries = hits.mapNotNull { hit ->
+            if (scopeRoot != null && !hit.path.startsWith(scopeRoot)) return@mapNotNull null
+            val file = java.io.File(hit.path)
+            if (!file.isFile) return@mapNotNull null
+            FileEntry(hit.path, file.name, false, file.length(), file.lastModified())
+                .takeIf { (f.type == TypeFilter.ANY || it.category in f.type.categories) && it.lastModified >= after && it.size >= f.size.minBytes }
+        }
+        snippets.value = hits.associate { it.path to it.snippet }
+        results.value = Triple(entries, false, hits.size >= LIMIT)
     }
 
     /** Рекурсивный поиск по папке с показом результатов по мере нахождения. */
