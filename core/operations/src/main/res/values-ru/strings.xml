@@ -56,6 +56,7 @@
     <string name="op_error_archive_encrypted">Архив защищён паролем. Такие архивы пока не поддерживаются</string>
     <string name="op_error_archive_unsupported">Этот формат архива не поддерживается</string>
     <string name="op_error_archive_corrupted">Архив повреждён или скачан не полностью</string>
+    <string name="op_error_archive_too_large">Архив распаковывается в больше данных, чем есть места. Распаковка остановлена.</string>
     <string name="op_error_archive_unsafe">В архиве есть небезопасные пути, он не распакован</string>
     <string name="op_error_io">Ошибка чтения или записи</string>
 </resources>

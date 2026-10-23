@@ -88,6 +88,12 @@ class ArchiveTools @Inject constructor(
         val count = all.count { selected(it.path) && !it.isDirectory }
         control.progress { it.copy(bytesTotal = total, itemsTotal = count) }
 
+        // Защита от «zip-бомб» (F10.3): заявленный размер должен помещаться, а фактическая запись
+        // не может съесть память целиком, даже если заголовки архива лгут о размерах.
+        val free = destRoot.usableSpace
+        if (free > 0 && total > free) throw OperationException.NotEnoughSpace(total, free)
+        val budget = WriteBudget(if (free > 0) (free - SPACE_RESERVE).coerceAtLeast(0) else Long.MAX_VALUE)
+
         val written = mutableListOf<String>()
         wrapErrors(archivePath) {
             forEachEntry(file, format, readData = true) { entry, input ->
@@ -101,8 +107,19 @@ class ArchiveTools @Inject constructor(
                         File(target.parentFile, FileNames.uniqueName(target.name, false) { File(target.parentFile, it).exists() })
                     } else target
                     control.progress { it.copy(currentName = entry.name) }
-                    finalTarget.outputStream().use { out -> copyStream(requireNotNull(input), out, control) }
-                    if (entry.lastModified > 0) finalTarget.setLastModified(entry.lastModified)
+                    // Как и при копировании: пишем во временный файл, конечное имя — только целому файлу.
+                    val temp = File(finalTarget.parentFile, ".${finalTarget.name}.qfpart")
+                    control.setTempFile(temp.path)
+                    try {
+                        temp.outputStream().use { out -> copyStream(requireNotNull(input), out, control, budget) }
+                        if (entry.lastModified > 0) temp.setLastModified(entry.lastModified)
+                        if (!temp.renameTo(finalTarget)) throw java.io.IOException("Cannot finalize ${finalTarget.path}")
+                    } catch (e: Throwable) {
+                        temp.delete()
+                        throw e
+                    } finally {
+                        control.setTempFile(null)
+                    }
                     control.progress { it.copy(itemsDone = it.itemsDone + 1) }
                     written += finalTarget.path
                 }
@@ -164,12 +181,19 @@ class ArchiveTools @Inject constructor(
         return target
     }
 
-    private suspend fun copyStream(input: InputStream, output: OutputStream, control: OperationControl) {
+    /** Сколько ещё можно записать при распаковке. */
+    private class WriteBudget(var remaining: Long)
+
+    private suspend fun copyStream(input: InputStream, output: OutputStream, control: OperationControl, budget: WriteBudget? = null) {
         val buffer = ByteArray(BUFFER)
         while (true) {
             control.checkpoint()
             val read = input.read(buffer)
             if (read < 0) break
+            if (budget != null) {
+                budget.remaining -= read
+                if (budget.remaining < 0) throw OperationException.ArchiveTooLarge()
+            }
             output.write(buffer, 0, read)
             control.progress { it.copy(bytesDone = it.bytesDone + read) }
         }
@@ -281,6 +305,15 @@ class ArchiveTools @Inject constructor(
 
     companion object {
         private const val BUFFER = 256 * 1024
+
+        /** Сколько места оставляем системе при распаковке. */
+        private const val SPACE_RESERVE = 64L * 1024 * 1024
+
+        /** Во сколько раз распакованное может быть больше архива без предупреждения (F10.3). */
+        const val SUSPICIOUS_RATIO = 100
+
+        fun isSuspiciousRatio(unpacked: Long, packed: Long): Boolean =
+            packed > 0 && unpacked / packed >= SUSPICIOUS_RATIO
 
         fun formatOfName(name: String): ArchiveFormat? {
             val lower = name.lowercase()

@@ -78,6 +78,7 @@ private sealed interface Overlay {
     data class Name(val mode: NameMode, val target: List<BrowserItem> = emptyList()) : Overlay
     data class Delete(val items: List<BrowserItem>, val forever: Boolean) : Overlay
     data object EmptyTrash : Overlay
+    data class ConfirmExtract(val event: BrowserEvent.ConfirmExtract) : Overlay
 }
 
 enum class NameMode { NEW_FOLDER, NEW_FILE, RENAME, COMPRESS }
@@ -120,6 +121,7 @@ fun BrowserScreen(
                 is BrowserEvent.Message -> snackbar.showSnackbar(event.text)
                 BrowserEvent.ShowOperations -> onShowOperations()
                 is BrowserEvent.OpenRoute -> Unit
+                is BrowserEvent.ConfirmExtract -> overlay = Overlay.ConfirmExtract(event)
             }
         }
     }
@@ -326,6 +328,20 @@ fun BrowserScreen(
             onDismiss = { overlay = null },
             onConfirm = { overlay = null; viewModel.emptyTrash() },
         )
+        is Overlay.ConfirmExtract -> {
+            val e = o.event
+            ConfirmDialog(
+                title = stringResource(R.string.extract_bomb_title),
+                message = stringResource(R.string.extract_bomb_message, formatters.size.format(e.unpackedBytes), e.ratio),
+                confirm = stringResource(R.string.extract_bomb_confirm),
+                destructive = true,
+                onDismiss = { overlay = null },
+                onConfirm = {
+                    overlay = null
+                    viewModel.extract(e.archivePath, e.entries, e.intoNewFolder, confirmed = true)
+                },
+            )
+        }
     }
 
     properties?.let { PropertiesSheet(it, formatters, onDismiss = viewModel::dismissProperties) }

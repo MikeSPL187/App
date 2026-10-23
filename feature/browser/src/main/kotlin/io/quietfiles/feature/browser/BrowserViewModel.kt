@@ -105,6 +105,15 @@ sealed interface BrowserEvent {
     data class Message(val text: String) : BrowserEvent
     data object ShowOperations : BrowserEvent
     data class OpenRoute(val route: BrowseRoute) : BrowserEvent
+
+    /** Архив распаковывается подозрительно сильно: спросить, продолжать ли (F10.3). */
+    data class ConfirmExtract(
+        val archivePath: String,
+        val entries: List<String>,
+        val intoNewFolder: Boolean,
+        val unpackedBytes: Long,
+        val ratio: Long,
+    ) : BrowserEvent
 }
 
 @OptIn(FlowPreview::class)
@@ -403,9 +412,20 @@ class BrowserViewModel @Inject constructor(
     }
 
     /** Распаковка: в папку архива или в новую папку с именем архива. */
-    fun extract(archivePath: String, entries: List<String>, intoNewFolder: Boolean) {
+    fun extract(archivePath: String, entries: List<String>, intoNewFolder: Boolean, confirmed: Boolean = false) {
         val parent = FileNames.parentOf(archivePath) ?: return
         viewModelScope.launch {
+            if (!confirmed) {
+                val packed = provider.stat(archivePath)?.size ?: 0L
+                val wanted = entries.map { it.trim('/') }
+                val unpacked = runCatching { archives.list(archivePath) }.getOrDefault(emptyList())
+                    .filter { e -> !e.isDirectory && (wanted.isEmpty() || wanted.any { e.path == it || e.path.startsWith("$it/") }) }
+                    .sumOf { it.size.coerceAtLeast(0) }
+                if (ArchiveTools.isSuspiciousRatio(unpacked, packed)) {
+                    events.send(BrowserEvent.ConfirmExtract(archivePath, entries, intoNewFolder, unpacked, unpacked / packed))
+                    return@launch
+                }
+            }
             val destination = if (intoNewFolder) {
                 val base = archiveBaseName(FileNames.nameOf(archivePath))
                 val taken = provider.list(parent, includeHidden = true).map { it.name }.toSet()

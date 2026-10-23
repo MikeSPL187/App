@@ -200,4 +200,8 @@
     <string name="media_downloads">Загрузки</string>
     <string name="media_today">Сегодня</string>
     <string name="media_yesterday">Вчера</string>
+
+    <string name="extract_bomb_title">Всё равно распаковать?</string>
+    <string name="extract_bomb_message">После распаковки архив займёт %1$s — в %2$d раз больше самого архива. Такие архивы могут заполнить всю память.</string>
+    <string name="extract_bomb_confirm">Распаковать</string>
 </resources>

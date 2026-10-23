@@ -36,6 +36,7 @@ object ErrorMessages {
         is OperationException.ArchiveUnsupported -> context.getString(R.string.op_error_archive_unsupported)
         is OperationException.ArchiveCorrupted -> context.getString(R.string.op_error_archive_corrupted)
         is OperationException.UnsafeArchiveEntry -> context.getString(R.string.op_error_archive_unsafe)
+        is OperationException.ArchiveTooLarge -> context.getString(R.string.op_error_archive_too_large)
         is java.io.IOException -> if (error.message?.contains("ENOSPC") == true) {
             context.getString(R.string.op_error_no_space)
         } else {

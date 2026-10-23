@@ -224,4 +224,48 @@ class FileOperationExecutorTest {
         assertThat(File(dst, "ok.txt").readText()).isEqualTo("ok")
         assertThat(dst.walk().none { it.name.endsWith(".qfpart") }).isTrue()
     }
+
+    @Test
+    fun cancelledExtractionLeavesNoPartialFile() = runTest {
+        val zip = File(dst, "big.zip")
+        java.util.zip.ZipOutputStream(zip.outputStream()).use { zos ->
+            zos.putNextEntry(java.util.zip.ZipEntry("big.bin"))
+            zos.write(ByteArray(2 * 1024 * 1024) { (it % 251).toByte() })
+            zos.closeEntry()
+        }
+        val out = tmp.newFolder("out")
+        var checks = 0
+        val cancelling = object : OperationControl by FakeControl() {
+            override suspend fun checkpoint() {
+                if (++checks > 3) throw kotlinx.coroutines.CancellationException("cancelled")
+            }
+        }
+
+        assertThrows(kotlinx.coroutines.CancellationException::class.java) {
+            kotlinx.coroutines.runBlocking { archives.extract(zip.path, out.path, emptyList(), cancelling) }
+        }
+        assertThat(out.listFiles().orEmpty().map { it.name }).isEmpty()
+    }
+
+    @Test
+    fun extractionUsesTempFileAndRecordsIt() = runTest {
+        val zip = File(dst, "one.zip")
+        java.util.zip.ZipOutputStream(zip.outputStream()).use { zos ->
+            zos.putNextEntry(java.util.zip.ZipEntry("a.txt"))
+            zos.write("a".toByteArray())
+            zos.closeEntry()
+        }
+        val out = tmp.newFolder("out")
+        val control = FakeControl()
+        archives.extract(zip.path, out.path, emptyList(), control)
+        assertThat(control.tempFiles.single()).endsWith(".a.txt.qfpart")
+        assertThat(out.list()!!.toList()).containsExactly("a.txt")
+    }
+
+    @Test
+    fun suspiciousRatio() {
+        assertThat(ArchiveTools.isSuspiciousRatio(unpacked = 100L * 1024 * 1024, packed = 1024 * 1024)).isTrue()
+        assertThat(ArchiveTools.isSuspiciousRatio(unpacked = 50L * 1024 * 1024, packed = 1024 * 1024)).isFalse()
+        assertThat(ArchiveTools.isSuspiciousRatio(unpacked = 10, packed = 0)).isFalse()
+    }
 }

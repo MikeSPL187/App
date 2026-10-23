@@ -111,4 +111,7 @@ sealed class OperationException(message: String) : Exception(message) {
         init { if (cause != null) initCause(cause) }
     }
     class UnsafeArchiveEntry(val entry: String) : OperationException("Entry escapes destination: $entry")
+
+    /** Архив распаковывается в больше данных, чем есть места: похоже на «zip-бомбу». */
+    class ArchiveTooLarge : OperationException("Archive expands beyond free space")
 }

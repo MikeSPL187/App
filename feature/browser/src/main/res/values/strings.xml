@@ -188,4 +188,8 @@
     <string name="media_downloads">Downloads</string>
     <string name="media_today">Today</string>
     <string name="media_yesterday">Yesterday</string>
+
+    <string name="extract_bomb_title">Extract anyway?</string>
+    <string name="extract_bomb_message">The archive expands to %1$s, %2$d times its own size. Archives like this can fill the whole storage.</string>
+    <string name="extract_bomb_confirm">Extract</string>
 </resources>
