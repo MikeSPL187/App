@@ -7,6 +7,7 @@ import io.quietfiles.core.model.TrashItem
 import io.quietfiles.core.storage.LocalStorageProvider
 import io.quietfiles.core.storage.StorageException
 import io.quietfiles.core.storage.StorageProvider
+import io.quietfiles.core.storage.StorageVolumes
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.io.File
@@ -21,11 +22,17 @@ import javax.inject.Singleton
 class TrashManager @Inject constructor(
     private val provider: StorageProvider,
     private val dao: TrashDao,
+    private val volumes: StorageVolumes? = null,
 ) {
     val items: Flow<List<TrashItem>> = dao.observeAll().map { list -> list.map { it.toItem() } }
 
-    /** Корень тома для пути; в тестах подменяется на временную папку. */
-    internal var volumeRootOf: (String) -> String = LocalStorageProvider::volumeRootOf
+    /**
+     * Корень тома для пути: сначала среди подключённых томов, иначе по виду пути (/storage/…).
+     * В тестах подменяется на временную папку.
+     */
+    internal var volumeRootOf: (String) -> String = { path ->
+        volumes?.volumeFor(path)?.rootPath ?: LocalStorageProvider.volumeRootOf(path)
+    }
 
     fun trashDirFor(path: String): String = volumeRootOf(path).trimEnd('/') + "/$TRASH_DIR"
 
