@@ -60,12 +60,14 @@ fun NetworkScreen(
     onEdit: (Long) -> Unit,
     onOpenFolder: (String) -> Unit,
     viewModel: NetworkViewModel = hiltViewModel(),
-    pcAccess: @Composable () -> Unit = {},
 ) {
     val servers by viewModel.servers.collectAsStateWithLifecycle()
     val opening by viewModel.opening.collectAsStateWithLifecycle()
     val problem by viewModel.problem.collectAsStateWithLifecycle()
     var deleting by remember { mutableStateOf<ServerItem?>(null) }
+    val pcState by viewModel.pcState.collectAsStateWithLifecycle()
+    val pcSettings by viewModel.pcSettings.collectAsStateWithLifecycle()
+    var pcSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(viewModel) { viewModel.openFolder.collect(onOpenFolder) }
 
@@ -78,7 +80,7 @@ fun NetworkScreen(
         },
     ) { padding ->
         Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 16.dp)) {
-            pcAccess()
+            PcAccessCard(pcState, pcSettings, onStart = viewModel::startPcAccess, onStop = viewModel::stopPcAccess, onOpen = { pcSheet = true })
             Text(
                 stringResource(R.string.network_local),
                 style = MaterialTheme.typography.titleSmall,
@@ -124,6 +126,17 @@ fun NetworkScreen(
                 dismissButton = { TextButton(onClick = viewModel::dismissProblem) { Text(stringResource(R.string.network_close)) } },
             )
         }
+    }
+
+    if (pcSheet) {
+        PcAccessSheet(
+            state = pcState,
+            settings = pcSettings,
+            onSettings = viewModel::updatePcSettings,
+            onDisconnect = viewModel::disconnectPcClient,
+            onNewPassword = viewModel::newPcPassword,
+            onDismiss = { pcSheet = false },
+        )
     }
 
     deleting?.let { item ->

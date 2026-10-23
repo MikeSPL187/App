@@ -10,6 +10,9 @@ import io.quietfiles.core.model.network.NetworkPaths
 import io.quietfiles.core.model.network.RemoteProblem
 import io.quietfiles.core.network.ConnectionsRepository
 import io.quietfiles.core.network.RemoteSessions
+import io.quietfiles.core.network.server.PcAccessServer
+import io.quietfiles.core.network.server.PcAccessSettings
+import io.quietfiles.core.network.server.PcAccessState
 import io.quietfiles.core.storage.StorageException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
@@ -35,7 +38,23 @@ class NetworkViewModel @Inject constructor(
     private val repository: ConnectionsRepository,
     private val sessions: RemoteSessions,
     @IoDispatcher private val io: CoroutineDispatcher,
+    private val pcAccess: PcAccessServer,
 ) : ViewModel() {
+
+    val pcState: StateFlow<PcAccessState> = pcAccess.state
+    val pcSettings: StateFlow<PcAccessSettings> = pcAccess.settings
+
+    fun startPcAccess() {
+        viewModelScope.launch(io) { pcAccess.start() }
+    }
+
+    fun stopPcAccess() = pcAccess.stop()
+    fun updatePcSettings(settings: PcAccessSettings) = pcAccess.updateSettings(settings)
+    fun disconnectPcClient(id: Int) = pcAccess.disconnect(id)
+
+    fun newPcPassword() {
+        viewModelScope.launch(io) { pcAccess.regeneratePassword() }
+    }
 
     val servers: StateFlow<List<ServerItem>?> = combine(repository.connections, sessions.statuses) { list, statuses ->
         list.map { ServerItem(it, statuses[it.id] ?: ConnectionStatus.UNKNOWN) }

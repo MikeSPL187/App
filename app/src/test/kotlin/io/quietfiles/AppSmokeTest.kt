@@ -70,6 +70,7 @@ class AppSmokeTest {
 
     @Inject lateinit var settings: SettingsRepository
     @Inject lateinit var contentIndex: io.quietfiles.core.data.index.ContentIndex
+    @Inject lateinit var pcAccess: io.quietfiles.core.network.server.PcAccessServer
 
     private var scenario: ActivityScenario<MainActivity>? = null
 
@@ -531,6 +532,44 @@ class AppSmokeTest {
             server.stop(true)
             serverRoot.deleteRecursively()
         }
+    }
+
+    /** «Доступ с ПК» (F17): без Wi-Fi не запускается, с адресом — FTPS с паролем, QR-кодом и списком клиентов. */
+    @Test
+    fun pcAccessServer() {
+        grantAllFilesAccess()
+        shadowOf(ApplicationProvider.getApplicationContext<android.app.Application>()).grantPermissions(android.Manifest.permission.POST_NOTIFICATIONS)
+        scenario = ActivityScenario.launch(MainActivity::class.java)
+        clickText("Сеть")
+        waitForText("Доступ с ПК")
+        compose.onNodeWithContentDescription("Сервер включён").performClick()
+        waitForBackground { compose.onAllNodesWithText("Подключитесь к Wi-Fi", substring = true).fetchSemanticsNodes().isNotEmpty() }
+        snapshot("58_pc_access_no_wifi")
+
+        pcAccess.addressOverride = java.net.InetAddress.getByName("127.0.0.1")
+        compose.onNodeWithContentDescription("Сервер включён").performClick()
+        waitForBackground { compose.onAllNodesWithText("ftps://127.0.0.1", substring = true).fetchSemanticsNodes().isNotEmpty() }
+        snapshot("59_pc_access_running")
+
+        // Компьютер подключается по FTPS с паролем из карточки.
+        val running = pcAccess.state.value as io.quietfiles.core.network.server.PcAccessState.Running
+        val client = org.apache.commons.net.ftp.FTPSClient(false).apply {
+            setTrustManager(org.apache.commons.net.util.TrustManagerUtils.getAcceptAllTrustManager())
+            connect("127.0.0.1", running.address.substringAfterLast(':').toInt())
+            check(login(running.user, running.password)) { replyString }
+            execPBSZ(0)
+            execPROT("P")
+            enterLocalPassiveMode()
+            check(listNames("/").contains("Download")) { "storage root must be served" }
+        }
+        clickText("Доступ с ПК")
+        waitForBackground { compose.onAllNodesWithText("Подключены").fetchSemanticsNodes().isNotEmpty() }
+        waitForBackground { compose.onAllNodesWithText("Отключить").fetchSemanticsNodes().isNotEmpty() }
+        snapshot("60_pc_access_details")
+        clickText("Отключить")
+        waitForBackground { compose.onAllNodesWithText("Пока никого").fetchSemanticsNodes().isNotEmpty() }
+        runCatching { client.disconnect() }
+        pcAccess.stop()
     }
 
     /** Данные приходят из Room и файловой системы в фоне, поэтому ждём появления текста. */

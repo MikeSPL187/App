@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pc_access_channel">PC access</string>
+    <string name="pc_access_notification_title">PC access is on</string>
+    <string name="pc_access_stop">Stop</string>
+    <plurals name="pc_access_clients">
+        <item quantity="one">%d device connected</item>
+        <item quantity="other">%d devices connected</item>
+    </plurals>
+</resources>

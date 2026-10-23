@@ -28,6 +28,7 @@ commonsNet = "3.13.0"
 bouncycastle = "1.86"
 sshd = "2.20.0"
 ftpserver = "1.2.1"
+zxing = "3.5.3"
 junit = "4.13.2"
 robolectric = "4.16"
 truth = "1.4.4"
@@ -87,6 +88,7 @@ bouncycastle-pkix = { module = "org.bouncycastle:bcpkix-jdk18on", version.ref = 
 bouncycastle-util = { module = "org.bouncycastle:bcutil-jdk18on", version.ref = "bouncycastle" }
 sshd-core = { module = "org.apache.sshd:sshd-core", version.ref = "sshd" }
 sshd-sftp = { module = "org.apache.sshd:sshd-sftp", version.ref = "sshd" }
+zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
 ftpserver-core = { module = "org.apache.ftpserver:ftpserver-core", version.ref = "ftpserver" }
 junit = { module = "junit:junit", version.ref = "junit" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }

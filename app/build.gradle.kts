@@ -89,6 +89,7 @@ dependencies {
     testImplementation(libs.hilt.android.testing)
     testImplementation(libs.sshd.core)
     testImplementation(libs.sshd.sftp)
+    testImplementation(libs.commons.net)
     kspTest(libs.hilt.compiler)
     testImplementation(platform(libs.compose.bom))
     testImplementation(libs.compose.ui.test.junit4)

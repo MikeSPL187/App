@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pc_access_channel">Доступ с ПК</string>
+    <string name="pc_access_notification_title">Доступ с ПК включён</string>
+    <string name="pc_access_stop">Остановить</string>
+    <plurals name="pc_access_clients">
+        <item quantity="one">Подключено %d устройство</item>
+        <item quantity="few">Подключено %d устройства</item>
+        <item quantity="many">Подключено %d устройств</item>
+        <item quantity="other">Подключено %d устройства</item>
+    </plurals>
+</resources>

@@ -8,10 +8,7 @@
         tools:ignore="ScopedStorage" />
     <!-- Установка APK из файлового менеджера по нажатию пользователя. -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <!-- Сеть (F16) и «Доступ с ПК» (F17): только локальные серверы пользователя, без аналитики и рекламы. -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- INTERNET и состояние сети объявлены в :core:network — только для серверов пользователя (F16, F17). -->
 
     <!-- Видим приложения, которые умеют открывать и принимать файлы (выбор «Открыть в…», «Поделиться»). -->
     <queries>

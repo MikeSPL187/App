@@ -99,4 +99,41 @@
     <string name="protocol_sftp" translatable="false">SFTP</string>
     <string name="protocol_ftp" translatable="false">FTP(S)</string>
     <string name="protocol_webdav" translatable="false">WebDAV</string>
+    <string name="pc_access_title">PC access</string>
+    <string name="pc_access_switch">Server on</string>
+    <string name="pc_access_show_qr">Show the QR code</string>
+    <string name="pc_access_flag_password">Password</string>
+    <string name="pc_access_flag_anonymous">Read-only for guests</string>
+    <string name="pc_access_flag_wifi">Wi-Fi only</string>
+    <string name="pc_access_flag_tls">TLS encryption</string>
+    <string name="pc_access_plain_warning">Without TLS the password and files travel in clear text.</string>
+    <string name="pc_access_waiting">Waiting for a computer to connect</string>
+    <string name="pc_access_off">Open the phone files from a computer on the same Wi-Fi</string>
+    <string name="pc_access_stopped_idle">Stopped after 30 minutes without activity</string>
+    <string name="pc_access_stopped_network">Stopped: the phone left Wi-Fi</string>
+    <string name="pc_access_no_wifi">Connect to Wi-Fi or turn on the hotspot: the server never runs on mobile data</string>
+    <string name="pc_access_port_busy">The port is taken by another app</string>
+    <string name="pc_access_no_storage">Allow access to all files first</string>
+    <string name="pc_access_tls_failed">Could not prepare the certificate</string>
+    <string name="pc_access_how">On the computer, open the address in FileZilla, WinSCP or the file manager and enter the password. The first time, compare the certificate fingerprint.</string>
+    <string name="pc_access_address">Address</string>
+    <string name="pc_access_user">User</string>
+    <string name="pc_access_password">Password</string>
+    <string name="pc_access_new_password">New password</string>
+    <string name="pc_access_certificate">Certificate SHA-256</string>
+    <string name="pc_access_clients">Connected</string>
+    <string name="pc_access_no_clients">Nobody yet</string>
+    <string name="pc_access_disconnect">Disconnect</string>
+    <string name="pc_access_autostop">The server stops by itself after 30 minutes without activity.</string>
+    <string name="pc_access_setting_tls">Encryption (FTPS)</string>
+    <string name="pc_access_setting_tls_hint">Recommended. The computer checks a self-signed certificate.</string>
+    <string name="pc_access_setting_anonymous">Guest access</string>
+    <string name="pc_access_setting_anonymous_hint">Anyone on the network can view and download files, but not change them.</string>
+    <string name="pc_access_port">Port %1$d</string>
+    <string name="pc_access_copy">Copy: %1$s</string>
+    <string name="pc_access_qr_description">QR code with the address %1$s</string>
+    <plurals name="pc_access_connected">
+        <item quantity="one">%d device connected</item>
+        <item quantity="other">%d devices connected</item>
+    </plurals>
 </resources>
