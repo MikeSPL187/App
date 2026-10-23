@@ -162,14 +162,61 @@ interface TrashDao {
     suspend fun delete(ids: List<Long>)
 }
 
+/** Сохранённые серверы без секретов (раздел 9.3); секреты — в `SecretStore`. */
+@Entity(tableName = "connections")
+data class ConnectionEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val protocol: String,
+    val host: String,
+    val port: Int,
+    val username: String,
+    val auth: String,
+    val name: String,
+    val path: String,
+    val ftpSecurity: String,
+    val plainHttp: Boolean,
+    val keyLabel: String,
+    val hostKey: String?,
+    val pinnedCertificate: String?,
+    val createdAt: Long,
+    val lastConnectedAt: Long?,
+)
+
+@Dao
+interface ConnectionDao {
+    @Query("SELECT * FROM connections ORDER BY createdAt")
+    fun observeAll(): Flow<List<ConnectionEntity>>
+
+    @Query("SELECT * FROM connections WHERE id = :id")
+    suspend fun get(id: Long): ConnectionEntity?
+
+    @Insert
+    suspend fun insert(entity: ConnectionEntity): Long
+
+    @Upsert
+    suspend fun upsert(entity: ConnectionEntity)
+
+    @Query("UPDATE connections SET hostKey = :hostKey WHERE id = :id")
+    suspend fun setHostKey(id: Long, hostKey: String?)
+
+    @Query("UPDATE connections SET pinnedCertificate = :spki WHERE id = :id")
+    suspend fun setPinnedCertificate(id: Long, spki: String?)
+
+    @Query("UPDATE connections SET lastConnectedAt = :at WHERE id = :id")
+    suspend fun setLastConnected(id: Long, at: Long)
+
+    @Query("DELETE FROM connections WHERE id = :id")
+    suspend fun delete(id: Long)
+}
+
 @Database(
     entities = [
         FavoriteEntity::class, SearchHistoryEntity::class, FolderPrefEntity::class, TrashEntity::class,
-        PlaybackPositionEntity::class, CleanupHistoryEntity::class,
+        PlaybackPositionEntity::class, CleanupHistoryEntity::class, ConnectionEntity::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = true,
-    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3)],
+    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3), AutoMigration(from = 3, to = 4)],
 )
 abstract class QfDatabase : RoomDatabase() {
     abstract fun favorites(): FavoriteDao
@@ -178,4 +225,5 @@ abstract class QfDatabase : RoomDatabase() {
     abstract fun trash(): TrashDao
     abstract fun playbackPositions(): PlaybackPositionDao
     abstract fun cleanupHistory(): CleanupHistoryDao
+    abstract fun connections(): ConnectionDao
 }

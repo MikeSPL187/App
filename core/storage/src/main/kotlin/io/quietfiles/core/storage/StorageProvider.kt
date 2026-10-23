@@ -2,6 +2,7 @@ package io.quietfiles.core.storage
 
 import io.quietfiles.core.model.FileEntry
 import io.quietfiles.core.model.StorageSpace
+import io.quietfiles.core.model.network.RemoteProblem
 import java.io.InputStream
 import java.io.OutputStream
 
@@ -29,6 +30,20 @@ interface StorageProvider {
     suspend fun delete(path: String)
     suspend fun space(path: String): StorageSpace?
     fun openRead(path: String): InputStream
+
+    /** Чтение с середины файла: перемотка видео и докачка без повторной загрузки начала (F16.7). */
+    fun openRead(path: String, offset: Long): InputStream = openRead(path).also { input ->
+        var left = offset
+        while (left > 0) {
+            val skipped = input.skip(left)
+            if (skipped <= 0) {
+                if (input.read() < 0) break
+                left--
+            } else {
+                left -= skipped
+            }
+        }
+    }
     fun openWrite(path: String): OutputStream
     fun setLastModified(path: String, time: Long)
 }
@@ -41,4 +56,11 @@ sealed class StorageException(message: String, cause: Throwable? = null) : Excep
         StorageException("Not enough space in $path: need $required, have $available")
     class InvalidName(val name: String) : StorageException("Invalid name: $name")
     class Io(message: String, cause: Throwable? = null) : StorageException(message, cause)
+
+    /** Ошибка сетевого хранилища; [problem] подсказывает интерфейсу, что делать дальше. */
+    class Remote(val connectionId: Long, val problem: RemoteProblem, cause: Throwable? = null) :
+        StorageException("Remote $connectionId: $problem", cause)
+
+    /** Действие не поддерживается этим хранилищем (например, корзина на сервере). */
+    class NotSupported(message: String) : StorageException(message)
 }

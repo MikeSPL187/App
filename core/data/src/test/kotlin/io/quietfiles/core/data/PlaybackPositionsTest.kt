@@ -59,10 +59,14 @@ class PlaybackPositionsTest {
             execSQL("INSERT INTO favorites (path, name, isDirectory, addedAt) VALUES ('/a', 'a', 0, 1)")
             close()
         }
-        val migrated = migrations.runMigrationsAndValidate(DB, 3, true)
+        val migrated = migrations.runMigrationsAndValidate(DB, 4, true)
         migrated.query("SELECT COUNT(*) FROM favorites").use {
             it.moveToFirst()
             assertThat(it.getInt(0)).isEqualTo(1)
+        }
+        migrated.query("SELECT COUNT(*) FROM connections").use {
+            it.moveToFirst()
+            assertThat(it.getInt(0)).isEqualTo(0)
         }
         migrated.close()
     }

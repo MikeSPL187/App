@@ -54,6 +54,8 @@ dependencies {
     implementation(project(":core:storage"))
     implementation(project(":core:data"))
     implementation(project(":core:operations"))
+    implementation(project(":core:network"))
+    implementation(project(":core:security"))
     implementation(project(":feature:home"))
     implementation(project(":feature:browser"))
     implementation(project(":feature:search"))

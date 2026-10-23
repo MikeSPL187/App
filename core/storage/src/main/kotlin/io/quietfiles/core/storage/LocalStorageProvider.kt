@@ -117,6 +117,12 @@ class LocalStorageProvider @Inject constructor(
         if (!File(path).exists()) throw StorageException.NotFound(path) else throw StorageException.AccessDenied(path, e)
     }
 
+    override fun openRead(path: String, offset: Long): InputStream {
+        val input = openRead(path)
+        if (offset > 0) (input as FileInputStream).channel.position(offset)
+        return input
+    }
+
     override fun openWrite(path: String): OutputStream = try {
         FileOutputStream(path)
     } catch (e: IOException) {

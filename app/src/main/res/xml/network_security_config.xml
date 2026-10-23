@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  S4: только системные корневые сертификаты, открытый HTTP запрещён.
+  Исключения — серверы, которые пользователь добавил сам: их сертификат (S3) и разрешение на HTTP
+  проверяет код приложения (ServerTrust, HttpClient), а не этот файл.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

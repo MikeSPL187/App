@@ -12,6 +12,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.quietfiles.core.data.db.CleanupHistoryDao
+import io.quietfiles.core.data.db.ConnectionDao
 import io.quietfiles.core.data.index.ContentIndexDao
 import io.quietfiles.core.data.index.ContentIndexDatabase
 import io.quietfiles.core.data.db.FavoriteDao
@@ -51,4 +52,5 @@ object DataModule {
     @Provides fun trash(db: QfDatabase): TrashDao = db.trash()
     @Provides fun playbackPositions(db: QfDatabase): PlaybackPositionDao = db.playbackPositions()
     @Provides fun cleanupHistory(db: QfDatabase): CleanupHistoryDao = db.cleanupHistory()
+    @Provides fun connections(db: QfDatabase): ConnectionDao = db.connections()
 }

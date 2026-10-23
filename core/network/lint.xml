@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!--
+      Пустые checkServerTrusted нашлись внутри библиотек (TrustManagerUtils в commons-net, утилиты bcpkix);
+      приложение их не вызывает: все TLS-подключения идут через ServerTrust из :core:security.
+    -->
+    <issue id="TrustAllX509TrustManager">
+        <ignore path="**/commons-net-*.jar" />
+        <ignore path="**/bcpkix-jdk18on-*.jar" />
+    </issue>
+</lint>
