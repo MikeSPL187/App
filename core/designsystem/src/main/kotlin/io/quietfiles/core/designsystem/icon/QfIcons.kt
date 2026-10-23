@@ -40,6 +40,10 @@ object QfIcons {
     val Settings by lazy { stroke("Settings", "M4 7h9 M17 7h3 M15 5v4 M4 12h3 M11 12h9 M9 10v4 M4 17h11 M19 17h1 M17 15v4") }
     val Tabs by lazy { stroke("Tabs", "M4 6.5A1.5 1.5 0 0 1 5.5 5h13A1.5 1.5 0 0 1 20 6.5v11a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5z M4 9.5h16 M9 5v4.5") }
     val Back by lazy { stroke("Back", "M19 12H5 M11 6l-6 6 6 6") }
+    val Undo by lazy { stroke("Undo", "M9 14L4 9l5-5 M4 9h10.5a5.5 5.5 0 0 1 0 11H11") }
+    val Redo by lazy { stroke("Redo", "M15 14l5-5-5-5 M20 9H9.5a5.5 5.5 0 0 0 0 11H13") }
+    val Replace by lazy { stroke("Replace", "M4 7h11 M12 4l3 3-3 3 M20 17H9 M12 14l-3 3 3 3") }
+    val WrapText by lazy { stroke("WrapText", "M4 6h16 M4 12h13a3 3 0 0 1 0 6h-4 M15 16l-2 2 2 2 M4 18h5") }
     val Close by lazy { stroke("Close", "M6 6l12 12 M18 6L6 18") }
     val More by lazy { stroke("More", "M12 5.5h.01 M12 12h.01 M12 18.5h.01", width = 2.6f) }
     val ChevronRight by lazy { stroke("ChevronRight", "M9 6l6 6-6 6") }

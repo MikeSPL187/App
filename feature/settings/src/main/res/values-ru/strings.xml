@@ -56,4 +56,6 @@
     <string name="privacy_4">Настройки, избранное и история поиска хранятся в приложении и удаляются вместе с ним.</string>
     <string name="settings_tap_icon">Выбор касанием значка</string>
     <string name="settings_tap_icon_hint">Иначе выбор начинается долгим нажатием</string>
+    <string name="settings_built_in_viewers">Встроенные просмотрщики</string>
+    <string name="settings_built_in_viewers_hint">Открывать текстовые файлы здесь, а не в другом приложении</string>
 </resources>

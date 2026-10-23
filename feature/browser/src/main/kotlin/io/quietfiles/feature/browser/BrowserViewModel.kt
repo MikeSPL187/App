@@ -104,6 +104,9 @@ data class PropertiesState(
 
 sealed interface BrowserEvent {
     data class Launch(val intent: Intent) : BrowserEvent
+
+    /** Открыть файл: экран сначала предлагает его встроенным просмотрщикам, потом другим приложениям. */
+    data class OpenFile(val entry: FileEntry, val siblings: List<FileEntry>, val readOnly: Boolean, val asText: Boolean = false) : BrowserEvent
     data class Message(val text: String) : BrowserEvent
     data object ShowOperations : BrowserEvent
     data class OpenRoute(val route: BrowseRoute) : BrowserEvent
@@ -256,7 +259,10 @@ class BrowserViewModel @Inject constructor(
             entry.isDirectory -> push(Location(SourceKind.FOLDER, entry.path))
             ArchiveTools.isBrowsableArchive(entry.name) ->
                 push(Location(SourceKind.ARCHIVE, entry.path, ""))
-            else -> launch(FileIntents.view(context, entry))
+            else -> {
+                val siblings = state.value.items.map { it.entry }.filterNot { it.isDirectory }
+                events.trySend(BrowserEvent.OpenFile(entry, siblings, readOnly = false))
+            }
         }
     }
 
@@ -516,6 +522,10 @@ class BrowserViewModel @Inject constructor(
         }
     }
 
+    fun openAsText(entry: FileEntry) {
+        events.trySend(BrowserEvent.OpenFile(entry, emptyList(), readOnly = false, asText = true))
+    }
+
     fun openWith(entry: FileEntry) =
         launch(FileIntents.chooserForView(context, entry, context.getString(R.string.browser_open_with)))
 
@@ -565,7 +575,7 @@ class BrowserViewModel @Inject constructor(
                 val written = archives.extract(archivePath, dir.path, listOf(inner), control)
                 val file = written.firstOrNull()?.let(::File) ?: return@launch
                 val entry = FileEntry(file.path, file.name, false, file.length(), file.lastModified())
-                launch(FileIntents.view(context, entry))
+                events.send(BrowserEvent.OpenFile(entry, emptyList(), readOnly = true))
             } catch (e: Exception) {
                 message(ErrorMessages.of(context, e))
             }

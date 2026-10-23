@@ -54,6 +54,13 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.rememberUpdatedState
+import io.quietfiles.core.designsystem.component.FileOpener
+import io.quietfiles.core.designsystem.component.LocalFileOpener
+import io.quietfiles.core.model.FileCategory
+import io.quietfiles.feature.editor.EditorRoute
+import io.quietfiles.feature.editor.editorScreen
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import io.quietfiles.MainActivity
@@ -117,11 +124,25 @@ fun AppRoot(
     val scope = rememberCoroutineScope()
     val noAppText = stringResource(R.string.msg_no_app)
     val requestAccess: () -> Unit = { openAllFilesSettings(context) }
+    val builtInViewers by rememberUpdatedState(settings.builtInViewers)
+    val fileOpener = remember(nav) {
+        FileOpener { entry, _, readOnly, asText ->
+            when {
+                asText -> nav.navigate(EditorRoute(entry.path, readOnly))
+                !builtInViewers -> return@FileOpener false
+                entry.category == FileCategory.TEXT -> nav.navigate(EditorRoute(entry.path, readOnly))
+                else -> return@FileOpener false
+            }
+            true
+        }
+    }
     val openFile: (FileEntry) -> Unit = { entry ->
-        try {
-            context.startActivity(FileIntents.view(context, entry))
-        } catch (e: ActivityNotFoundException) {
-            scope.launch { snackbar.showSnackbar(noAppText) }
+        if (!fileOpener.open(entry, emptyList(), readOnly = false, asText = false)) {
+            try {
+                context.startActivity(FileIntents.view(context, entry))
+            } catch (e: ActivityNotFoundException) {
+                scope.launch { snackbar.showSnackbar(noAppText) }
+            }
         }
     }
 
@@ -179,68 +200,72 @@ fun AppRoot(
 
     val backStack by nav.currentBackStackEntryAsState()
     val destination = backStack?.destination
-    val fullScreen = destination?.hasRoute(SearchRoute::class) == true || destination?.hasRoute(SettingsRoute::class) == true
+    val fullScreen = destination?.hasRoute(SearchRoute::class) == true || destination?.hasRoute(SettingsRoute::class) == true ||
+        destination?.hasRoute(EditorRoute::class) == true
     val showNav = !fullScreen && !selectionMode
 
-    BoxWithConstraints(Modifier.fillMaxSize()) {
-        val wide = maxWidth >= 600.dp
-        Scaffold(
-            snackbarHost = { SnackbarHost(snackbar) },
-            contentWindowInsets = WindowInsets(0),
-            bottomBar = {
-                if (!wide) {
-                    Column {
-                        AnimatedVisibility(visible = hasActive && !showOperations) {
-                            OperationsPill(operations) { showOperations = true }
-                        }
-                        AnimatedVisibility(visible = showNav) {
-                            NavigationBar {
-                                TopLevels.forEach { item ->
-                                    val selected = destination?.hierarchy?.any { it.hasRoute(item.routeClass) } == true
-                                    NavigationBarItem(
-                                        selected = selected,
-                                        onClick = { nav.navigateTopLevel(item.route) },
-                                        icon = { Icon(item.icon, contentDescription = null) },
-                                        label = { Text(stringResource(item.label)) },
-                                    )
+    CompositionLocalProvider(LocalFileOpener provides fileOpener) {
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            val wide = maxWidth >= 600.dp
+            Scaffold(
+                snackbarHost = { SnackbarHost(snackbar) },
+                contentWindowInsets = WindowInsets(0),
+                bottomBar = {
+                    if (!wide) {
+                        Column {
+                            AnimatedVisibility(visible = hasActive && !showOperations) {
+                                OperationsPill(operations) { showOperations = true }
+                            }
+                            AnimatedVisibility(visible = showNav) {
+                                NavigationBar {
+                                    TopLevels.forEach { item ->
+                                        val selected = destination?.hierarchy?.any { it.hasRoute(item.routeClass) } == true
+                                        NavigationBarItem(
+                                            selected = selected,
+                                            onClick = { nav.navigateTopLevel(item.route) },
+                                            icon = { Icon(item.icon, contentDescription = null) },
+                                            label = { Text(stringResource(item.label)) },
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            },
-        ) { padding ->
-            Row(Modifier.fillMaxSize().padding(padding)) {
-                if (wide && showNav) {
-                    NavigationRail(Modifier.padding(top = 8.dp)) {
-                        Spacer(Modifier.padding(top = 8.dp))
-                        TopLevels.forEach { item ->
-                            val selected = destination?.hierarchy?.any { it.hasRoute(item.routeClass) } == true
-                            NavigationRailItem(
-                                selected = selected,
-                                onClick = { nav.navigateTopLevel(item.route) },
-                                icon = { Icon(item.icon, contentDescription = null) },
-                                label = { Text(stringResource(item.label)) },
-                            )
+                },
+            ) { padding ->
+                Row(Modifier.fillMaxSize().padding(padding)) {
+                    if (wide && showNav) {
+                        NavigationRail(Modifier.padding(top = 8.dp)) {
+                            Spacer(Modifier.padding(top = 8.dp))
+                            TopLevels.forEach { item ->
+                                val selected = destination?.hierarchy?.any { it.hasRoute(item.routeClass) } == true
+                                NavigationRailItem(
+                                    selected = selected,
+                                    onClick = { nav.navigateTopLevel(item.route) },
+                                    icon = { Icon(item.icon, contentDescription = null) },
+                                    label = { Text(stringResource(item.label)) },
+                                )
+                            }
                         }
                     }
-                }
-                Box(Modifier.weight(1f)) {
-                    AppNavHost(
-                        nav = nav,
-                        onOpenFile = openFile,
-                        onRequestAccess = requestAccess,
-                        onShowOperations = { showOperations = true },
-                        onSelectionModeChange = { selectionMode = it },
-                    )
-                    if (wide && hasActive && !showOperations) {
-                        Box(Modifier.navigationBarsPadding()) {
-                            OperationsPill(operations) { showOperations = true }
+                    Box(Modifier.weight(1f)) {
+                        AppNavHost(
+                            nav = nav,
+                            onOpenFile = openFile,
+                            onRequestAccess = requestAccess,
+                            onShowOperations = { showOperations = true },
+                            onSelectionModeChange = { selectionMode = it },
+                        )
+                        if (wide && hasActive && !showOperations) {
+                            Box(Modifier.navigationBarsPadding()) {
+                                OperationsPill(operations) { showOperations = true }
+                            }
                         }
                     }
                 }
             }
         }
+
     }
 
     if (showOperations) {
@@ -283,6 +308,17 @@ private fun AppNavHost(
             onOpenFolder = { nav.navigate(BrowseRoute(SourceKind.FOLDER, it)) },
         )
         settingsScreen(onBack = { nav.popBackStack() }, onRequestAccess = onRequestAccess)
+        editorScreen(
+            onBack = { nav.popBackStack() },
+            onOpenExternally = { path ->
+                val file = java.io.File(path)
+                runCatching {
+                    context.startActivity(
+                        FileIntents.chooserForView(context, FileEntry(path, file.name, false, file.length(), file.lastModified()), ""),
+                    )
+                }
+            },
+        )
         composable<ToolsRoute> {
             ToolsScreen(onOpen = { nav.navigate(it) }, onSettings = { nav.navigate(SettingsRoute) })
         }

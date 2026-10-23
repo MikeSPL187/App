@@ -34,6 +34,10 @@ class SettingsRepository @Inject constructor(
         val trashDays = intPreferencesKey("trash_retention_days")
         val confirmDelete = booleanPreferencesKey("confirm_delete")
         val tapIcon = booleanPreferencesKey("tap_icon_to_select")
+        val builtInViewers = booleanPreferencesKey("built_in_viewers")
+        val editorFontSize = intPreferencesKey("editor_font_size")
+        val editorWrap = booleanPreferencesKey("editor_wrap")
+        val editorLineNumbers = booleanPreferencesKey("editor_line_numbers")
         val appLock = booleanPreferencesKey("app_lock")
         val secureScreen = booleanPreferencesKey("secure_screen")
         val stripLocation = booleanPreferencesKey("strip_location_on_share")
@@ -57,6 +61,10 @@ class SettingsRepository @Inject constructor(
             trashRetentionDays = p[Keys.trashDays] ?: d.trashRetentionDays,
             confirmDelete = p[Keys.confirmDelete] ?: d.confirmDelete,
             tapIconToSelect = p[Keys.tapIcon] ?: d.tapIconToSelect,
+            builtInViewers = p[Keys.builtInViewers] ?: d.builtInViewers,
+            editorFontSize = p[Keys.editorFontSize] ?: d.editorFontSize,
+            editorWrap = p[Keys.editorWrap] ?: d.editorWrap,
+            editorLineNumbers = p[Keys.editorLineNumbers] ?: d.editorLineNumbers,
             appLock = p[Keys.appLock] ?: d.appLock,
             secureScreen = p[Keys.secureScreen] ?: d.secureScreen,
             stripLocationOnShare = p[Keys.stripLocation] ?: d.stripLocationOnShare,
@@ -94,6 +102,18 @@ class SettingsRepository @Inject constructor(
     }
     suspend fun setConfirmDelete(enabled: Boolean) {
         store.edit { it[Keys.confirmDelete] = enabled }
+    }
+    suspend fun setBuiltInViewers(enabled: Boolean) {
+        store.edit { it[Keys.builtInViewers] = enabled }
+    }
+    suspend fun setEditorFontSize(sp: Int) {
+        store.edit { it[Keys.editorFontSize] = sp.coerceIn(UserSettings.EDITOR_FONT_SIZES) }
+    }
+    suspend fun setEditorWrap(enabled: Boolean) {
+        store.edit { it[Keys.editorWrap] = enabled }
+    }
+    suspend fun setEditorLineNumbers(enabled: Boolean) {
+        store.edit { it[Keys.editorLineNumbers] = enabled }
     }
     suspend fun setTapIconToSelect(enabled: Boolean) {
         store.edit { it[Keys.tapIcon] = enabled }

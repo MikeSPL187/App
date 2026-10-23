@@ -63,7 +63,7 @@ import io.quietfiles.core.operations.ArchiveTools
 import java.text.NumberFormat
 
 enum class ItemAction {
-    OPEN, OPEN_WITH, SHARE, COPY, CUT, RENAME, COMPRESS, EXTRACT_HERE, EXTRACT_FOLDER, EXTRACT_ENTRY,
+    OPEN, OPEN_WITH, OPEN_AS_TEXT, SHARE, COPY, CUT, RENAME, COMPRESS, EXTRACT_HERE, EXTRACT_FOLDER, EXTRACT_ENTRY,
     FAVORITE, PIN, PROPERTIES, OPEN_LOCATION, DELETE, RESTORE, DELETE_FOREVER,
 }
 
@@ -99,6 +99,9 @@ fun ItemActionsSheet(
                 }
                 if (!entry.isDirectory) {
                     add(ActionRow(ItemAction.OPEN_WITH, stringResource(R.string.action_open_with), QfIcons.OpenWith))
+                    if (entry.category != FileCategory.TEXT) {
+                        add(ActionRow(ItemAction.OPEN_AS_TEXT, stringResource(R.string.action_open_as_text), QfIcons.Text))
+                    }
                     add(ActionRow(ItemAction.SHARE, stringResource(R.string.action_share), QfIcons.Share))
                 }
                 if (kind != SourceKind.FOLDER) add(ActionRow(ItemAction.OPEN_LOCATION, stringResource(R.string.action_open_location), QfIcons.FolderOpen))

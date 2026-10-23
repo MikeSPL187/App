@@ -193,4 +193,5 @@
     <string name="extract_bomb_message">The archive expands to %1$s (compression ×%2$d). Archives like this can fill the whole storage.</string>
     <string name="extract_bomb_confirm">Extract</string>
     <string name="browser_share_location_failed">Couldn’t remove location from the photo, so it wasn’t shared. You can turn this off in Settings.</string>
+    <string name="action_open_as_text">Open as text</string>
 </resources>

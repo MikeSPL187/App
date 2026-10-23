@@ -98,6 +98,7 @@ internal fun groupByVolume(results: List<FileEntry>, volumes: List<StorageVolume
 
 sealed interface SearchEvent {
     data class Launch(val intent: android.content.Intent) : SearchEvent
+    data class OpenFile(val entry: FileEntry, val siblings: List<FileEntry>) : SearchEvent
 }
 
 @OptIn(FlowPreview::class)
@@ -150,7 +151,7 @@ class SearchViewModel @Inject constructor(
 
     fun openFile(entry: FileEntry) {
         submit()
-        events.trySend(SearchEvent.Launch(FileIntents.view(context, entry)))
+        events.trySend(SearchEvent.OpenFile(entry, state.value.results.filterNot { it.isDirectory }))
     }
 
     private suspend fun run(f: SearchFilters) {

@@ -8,7 +8,11 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.longClick
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasScrollAction
+import androidx.compose.ui.test.hasSetTextAction
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
@@ -146,8 +150,9 @@ class AppSmokeTest {
 
         waitForText("Поиск файлов")
         compose.onNodeWithContentDescription("Настройки").performClick()
-        waitForText("Безопасность и конфиденциальность")
+        waitForText("Оформление")
         compose.onNode(hasScrollAction()).performScrollToNode(hasText("Удалять геоданные при отправке"))
+        waitForText("Безопасность и конфиденциальность")
         snapshot("13_settings")
     }
 
@@ -169,6 +174,50 @@ class AppSmokeTest {
     private fun pressBack() {
         scenario!!.onActivity { it.onBackPressedDispatcher.onBackPressed() }
         compose.waitForIdle()
+    }
+
+    @Test
+    fun editorOpensEditsFindsAndSaves() {
+        val yaml = File(Environment.getExternalStorageDirectory(), "Documents/Сервер/config.yaml")
+        yaml.parentFile!!.mkdirs()
+        yaml.writeText(CONFIG_YAML.replace("\n", "\r\n"))
+        grantAllFilesAccess()
+        scenario = ActivityScenario.launch(MainActivity::class.java)
+        clickText("Обзор")
+        clickText("Внутренняя память")
+        clickText("Documents")
+        clickText("Сервер")
+        clickText("config.yaml")
+        waitForText("YAML · UTF-8 · CRLF")
+        snapshot("20_editor")
+
+        scenario!!.onActivity { activity ->
+            val editor = findEditor(activity.window.decorView)
+            editor.setSelection(editor.text.indexOf("\"guest\"") + 1)
+            editor.text.insert(editor.selectionStart, "new-")
+        }
+        compose.onNodeWithContentDescription("Найти").performClick()
+        compose.onNode(hasSetTextAction() and hasContentDescription("Найти")).performTextInput("name")
+        waitForText("1 из 2")
+        snapshot("21_editor_search")
+
+        compose.onNodeWithText("Сохранить").performClick()
+        waitForText("Сохранено")
+        val saved = yaml.readText()
+        check(saved.contains("\"new-guest\"")) { saved }
+        check(saved.contains("\r\n")) { "line endings were not preserved" }
+
+        clickText("YAML · UTF-8 · CRLF")
+        waitForText("Кодировка")
+        snapshot("22_editor_params")
+    }
+
+    private fun findEditor(view: android.view.View): io.quietfiles.feature.editor.ui.CodeEditText {
+        if (view is io.quietfiles.feature.editor.ui.CodeEditText) return view
+        if (view is android.view.ViewGroup) for (i in 0 until view.childCount) {
+            runCatching { return findEditor(view.getChildAt(i)) }
+        }
+        error("editor not found")
     }
 
     @Test
@@ -194,15 +243,53 @@ class AppSmokeTest {
         compose.waitForIdle()
         var bitmap: Bitmap? = null
         scenario!!.onActivity { activity ->
-            val view = activity.window.decorView
-            bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888).also { view.draw(Canvas(it)) }
+            val decor = activity.window.decorView
+            bitmap = Bitmap.createBitmap(decor.width, decor.height, Bitmap.Config.ARGB_8888).also { b ->
+                val canvas = Canvas(b)
+                // Все окна приложения по порядку: само окно, затем диалоги и нижние листы поверх.
+                rootViews().ifEmpty { listOf(decor) }.forEach { root ->
+                    val location = IntArray(2).also(root::getLocationOnScreen)
+                    canvas.save()
+                    canvas.translate(location[0].toFloat(), location[1].toFloat())
+                    root.draw(canvas)
+                    canvas.restore()
+                }
+            }
         }
         val dir = File(System.getProperty("user.dir"), "build/screenshots").apply { mkdirs() }
         File(dir, "$name.png").outputStream().use { bitmap!!.compress(Bitmap.CompressFormat.PNG, 100, it) }
     }
 
+    /** Корневые окна процесса через скрытый WindowManagerGlobal — так на снимок попадают диалоги. */
+    private fun rootViews(): List<android.view.View> = runCatching {
+        val cls = Class.forName("android.view.WindowManagerGlobal")
+        val global = cls.getMethod("getInstance").invoke(null)
+        @Suppress("UNCHECKED_CAST")
+        val names = cls.getMethod("getViewRootNames").invoke(global) as Array<String>
+        names.mapNotNull { cls.getMethod("getRootView", String::class.java).invoke(global, it) as? android.view.View }
+            .filter { it.isShown && it.width > 0 }
+    }.getOrDefault(emptyList())
+
     private companion object {
         const val TIMEOUT_MS = 5_000L
+        const val CONFIG_YAML = """# Домашний сервер
+server:
+  host: 192.168.1.50
+  port: 8080
+  tls: true
+
+storage:
+  path: "/mnt/nas/media"
+  max_size: 2TB
+  # TODO: включить сжатие
+  compress: false
+
+users:
+  - name: "ivan"
+    role: admin
+  - name: "guest"
+    role: read-only
+"""
         val PALETTE = listOf(0xFF4E8C7A.toInt(), 0xFFE0A458.toInt(), 0xFF5B7DB1.toInt(), 0xFFC1666B.toInt(), 0xFF8E7DBE.toInt())
     }
 }

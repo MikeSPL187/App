@@ -54,4 +54,6 @@
     <string name="privacy_4">Settings, favorites and search history are stored in the app and removed when you uninstall it.</string>
     <string name="settings_tap_icon">Select by tapping the icon</string>
     <string name="settings_tap_icon_hint">Otherwise selection starts with a long press</string>
+    <string name="settings_built_in_viewers">Built-in viewers</string>
+    <string name="settings_built_in_viewers_hint">Open text files here; otherwise another app is offered</string>
 </resources>

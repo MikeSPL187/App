@@ -64,11 +64,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.quietfiles.core.designsystem.component.EmptyState
 import io.quietfiles.core.designsystem.component.FileTile
 import io.quietfiles.core.designsystem.component.Formatters
+import io.quietfiles.core.designsystem.component.LocalFileOpener
 import io.quietfiles.core.designsystem.component.SectionLabel
 import io.quietfiles.core.designsystem.component.rememberFormatters
 import io.quietfiles.core.designsystem.icon.QfIcons
 import io.quietfiles.core.designsystem.theme.MonoTextStyle
 import io.quietfiles.core.designsystem.theme.QfTheme
+import io.quietfiles.core.storage.FileIntents
 import io.quietfiles.core.model.FileEntry
 import io.quietfiles.core.model.StorageVolumeInfo
 import io.quietfiles.feature.browser.volumeLabel
@@ -87,6 +89,7 @@ fun SearchScreen(
     val formatters = rememberFormatters()
     val snackbar = remember { SnackbarHostState() }
     val noApp = stringResource(R.string.search_no_app)
+    val fileOpener = LocalFileOpener.current
     var query by rememberSaveable { mutableStateOf(state.filters.query) }
     val focus = remember { FocusRequester() }
 
@@ -98,6 +101,13 @@ fun SearchScreen(
                     context.startActivity(event.intent)
                 } catch (e: ActivityNotFoundException) {
                     snackbar.showSnackbar(noApp)
+                }
+                is SearchEvent.OpenFile -> if (!fileOpener.open(event.entry, event.siblings, readOnly = false, asText = false)) {
+                    try {
+                        context.startActivity(FileIntents.view(context, event.entry))
+                    } catch (e: ActivityNotFoundException) {
+                        snackbar.showSnackbar(noApp)
+                    }
                 }
             }
         }

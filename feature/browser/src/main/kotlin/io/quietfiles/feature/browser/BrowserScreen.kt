@@ -65,7 +65,9 @@ import io.quietfiles.core.designsystem.component.Formatters
 import io.quietfiles.core.designsystem.component.SectionLabel
 import io.quietfiles.core.designsystem.component.ToolbarAction
 import io.quietfiles.core.designsystem.component.rememberFormatters
+import io.quietfiles.core.designsystem.component.LocalFileOpener
 import io.quietfiles.core.designsystem.icon.QfIcons
+import io.quietfiles.core.storage.FileIntents
 import io.quietfiles.core.model.FileEntry
 import io.quietfiles.core.model.FileNames
 import io.quietfiles.core.model.SortField
@@ -109,6 +111,7 @@ fun BrowserScreen(
     var refreshing by remember { mutableStateOf(false) }
     var createMenu by rememberSaveable { mutableStateOf(false) }
     val noAppMessage = stringResource(R.string.browser_no_app)
+    val fileOpener = LocalFileOpener.current
 
     LaunchedEffect(viewModel) {
         viewModel.eventFlow.collect { event ->
@@ -117,6 +120,13 @@ fun BrowserScreen(
                     context.startActivity(event.intent)
                 } catch (e: ActivityNotFoundException) {
                     snackbar.showSnackbar(noAppMessage)
+                }
+                is BrowserEvent.OpenFile -> if (!fileOpener.open(event.entry, event.siblings, event.readOnly, event.asText)) {
+                    try {
+                        context.startActivity(FileIntents.view(context, event.entry))
+                    } catch (e: ActivityNotFoundException) {
+                        snackbar.showSnackbar(noAppMessage)
+                    }
                 }
                 is BrowserEvent.Message -> snackbar.showSnackbar(event.text)
                 BrowserEvent.ShowOperations -> onShowOperations()
@@ -259,6 +269,7 @@ fun BrowserScreen(
                 when (action) {
                     ItemAction.OPEN -> viewModel.open(o.item)
                     ItemAction.OPEN_WITH -> viewModel.openWith(o.item.entry)
+                    ItemAction.OPEN_AS_TEXT -> viewModel.openAsText(o.item.entry)
                     ItemAction.SHARE -> viewModel.share(list)
                     ItemAction.COPY -> viewModel.copySelection(list)
                     ItemAction.CUT -> viewModel.cutSelection(list)
