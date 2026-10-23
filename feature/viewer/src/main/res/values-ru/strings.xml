@@ -30,4 +30,8 @@
     <string name="photo_has_serial">В фото есть серийные номера камеры</string>
     <string name="photo_strip_on_share">Удалять геоданные и серийный номер камеры из копии при «Поделиться»</string>
     <string name="photo_strip_metadata">Убрать метаданные</string>
+    <string name="photo_details_title">Сведения</string>
+    <string name="photo_open">Открыть</string>
+    <string name="photo_resolution_small">%1$d × %2$d</string>
+    <string name="photo_cannot_open">Не удалось открыть фото</string>
 </resources>

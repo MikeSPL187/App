@@ -19,6 +19,11 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTouchInput
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
+import coil3.ImageLoader
+import coil3.SingletonImageLoader
+import coil3.imageDecoderEnabled
+import coil3.request.allowHardware
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
@@ -36,6 +41,9 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import java.io.File
+import java.time.Duration
+import android.os.Looper
+import org.robolectric.Shadows.shadowOf
 import javax.inject.Inject
 
 /**
@@ -62,6 +70,15 @@ class AppSmokeTest {
     @Before
     fun setUp() {
         hilt.inject()
+        // В тесте приложение — HiltTestApplication, поэтому загрузчик Coil задаём здесь: Robolectric
+        // не умеет ImageDecoder (декодируем через BitmapFactory), а аппаратные битмапы не рисуются
+        // на программном Canvas снимка экрана.
+        SingletonImageLoader.setUnsafe(
+            ImageLoader.Builder(ApplicationProvider.getApplicationContext<android.content.Context>())
+                .imageDecoderEnabled(false)
+                .allowHardware(false)
+                .build(),
+        )
         val root = Environment.getExternalStorageDirectory()
         File(root, "Download").mkdirs()
         File(root, "Download/Отчёт за квартал.pdf").writeBytes(ByteArray(240_000))
@@ -153,12 +170,12 @@ class AppSmokeTest {
         waitForText("Фото")
         compose.onAllNodesWithText("Фото").onLast().performClick()
         waitForText("Сегодня")
+        waitForImages()
         snapshot("09_photos")
 
         compose.onNodeWithContentDescription("IMG_0001.jpg").performClick()
         waitForText("Повернуть")
-        // Coil декодирует кадр в фоне — даём ему время, чтобы снимок показал само фото.
-        Thread.sleep(1_500)
+        waitForImages()
         snapshot("14_photo_viewer")
         compose.onNodeWithContentDescription("Сведения о фото").performClick()
         waitForText("В фото есть координаты съёмки")
@@ -256,6 +273,19 @@ class AppSmokeTest {
         compose.waitUntil(TIMEOUT_MS) { compose.onAllNodesWithText(text).fetchSemanticsNodes().isNotEmpty() }
     }
 
+    /**
+     * Coil декодирует картинки на фоновых потоках, а результат доставляет через главный лупер.
+     * Тест сам работает на главном потоке, поэтому просто спать нельзя — ждём, прокручивая лупер
+     * и двигая его часы: по ним идёт и плавное появление кадра.
+     */
+    private fun waitForImages() {
+        repeat(IMAGE_WAIT_STEPS) {
+            Thread.sleep(50)
+            shadowOf(Looper.getMainLooper()).idleFor(Duration.ofMillis(50))
+            compose.waitForIdle()
+        }
+    }
+
     private fun clickText(text: String) {
         waitForText(text)
         compose.onAllNodesWithText(text).onFirst().performClick()
@@ -295,6 +325,7 @@ class AppSmokeTest {
 
     private companion object {
         const val TIMEOUT_MS = 5_000L
+        const val IMAGE_WAIT_STEPS = 30
         const val CONFIG_YAML = """# Домашний сервер
 server:
   host: 192.168.1.50

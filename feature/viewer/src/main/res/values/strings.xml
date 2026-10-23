@@ -30,4 +30,8 @@
     <string name="photo_has_serial">This photo contains camera serial numbers</string>
     <string name="photo_strip_on_share">Remove location and camera serial numbers from the copy when sharing</string>
     <string name="photo_strip_metadata">Remove metadata</string>
+    <string name="photo_details_title">Details</string>
+    <string name="photo_open">Open</string>
+    <string name="photo_resolution_small">%1$d × %2$d</string>
+    <string name="photo_cannot_open">Can\'t open this photo</string>
 </resources>

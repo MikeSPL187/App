@@ -2,10 +2,6 @@ package io.quietfiles.feature.viewer.photo
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
-import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,7 +20,6 @@ import io.quietfiles.core.operations.OperationRequest
 import io.quietfiles.core.storage.FileIntents
 import io.quietfiles.core.storage.LocationStripper
 import io.quietfiles.core.storage.MediaIndex
-import io.quietfiles.core.storage.StorageException
 import io.quietfiles.core.storage.StorageProvider
 import io.quietfiles.core.storage.StorageVolumes
 import io.quietfiles.core.common.displayPath
@@ -45,7 +40,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import java.io.File
-import java.io.FileOutputStream
 import javax.inject.Inject
 
 /** Просмотр фото (F8). [session] — список соседних файлов из [ViewerSessions]. */
@@ -219,43 +213,18 @@ class PhotoViewModel @Inject constructor(
     /** Поворот на 90° по часовой (F8.2): для JPEG — только тег EXIF, без перекодирования и потери качества. */
     fun rotate() {
         val photo = _state.value.current ?: return
-        if (!PhotoDetails.isRotatable(photo.path)) {
+        if (!PhotoRotation.isSupported(photo.path)) {
             events.trySend(PhotoEvent.Message(context.getString(R.string.photo_rotate_unsupported)))
             return
         }
         viewModelScope.launch {
             try {
-                withContext(io) { rotateFile(photo.path) }
+                withContext(io) { PhotoRotation.rotateClockwise(photo.path) }
                 mediaIndex.notifyChanged(listOf(photo.path))
                 bumpVersion(photo.path)
                 loadDetails()
             } catch (e: Exception) {
                 events.send(PhotoEvent.Message(ErrorMessages.of(context, e)))
-            }
-        }
-    }
-
-    private fun rotateFile(path: String) {
-        val file = File(path)
-        if (!file.canWrite()) throw StorageException.AccessDenied(path)
-        when (FileNames.extension(path).lowercase()) {
-            "jpg", "jpeg" -> ExifInterface(path).apply {
-                rotate(90)
-                saveAttributes()
-            }
-            else -> {
-                // PNG хранит пиксели без потерь, поэтому пересохранение ничего не портит.
-                val source = BitmapFactory.decodeFile(path) ?: throw StorageException.Io("Cannot decode $path")
-                val rotated = Bitmap.createBitmap(source, 0, 0, source.width, source.height, Matrix().apply { postRotate(90f) }, true)
-                val temp = File(file.parentFile, ".${file.name}.qfpart")
-                try {
-                    FileOutputStream(temp).use { rotated.compress(Bitmap.CompressFormat.PNG, 100, it) }
-                    if (!temp.renameTo(file)) throw StorageException.Io("Cannot replace $path")
-                } finally {
-                    temp.delete()
-                    source.recycle()
-                    rotated.recycle()
-                }
             }
         }
     }

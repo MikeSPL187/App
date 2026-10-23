@@ -2,7 +2,6 @@ package io.quietfiles.feature.viewer.photo
 
 import android.graphics.BitmapFactory
 import androidx.exifinterface.media.ExifInterface
-import io.quietfiles.core.model.FileNames
 import java.io.File
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -82,7 +81,5 @@ data class PhotoDetails(
         ).joinToString(" · ").ifEmpty { null }
 
         private fun trim(v: Double): String = if (v == Math.floor(v)) v.toLong().toString() else "%.1f".format(java.util.Locale.ROOT, v)
-
-        fun isRotatable(path: String) = FileNames.extension(path).lowercase() in setOf("jpg", "jpeg", "png")
     }
 }

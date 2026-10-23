@@ -68,6 +68,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import io.quietfiles.core.designsystem.component.rememberFormatters
@@ -185,16 +186,31 @@ internal fun PhotoImage(photo: FileEntry, version: Long?, full: Boolean, modifie
             .data(File(photo.path))
             .memoryCacheKey("${photo.path}#${version ?: photo.lastModified}#$full")
             .diskCacheKey("${photo.path}#${version ?: photo.lastModified}#$full")
-            .apply { if (full) size(MAX_DECODE_PX) else size(THUMB_PX) }
-            .crossfade(full)
+            // Полный кадр появляется плавно по общей настройке загрузчика, миниатюры — сразу.
+            .apply { if (full) size(MAX_DECODE_PX) else size(THUMB_PX).crossfade(false) }
             .build()
     }
-    AsyncImage(
-        model = request,
-        contentDescription = photo.name,
-        contentScale = if (full) ContentScale.Fit else ContentScale.Crop,
-        modifier = modifier.fillMaxSize(),
-    )
+    var failed by remember(request) { mutableStateOf(false) }
+    Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        AsyncImage(
+            model = request,
+            contentDescription = photo.name,
+            contentScale = if (full) ContentScale.Fit else ContentScale.Crop,
+            onState = { failed = it is AsyncImagePainter.State.Error },
+            modifier = Modifier.fillMaxSize(),
+        )
+        // Файл повреждён или формат не поддерживается устройством: говорим об этом, а не показываем пустоту.
+        if (failed) {
+            if (full) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Icon(QfIcons.Image, null, tint = Color.White.copy(alpha = 0.6f), modifier = Modifier.size(48.dp))
+                    Text(stringResource(R.string.photo_cannot_open), color = Color.White.copy(alpha = 0.8f), fontSize = 14.sp)
+                }
+            } else {
+                Icon(QfIcons.Image, null, tint = Color.White.copy(alpha = 0.5f), modifier = Modifier.size(18.dp))
+            }
+        }
+    }
 }
 
 @Composable
@@ -271,7 +287,7 @@ private fun ThumbnailStrip(state: PhotoUiState, onSelect: (Int) -> Unit) {
     }
     LazyRow(
         state = listState,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
         contentPadding = PaddingValues(horizontal = 16.dp),
         modifier = Modifier.fillMaxWidth(),
     ) {

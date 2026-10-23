@@ -49,19 +49,30 @@ internal fun PhotoDetailsSheet(state: PhotoUiState, viewModel: PhotoViewModel, o
             Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).navigationBarsPadding().padding(bottom = 18.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Text(photo.name, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(horizontal = 4.dp))
+            Text(stringResource(R.string.photo_details_title), style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(horizontal = 4.dp))
             Column(Modifier.clip(RoundedCornerShape(20.dp)), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 val ext = FileNames.extension(photo.name).uppercase()
                 val resolution = d?.takeIf { it.width > 0 }?.let {
-                    stringResource(R.string.photo_resolution, it.width, it.height, "%.1f".format(it.megapixels).replace('.', ','))
+                    // Мегапиксели имеют смысл только для настоящих снимков, а не для значков 160 × 160.
+                    if (it.megapixels >= 0.1) {
+                        stringResource(R.string.photo_resolution, it.width, it.height, "%.1f".format(it.megapixels).replace('.', ','))
+                    } else {
+                        stringResource(R.string.photo_resolution_small, it.width, it.height)
+                    }
                 }
                 InfoRow(QfIcons.File, stringResource(R.string.photo_file), listOfNotNull(ext.ifEmpty { null }, formatters.size.format(photo.size), resolution).joinToString(" · "))
                 InfoRow(QfIcons.Calendar, stringResource(R.string.photo_taken), formatters.date.long(d?.takenAt ?: photo.lastModified))
                 val cameraLine = d?.let { PhotoDetails.cameraLine(it, stringResource(R.string.photo_seconds), stringResource(R.string.photo_mm)) }
-                if (d?.camera != null || cameraLine != null) {
-                    InfoRow(QfIcons.Camera, d?.camera ?: stringResource(R.string.photo_camera), cameraLine ?: "")
-                }
-                InfoRow(QfIcons.Folder, stringResource(R.string.photo_folder), viewModel.folderLabel(photo.path), mono = true, onClick = onOpenFolder)
+                val cameraValue = listOfNotNull(d?.camera, cameraLine).joinToString(" · ")
+                if (cameraValue.isNotEmpty()) InfoRow(QfIcons.Camera, stringResource(R.string.photo_camera), cameraValue)
+                InfoRow(
+                    QfIcons.Folder,
+                    stringResource(R.string.photo_folder),
+                    viewModel.folderLabel(photo.path),
+                    mono = true,
+                    link = stringResource(R.string.photo_open),
+                    onClick = onOpenFolder,
+                )
             }
             if (d?.hasPrivateData == true) PrivacyBlock(d.hasLocation, state.stripOnShare, viewModel)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -77,7 +88,14 @@ internal fun PhotoDetailsSheet(state: PhotoUiState, viewModel: PhotoViewModel, o
 }
 
 @Composable
-private fun InfoRow(icon: ImageVector, label: String, value: String, mono: Boolean = false, onClick: (() -> Unit)? = null) {
+private fun InfoRow(
+    icon: ImageVector,
+    label: String,
+    value: String,
+    mono: Boolean = false,
+    link: String? = null,
+    onClick: (() -> Unit)? = null,
+) {
     Row(
         Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceContainerHigh)
             .then(if (onClick != null) Modifier.clickable(role = Role.Button, onClick = onClick) else Modifier)
@@ -92,7 +110,14 @@ private fun InfoRow(icon: ImageVector, label: String, value: String, mono: Boole
                 Text(value, style = if (mono) MonoTextStyle.copy(color = MaterialTheme.colorScheme.onSurface) else MaterialTheme.typography.bodyLarge)
             }
         }
-        if (onClick != null) Icon(QfIcons.ChevronRight, null, tint = MaterialTheme.colorScheme.outline, modifier = Modifier.align(Alignment.CenterVertically))
+        if (link != null) {
+            Text(
+                link,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.align(Alignment.CenterVertically),
+            )
+        }
     }
 }
 
