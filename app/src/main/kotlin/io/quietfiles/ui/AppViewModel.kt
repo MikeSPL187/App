@@ -16,6 +16,7 @@ import io.quietfiles.core.model.OperationStatus
 import io.quietfiles.core.operations.OperationQueue
 import io.quietfiles.core.operations.OperationRequest
 import io.quietfiles.core.operations.destinationPath
+import io.quietfiles.feature.viewer.ViewerSessions
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,6 +44,8 @@ class AppViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val queue: OperationQueue,
     private val settings: SettingsRepository,
+    /** Списки соседних файлов для просмотрщиков: открываются из любого раздела. */
+    val viewerSessions: ViewerSessions,
 ) : ViewModel() {
 
     val operations: StateFlow<List<OperationSnapshot>> = queue.operations

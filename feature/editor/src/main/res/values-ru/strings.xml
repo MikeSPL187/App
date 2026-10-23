@@ -62,7 +62,4 @@
     <string name="editor_sp">%1$d sp</string>
     <string name="editor_wrap">Переносить строки</string>
     <string name="editor_line_numbers">Номера строк</string>
-    <string name="editor_volume_internal">Память</string>
-    <string name="editor_volume_sd">SD-карта</string>
-    <string name="editor_volume_usb">USB-накопитель</string>
 </resources>

@@ -13,8 +13,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Удаление геоданных при отправке (F14, «Конфиденциальность»). Оригинал не меняется: другим
- * приложениям уходит копия без GPS-тегов из кеша, который очищается при следующем запуске.
+ * Удаление геоданных и серийных номеров камеры при отправке (F8.4, F14). Оригинал не меняется:
+ * другим приложениям уходит копия из кеша, который очищается раз в сутки.
  */
 @Singleton
 class LocationStripper @Inject constructor(
@@ -26,21 +26,36 @@ class LocationStripper @Inject constructor(
     /** Путь, который можно отправлять: оригинал, если в нём нет координат, иначе очищенная копия. */
     suspend fun forSharing(path: String): String = withContext(io) {
         if (FileNames.extension(path).lowercase() !in WRITABLE) return@withContext path
-        val hasLocation = runCatching { ExifInterface(path).hasLocation() }.getOrDefault(false)
-        if (!hasLocation) return@withContext path
+        if (!hasPrivateData(path)) return@withContext path
         val copy = File(File(shareDir, UUID.randomUUID().toString()), FileNames.nameOf(path))
         try {
             copy.parentFile!!.mkdirs()
             File(path).copyTo(copy)
-            ExifInterface(copy.path).apply {
-                GPS_TAGS.forEach { setAttribute(it, null) }
-                saveAttributes()
-            }
+            strip(copy.path)
             copy.path
         } catch (e: Exception) {
             copy.parentFile?.deleteRecursively()
             // Лучше не отправить, чем отправить координаты, которые пользователь просил убрать.
             throw StorageException.Io("Cannot remove location from ${FileNames.nameOf(path)}", e)
+        }
+    }
+
+    /** Есть ли в фото координаты или серийные номера. */
+    suspend fun hasPrivateData(path: String): Boolean = withContext(io) {
+        if (FileNames.extension(path).lowercase() !in WRITABLE) return@withContext false
+        runCatching {
+            val exif = ExifInterface(path)
+            exif.hasLocation() || SERIAL_TAGS.any { exif.getAttribute(it) != null }
+        }.getOrDefault(false)
+    }
+
+    /** Убирает те же поля из самого файла — по явной просьбе пользователя («Убрать метаданные»). */
+    suspend fun stripInPlace(path: String) = withContext(io) { strip(path) }
+
+    private fun strip(path: String) {
+        ExifInterface(path).apply {
+            (GPS_TAGS + SERIAL_TAGS).forEach { setAttribute(it, null) }
+            saveAttributes()
         }
     }
 
@@ -59,6 +74,11 @@ class LocationStripper @Inject constructor(
 
         /** Форматы, в которые ExifInterface умеет записывать. */
         private val WRITABLE = setOf("jpg", "jpeg", "png", "webp")
+
+        private val SERIAL_TAGS = listOf(
+            ExifInterface.TAG_BODY_SERIAL_NUMBER, ExifInterface.TAG_LENS_SERIAL_NUMBER, ExifInterface.TAG_CAMERA_OWNER_NAME,
+            ExifInterface.TAG_IMAGE_UNIQUE_ID,
+        )
 
         private val GPS_TAGS = listOf(
             ExifInterface.TAG_GPS_VERSION_ID, ExifInterface.TAG_GPS_LATITUDE_REF, ExifInterface.TAG_GPS_LATITUDE,

@@ -40,6 +40,12 @@ object QfIcons {
     val Settings by lazy { stroke("Settings", "M4 7h9 M17 7h3 M15 5v4 M4 12h3 M11 12h9 M9 10v4 M4 17h11 M19 17h1 M17 15v4") }
     val Tabs by lazy { stroke("Tabs", "M4 6.5A1.5 1.5 0 0 1 5.5 5h13A1.5 1.5 0 0 1 20 6.5v11a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5z M4 9.5h16 M9 5v4.5") }
     val Back by lazy { stroke("Back", "M19 12H5 M11 6l-6 6 6 6") }
+    val Rotate by lazy { stroke("Rotate", "M4 12a8 8 0 1 0 2.4-5.7L4 8.6 M4 4v4.6h4.6") }
+    val Wallpaper by lazy { stroke("Wallpaper", "M8 3h8a1.5 1.5 0 0 1 1.5 1.5v15A1.5 1.5 0 0 1 16 21H8a1.5 1.5 0 0 1-1.5-1.5v-15A1.5 1.5 0 0 1 8 3z M6.5 15l3.5-3.5 3 3 1.5-1.5 2 2") }
+    val Slideshow by lazy { stroke("Slideshow", "M4 5h16v12H4z M10 8.5v5l4-2.5z M9 20h6") }
+    val Camera by lazy { stroke("Camera", "M4 8h3l1.5-2h7L17 8h3v11H4z M12 10.5a3.5 3.5 0 1 1 0 7a3.5 3.5 0 0 1 0-7z") }
+    val Calendar by lazy { stroke("Calendar", "M4 6h16v14H4z M4 10h16 M8 3.5v4 M16 3.5v4") }
+    val MapPin by lazy { stroke("MapPin", "M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11z M12 7.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 0 1 0-5z") }
     val Undo by lazy { stroke("Undo", "M9 14L4 9l5-5 M4 9h10.5a5.5 5.5 0 0 1 0 11H11") }
     val Redo by lazy { stroke("Redo", "M15 14l5-5-5-5 M20 9H9.5a5.5 5.5 0 0 0 0 11H13") }
     val Replace by lazy { stroke("Replace", "M4 7h11 M12 4l3 3-3 3 M20 17H9 M12 14l-3 3 3 3") }

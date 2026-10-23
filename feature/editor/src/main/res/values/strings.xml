@@ -60,7 +60,4 @@
     <string name="editor_sp">%1$d sp</string>
     <string name="editor_wrap">Wrap lines</string>
     <string name="editor_line_numbers">Line numbers</string>
-    <string name="editor_volume_internal">Storage</string>
-    <string name="editor_volume_sd">SD card</string>
-    <string name="editor_volume_usb">USB drive</string>
 </resources>

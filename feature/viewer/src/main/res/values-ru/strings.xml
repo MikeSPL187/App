@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="photo_back">Назад</string>
+    <string name="photo_info">Сведения о фото</string>
+    <string name="photo_more">Ещё</string>
+    <string name="photo_counter">%1$d из %2$d</string>
+    <string name="photo_share">Поделиться</string>
+    <string name="photo_rotate">Повернуть</string>
+    <string name="photo_wallpaper">Обои</string>
+    <string name="photo_set_as">Установить как</string>
+    <string name="photo_slideshow">Слайд-шоу</string>
+    <string name="photo_delete">Удалить</string>
+    <string name="photo_cancel">Отмена</string>
+    <string name="photo_delete_trash_title">Переместить в корзину?</string>
+    <string name="photo_delete_forever_title">Удалить навсегда?</string>
+    <string name="photo_open_with">Открыть с помощью…</string>
+    <string name="photo_open_folder">Показать в папке</string>
+    <string name="photo_no_app">Нет приложения для этого действия</string>
+    <string name="photo_rotate_unsupported">Без потери качества поворачиваются только JPEG и PNG</string>
+    <string name="photo_share_location_failed">Не удалось убрать геоданные, поэтому фото не отправлено</string>
+    <string name="photo_metadata_removed">Геоданные и серийные номера камеры удалены</string>
+    <string name="photo_file">Файл</string>
+    <string name="photo_resolution">%1$d × %2$d (%3$s Мп)</string>
+    <string name="photo_taken">Снято</string>
+    <string name="photo_camera">Камера</string>
+    <string name="photo_seconds">с</string>
+    <string name="photo_mm">мм</string>
+    <string name="photo_folder">Папка</string>
+    <string name="photo_has_location">В фото есть координаты съёмки</string>
+    <string name="photo_has_serial">В фото есть серийные номера камеры</string>
+    <string name="photo_strip_on_share">Удалять геоданные и серийный номер камеры из копии при «Поделиться»</string>
+    <string name="photo_strip_metadata">Убрать метаданные</string>
+</resources>

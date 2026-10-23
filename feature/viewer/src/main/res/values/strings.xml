@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="photo_back">Back</string>
+    <string name="photo_info">Photo details</string>
+    <string name="photo_more">More</string>
+    <string name="photo_counter">%1$d of %2$d</string>
+    <string name="photo_share">Share</string>
+    <string name="photo_rotate">Rotate</string>
+    <string name="photo_wallpaper">Set as</string>
+    <string name="photo_set_as">Set as</string>
+    <string name="photo_slideshow">Slideshow</string>
+    <string name="photo_delete">Delete</string>
+    <string name="photo_cancel">Cancel</string>
+    <string name="photo_delete_trash_title">Move to trash?</string>
+    <string name="photo_delete_forever_title">Delete permanently?</string>
+    <string name="photo_open_with">Open with…</string>
+    <string name="photo_open_folder">Show in folder</string>
+    <string name="photo_no_app">No app can do this</string>
+    <string name="photo_rotate_unsupported">Only JPEG and PNG can be rotated without quality loss</string>
+    <string name="photo_share_location_failed">Couldn’t remove location from the photo, so it wasn’t shared</string>
+    <string name="photo_metadata_removed">Location and camera serial numbers removed</string>
+    <string name="photo_file">File</string>
+    <string name="photo_resolution">%1$d × %2$d (%3$s MP)</string>
+    <string name="photo_taken">Taken</string>
+    <string name="photo_camera">Camera</string>
+    <string name="photo_seconds">s</string>
+    <string name="photo_mm">mm</string>
+    <string name="photo_folder">Folder</string>
+    <string name="photo_has_location">This photo contains the shooting location</string>
+    <string name="photo_has_serial">This photo contains camera serial numbers</string>
+    <string name="photo_strip_on_share">Remove location and camera serial numbers from the copy when sharing</string>
+    <string name="photo_strip_metadata">Remove metadata</string>
+</resources>

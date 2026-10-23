@@ -61,6 +61,8 @@ import io.quietfiles.core.designsystem.component.LocalFileOpener
 import io.quietfiles.core.model.FileCategory
 import io.quietfiles.feature.editor.EditorRoute
 import io.quietfiles.feature.editor.editorScreen
+import io.quietfiles.feature.viewer.photo.PhotoRoute
+import io.quietfiles.feature.viewer.viewerScreens
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import io.quietfiles.MainActivity
@@ -126,11 +128,15 @@ fun AppRoot(
     val requestAccess: () -> Unit = { openAllFilesSettings(context) }
     val builtInViewers by rememberUpdatedState(settings.builtInViewers)
     val fileOpener = remember(nav) {
-        FileOpener { entry, _, readOnly, asText ->
+        FileOpener { entry, siblings, readOnly, asText ->
             when {
                 asText -> nav.navigate(EditorRoute(entry.path, readOnly))
                 !builtInViewers -> return@FileOpener false
                 entry.category == FileCategory.TEXT -> nav.navigate(EditorRoute(entry.path, readOnly))
+                entry.category == FileCategory.IMAGE -> {
+                    val photos = siblings.filter { it.category == FileCategory.IMAGE }.map { it.path }
+                    nav.navigate(PhotoRoute(entry.path, viewModel.viewerSessions.put(photos)))
+                }
                 else -> return@FileOpener false
             }
             true
@@ -200,8 +206,8 @@ fun AppRoot(
 
     val backStack by nav.currentBackStackEntryAsState()
     val destination = backStack?.destination
-    val fullScreen = destination?.hasRoute(SearchRoute::class) == true || destination?.hasRoute(SettingsRoute::class) == true ||
-        destination?.hasRoute(EditorRoute::class) == true
+    val fullScreen = listOf(SearchRoute::class, SettingsRoute::class, EditorRoute::class, PhotoRoute::class)
+        .any { destination?.hasRoute(it) == true }
     val showNav = !fullScreen && !selectionMode
 
     CompositionLocalProvider(LocalFileOpener provides fileOpener) {
@@ -308,6 +314,10 @@ private fun AppNavHost(
             onOpenFolder = { nav.navigate(BrowseRoute(SourceKind.FOLDER, it)) },
         )
         settingsScreen(onBack = { nav.popBackStack() }, onRequestAccess = onRequestAccess)
+        viewerScreens(
+            onBack = { nav.popBackStack() },
+            onOpenFolder = { nav.navigate(BrowseRoute(SourceKind.FOLDER, it)) },
+        )
         editorScreen(
             onBack = { nav.popBackStack() },
             onOpenExternally = { path ->

@@ -59,6 +59,8 @@ dependencies {
     implementation(project(":feature:search"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:editor"))
+    implementation(project(":feature:viewer"))
+    implementation(libs.coil.gif)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
@@ -77,6 +79,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
     testImplementation(libs.truth)
+    testImplementation(libs.androidx.exifinterface)
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.compiler)
     testImplementation(platform(libs.compose.bom))

@@ -28,4 +28,7 @@
         <item quantity="many">%d папок</item>
         <item quantity="other">%d папки</item>
     </plurals>
+    <string name="volume_short_internal">Память</string>
+    <string name="volume_short_sd">SD-карта</string>
+    <string name="volume_short_usb">USB-накопитель</string>
 </resources>

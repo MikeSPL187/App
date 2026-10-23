@@ -78,6 +78,18 @@ class AppSmokeTest {
             "Pictures/Screenshots/Screenshot_1.png" to day, "Pictures/Telegram/photo_1.jpg" to 40 * day,
             "DCIM/Camera/IMG_0004.jpg" to 45 * day, "DCIM/Camera/IMG_0005.jpg" to 45 * day,
         ).forEachIndexed { i, (path, age) -> writeImage(File(root, path), PALETTE[i % PALETTE.size], now - age) }
+        File(root, "DCIM/Camera/IMG_0001.jpg").let { photo ->
+            androidx.exifinterface.media.ExifInterface(photo.path).apply {
+                setAttribute(androidx.exifinterface.media.ExifInterface.TAG_MAKE, "Google")
+                setAttribute(androidx.exifinterface.media.ExifInterface.TAG_MODEL, "Pixel 9")
+                setAttribute(androidx.exifinterface.media.ExifInterface.TAG_F_NUMBER, "1.7")
+                setAttribute(androidx.exifinterface.media.ExifInterface.TAG_EXPOSURE_TIME, "0.008333")
+                setAttribute(androidx.exifinterface.media.ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY, "200")
+                setLatLong(55.7558, 37.6173)
+                saveAttributes()
+            }
+            photo.setLastModified(now)
+        }
     }
 
     /** Однотонная картинка с полосой: миниатюры в галерее должны быть настоящими изображениями. */
@@ -142,6 +154,17 @@ class AppSmokeTest {
         compose.onAllNodesWithText("Фото").onLast().performClick()
         waitForText("Сегодня")
         snapshot("09_photos")
+
+        compose.onNodeWithContentDescription("IMG_0001.jpg").performClick()
+        waitForText("Повернуть")
+        // Coil декодирует кадр в фоне — даём ему время, чтобы снимок показал само фото.
+        Thread.sleep(1_500)
+        snapshot("14_photo_viewer")
+        compose.onNodeWithContentDescription("Сведения о фото").performClick()
+        waitForText("В фото есть координаты съёмки")
+        snapshot("15_photo_details")
+        pressBack()
+        pressBack()
         pressBack()
 
         clickText("Поиск файлов")

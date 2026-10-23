@@ -8,10 +8,10 @@ import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.quietfiles.core.common.IoDispatcher
+import io.quietfiles.core.common.displayPath
 import io.quietfiles.core.data.repository.SettingsRepository
 import io.quietfiles.core.model.FileNames
 import io.quietfiles.core.model.UserSettings
-import io.quietfiles.core.model.VolumeKind
 import io.quietfiles.core.storage.StorageVolumes
 import io.quietfiles.core.operations.ErrorMessages
 import io.quietfiles.feature.editor.data.Drafts
@@ -152,13 +152,7 @@ class EditorViewModel @Inject constructor(
 
     private fun folderLabel(path: String, volumes: StorageVolumes): String {
         val parent = FileNames.parentOf(path).orEmpty()
-        val volume = volumes.volumeFor(path) ?: return parent
-        val name = when (volume.kind) {
-            VolumeKind.INTERNAL -> context.getString(R.string.editor_volume_internal)
-            VolumeKind.SD_CARD -> volume.label.ifBlank { context.getString(R.string.editor_volume_sd) }
-            VolumeKind.USB -> volume.label.ifBlank { context.getString(R.string.editor_volume_usb) }
-        }
-        return name + parent.removePrefix(volume.rootPath.trimEnd('/'))
+        return context.displayPath(parent, volumes.volumeFor(path))
     }
 
     // ---- Открытие ----

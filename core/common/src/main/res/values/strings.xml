@@ -22,4 +22,7 @@
         <item quantity="one">%d folder</item>
         <item quantity="other">%d folders</item>
     </plurals>
+    <string name="volume_short_internal">Storage</string>
+    <string name="volume_short_sd">SD card</string>
+    <string name="volume_short_usb">USB drive</string>
 </resources>

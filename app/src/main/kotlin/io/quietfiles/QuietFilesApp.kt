@@ -17,6 +17,7 @@ import coil3.disk.DiskCache
 import coil3.disk.directory
 import coil3.memory.MemoryCache
 import coil3.request.crossfade
+import coil3.gif.AnimatedImageDecoder
 import coil3.video.VideoFrameDecoder
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -52,7 +53,11 @@ class QuietFilesApp : Application(), Configuration.Provider, SingletonImageLoade
 
     /** Миниатюры: кэш на диске ограничен 200 МБ (раздел 8 ТЗ), кадры видео через MediaMetadataRetriever. */
     override fun newImageLoader(context: PlatformContext): ImageLoader = ImageLoader.Builder(context)
-        .components { add(VideoFrameDecoder.Factory()) }
+        .components {
+            add(VideoFrameDecoder.Factory())
+            // Анимированные GIF и WebP (F8.5) через системный ImageDecoder.
+            add(AnimatedImageDecoder.Factory())
+        }
         .memoryCache { MemoryCache.Builder().maxSizePercent(context, 0.15).build() }
         .diskCache {
             DiskCache.Builder()
