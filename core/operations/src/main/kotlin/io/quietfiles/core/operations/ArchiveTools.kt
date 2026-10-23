@@ -3,11 +3,17 @@ package io.quietfiles.core.operations
 import com.github.junrar.Archive
 import com.github.junrar.exception.RarException
 import com.github.junrar.exception.UnsupportedRarV5Exception
+import net.lingala.zip4j.ZipFile as Zip4jFile
+import net.lingala.zip4j.exception.ZipException as Zip4jException
 import io.quietfiles.core.common.IoDispatcher
 import io.quietfiles.core.model.FileNames
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import org.apache.commons.compress.archivers.ArchiveInputStream
+import net.lingala.zip4j.io.outputstream.ZipOutputStream as Zip4jOutputStream
+import net.lingala.zip4j.model.ZipParameters
+import net.lingala.zip4j.model.enums.AesKeyStrength
+import net.lingala.zip4j.model.enums.EncryptionMethod
 import org.apache.commons.compress.archivers.sevenz.SevenZFile
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry
@@ -45,13 +51,37 @@ class ArchiveTools @Inject constructor(
 
     fun isArchive(name: String): Boolean = formatOf(name) != null
 
-    suspend fun list(archivePath: String): List<ArchiveEntry> = withContext(io) {
+    /** Содержимое архива. Имена в зашифрованном zip видны и без пароля, в 7z со скрытыми именами — нет. */
+    suspend fun list(archivePath: String, password: CharArray? = null): List<ArchiveEntry> = withContext(io) {
         val file = File(archivePath)
         val format = formatOf(file.name) ?: throw OperationException.ArchiveUnsupported(archivePath)
-        wrapErrors(archivePath) {
+        wrapErrors(archivePath, password) {
             val raw = mutableListOf<ArchiveEntry>()
-            forEachEntry(file, format, readData = false) { entry, _ -> raw += entry; true }
+            forEachEntry(file, format, readData = false, password) { entry, _ -> raw += entry; true }
             withImplicitDirectories(raw)
+        }
+    }
+
+    /** Нужен ли пароль, чтобы распаковать архив (F5.11): zip с шифрованием, 7z с AES, rar с паролем. */
+    suspend fun isEncrypted(archivePath: String): Boolean = withContext(io) {
+        val file = File(archivePath)
+        try {
+            when (formatOf(file.name)) {
+                ArchiveFormat.ZIP -> openZip(file).use { zip -> zip.entries.toList().any { it.generalPurposeBit.usesEncryption() } }
+                // Имена могут быть открыты, а данные — зашифрованы: пробуем прочитать первый байт.
+                ArchiveFormat.SEVEN_Z -> SevenZFile.builder().setFile(file).get().use { sz ->
+                    val first = sz.entries.firstOrNull { it.hasStream() && it.size > 0 }
+                    first != null && runCatching { sz.getInputStream(first).use { it.read() } }
+                        .exceptionOrNull() is org.apache.commons.compress.PasswordRequiredException
+                }
+                ArchiveFormat.RAR -> Archive(file).use { rar -> rar.isEncrypted || rar.fileHeaders.any { it.isEncrypted } }
+                else -> false
+            }
+        } catch (e: org.apache.commons.compress.PasswordRequiredException) {
+            true
+        } catch (e: Exception) {
+            if (e is kotlinx.coroutines.CancellationException) throw e
+            false
         }
     }
 
@@ -64,6 +94,7 @@ class ArchiveTools @Inject constructor(
         destination: String,
         entries: List<String>,
         control: OperationControl,
+        password: CharArray? = null,
     ): List<String> = withContext(io) {
         val file = File(archivePath)
         val format = formatOf(file.name) ?: throw OperationException.ArchiveUnsupported(archivePath)
@@ -79,9 +110,9 @@ class ArchiveTools @Inject constructor(
             return if (parent.isEmpty()) path else path.removePrefix("$parent/")
         }
 
-        val all = wrapErrors(archivePath) {
+        val all = wrapErrors(archivePath, password) {
             val list = mutableListOf<ArchiveEntry>()
-            forEachEntry(file, format, readData = false) { e, _ -> list += e; true }
+            forEachEntry(file, format, readData = false, password) { e, _ -> list += e; true }
             list
         }
         val total = all.filter { selected(it.path) && !it.isDirectory }.sumOf { it.size.coerceAtLeast(0) }
@@ -97,8 +128,8 @@ class ArchiveTools @Inject constructor(
         val budget = WriteBudget(if (free > 0) (free - SPACE_RESERVE).coerceAtLeast(0) else Long.MAX_VALUE)
 
         val written = mutableListOf<String>()
-        wrapErrors(archivePath) {
-            forEachEntry(file, format, readData = true) { entry, input ->
+        wrapErrors(archivePath, password) {
+            forEachEntry(file, format, readData = true, password) { entry, input ->
                 if (!selected(entry.path)) return@forEachEntry true
                 val target = safeTarget(destRoot, relative(entry.path))
                 if (entry.isDirectory) {
@@ -131,8 +162,11 @@ class ArchiveTools @Inject constructor(
         written
     }
 
-    /** Сжатие в zip с именами в UTF-8. Пишется во временный файл, затем переименовывается. */
-    suspend fun zip(sources: List<String>, target: String, control: OperationControl) = withContext(io) {
+    /**
+     * Сжатие в zip с именами в UTF-8. Пишется во временный файл, затем переименовывается.
+     * С [password] — шифрование AES-256 (F5.11), его открывают 7-Zip, WinRAR и системы.
+     */
+    suspend fun zip(sources: List<String>, target: String, control: OperationControl, password: CharArray? = null) = withContext(io) {
         val files = sources.map(::File)
         val total = files.sumOf { sizeOf(it) }
         val count = files.sumOf { countFiles(it) }
@@ -141,10 +175,16 @@ class ArchiveTools @Inject constructor(
         val temp = File(targetFile.parentFile, ".${targetFile.name}.qfpart")
         control.setTempFile(temp.path)
         try {
-            ZipArchiveOutputStream(temp).use { zip ->
-                zip.setEncoding("UTF-8")
-                zip.setUseLanguageEncodingFlag(true)
-                files.forEach { addToZip(zip, it, it.name, control) }
+            if (password != null && password.isNotEmpty()) {
+                Zip4jOutputStream(temp.outputStream().buffered(), password).use { zip ->
+                    files.forEach { addToEncryptedZip(zip, it, it.name, control) }
+                }
+            } else {
+                ZipArchiveOutputStream(temp).use { zip ->
+                    zip.setEncoding("UTF-8")
+                    zip.setUseLanguageEncodingFlag(true)
+                    files.forEach { addToZip(zip, it, it.name, control) }
+                }
             }
             if (!temp.renameTo(targetFile)) throw java.io.IOException("Cannot rename ${temp.path}")
         } finally {
@@ -164,6 +204,29 @@ class ArchiveTools @Inject constructor(
             zip.putArchiveEntry(ZipArchiveEntry(file, name))
             FileInputStream(file).use { copyStream(it, zip, control) }
             zip.closeArchiveEntry()
+            control.progress { it.copy(itemsDone = it.itemsDone + 1) }
+        }
+    }
+
+    private suspend fun addToEncryptedZip(zip: Zip4jOutputStream, file: File, name: String, control: OperationControl) {
+        control.checkpoint()
+        val params = ZipParameters().apply {
+            fileNameInZip = if (file.isDirectory) "$name/" else name
+            lastModifiedFileTime = file.lastModified()
+            if (!file.isDirectory) {
+                isEncryptFiles = true
+                encryptionMethod = EncryptionMethod.AES
+                aesKeyStrength = AesKeyStrength.KEY_STRENGTH_256
+            }
+        }
+        zip.putNextEntry(params)
+        if (file.isDirectory) {
+            zip.closeEntry()
+            file.listFiles()?.sortedBy { it.name }?.forEach { addToEncryptedZip(zip, it, "$name/${it.name}", control) }
+        } else {
+            control.progress { it.copy(currentName = file.name) }
+            FileInputStream(file).use { copyStream(it, zip, control) }
+            zip.closeEntry()
             control.progress { it.copy(itemsDone = it.itemsDone + 1) }
         }
     }
@@ -209,19 +272,28 @@ class ArchiveTools @Inject constructor(
         file: File,
         format: ArchiveFormat,
         readData: Boolean,
+        password: CharArray?,
         block: suspend (ArchiveEntry, InputStream?) -> Boolean,
     ) {
         when (format) {
             ArchiveFormat.ZIP -> openZip(file).use { zip ->
-                for (e in zip.entries.toList()) {
-                    if (e.generalPurposeBit.usesEncryption()) throw OperationException.ArchiveEncrypted(file.path)
+                val charset = zip.encoding
+                val entries = zip.entries.toList()
+                if (readData && entries.any { it.generalPurposeBit.usesEncryption() }) {
+                    // Шифрованный zip (ZipCrypto или AES) читает zip4j; имена — в той же кодировке.
+                    if (password == null || password.isEmpty()) throw OperationException.ArchiveEncrypted(file.path)
+                    zip.close()
+                    forEachEncryptedZip(file, password, Charset.forName(charset), block)
+                    return
+                }
+                for (e in entries) {
                     val entry = ArchiveEntry(e.name.trimStart('/'), e.isDirectory, e.size, e.time)
                     val stream = if (readData && !e.isDirectory) zip.getInputStream(e) else null
                     val go = stream.useOrNull { block(entry, it) }
                     if (!go) break
                 }
             }
-            ArchiveFormat.SEVEN_Z -> SevenZFile.builder().setFile(file).get().use { sz ->
+            ArchiveFormat.SEVEN_Z -> SevenZFile.builder().setFile(file).apply { if (password != null) setPassword(password) }.get().use { sz ->
                 for (e in sz.entries) {
                     val entry = ArchiveEntry(e.name.trimStart('/'), e.isDirectory, e.size, if (e.hasLastModifiedDate) e.lastModifiedDate.time else 0)
                     val stream = if (readData && !e.isDirectory && e.hasStream()) sz.getInputStream(e) else null
@@ -238,15 +310,32 @@ class ArchiveTools @Inject constructor(
                 val entry = ArchiveEntry(inner, false, -1, file.lastModified())
                 decompress(file, format).use { block(entry, if (readData) it else null) }
             }
-            ArchiveFormat.RAR -> Archive(file).use { rar ->
-                if (rar.isEncrypted) throw OperationException.ArchiveEncrypted(file.path)
+            ArchiveFormat.RAR -> (if (password != null) Archive(file, String(password)) else Archive(file)).use { rar ->
+                if (rar.isEncrypted && password == null) throw OperationException.ArchiveEncrypted(file.path)
                 for (h in rar.fileHeaders) {
-                    if (h.isEncrypted) throw OperationException.ArchiveEncrypted(file.path)
+                    if (h.isEncrypted && password == null && readData) throw OperationException.ArchiveEncrypted(file.path)
                     val entry = ArchiveEntry(h.fileName.replace('\\', '/').trimStart('/'), h.isDirectory, h.fullUnpackSize, h.mTime?.time ?: 0)
                     val stream = if (readData && !h.isDirectory) rar.getInputStream(h) else null
                     val go = stream.useOrNull { block(entry, it) }
                     if (!go) break
                 }
+            }
+        }
+    }
+
+    private suspend fun forEachEncryptedZip(
+        file: File,
+        password: CharArray,
+        charset: Charset,
+        block: suspend (ArchiveEntry, InputStream?) -> Boolean,
+    ) {
+        Zip4jFile(file, password).use { zip ->
+            zip.charset = charset
+            for (h in zip.fileHeaders) {
+                val entry = ArchiveEntry(h.fileName.trimStart('/'), h.isDirectory, h.uncompressedSize, h.lastModifiedTimeEpoch)
+                val stream = if (!h.isDirectory) zip.getInputStream(h) else null
+                val go = stream.useOrNull { block(entry, it) }
+                if (!go) break
             }
         }
     }
@@ -282,24 +371,31 @@ class ArchiveTools @Inject constructor(
         return ZipFile.builder().setFile(file).setCharset(Charset.forName("CP866")).get()
     }
 
-    private inline fun <T> wrapErrors(path: String, block: () -> T): T = try {
+    /**
+     * Ошибки библиотек — в понятные пользователю. С паролем повреждённые данные почти всегда значат
+     * неверный пароль: расшифрованный мусор не проходит проверку контрольной суммы.
+     */
+    private inline fun <T> wrapErrors(path: String, password: CharArray?, block: () -> T): T = try {
         block()
     } catch (e: OperationException) {
         throw e
     } catch (e: kotlinx.coroutines.CancellationException) {
         throw e
-    } catch (e: UnsupportedRarV5Exception) {
-        throw OperationException.ArchiveUnsupported(path)
-    } catch (e: org.apache.commons.compress.PasswordRequiredException) {
-        throw OperationException.ArchiveEncrypted(path)
-    } catch (e: RarException) {
-        throw OperationException.ArchiveCorrupted(path, e)
-    } catch (e: java.util.zip.ZipException) {
-        throw OperationException.ArchiveCorrupted(path, e)
-    } catch (e: java.io.EOFException) {
-        throw OperationException.ArchiveCorrupted(path, e)
-    } catch (e: org.apache.commons.compress.archivers.ArchiveException) {
-        throw OperationException.ArchiveCorrupted(path, e)
+    } catch (e: Exception) {
+        throw mapArchiveError(path, password != null, e)
+    }
+
+    private fun mapArchiveError(path: String, withPassword: Boolean, e: Exception): Exception = when (e) {
+        is Zip4jException ->
+            if (e.type == Zip4jException.Type.WRONG_PASSWORD || withPassword) OperationException.WrongPassword(path) else OperationException.ArchiveCorrupted(path, e)
+        is UnsupportedRarV5Exception -> OperationException.ArchiveUnsupported(path)
+        is org.apache.commons.compress.PasswordRequiredException ->
+            if (withPassword) OperationException.WrongPassword(path) else OperationException.ArchiveEncrypted(path)
+        is RarException, is java.util.zip.ZipException, is java.io.EOFException, is org.apache.commons.compress.archivers.ArchiveException ->
+            if (withPassword) OperationException.WrongPassword(path) else OperationException.ArchiveCorrupted(path, e)
+        is java.io.FileNotFoundException -> e
+        is java.io.IOException -> if (withPassword) OperationException.WrongPassword(path) else e
+        else -> e
     }
 
     private inline fun <T> InputStream?.useOrNull(block: (InputStream?) -> T): T =

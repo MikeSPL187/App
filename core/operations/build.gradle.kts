@@ -18,6 +18,7 @@ dependencies {
     implementation(libs.commons.compress)
     implementation(libs.xz)
     implementation(libs.junrar)
+    implementation(libs.zip4j)
     implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.robolectric)
 }

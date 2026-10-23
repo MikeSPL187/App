@@ -21,6 +21,7 @@ media3 = "1.9.1"
 commonsCompress = "1.28.0"
 xz = "1.10"
 junrar = "7.5.5"
+zip4j = "2.11.5"
 junit = "4.13.2"
 robolectric = "4.16"
 truth = "1.4.4"
@@ -71,6 +72,7 @@ media3-ui-compose = { module = "androidx.media3:media3-ui-compose", version.ref 
 commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commonsCompress" }
 xz = { module = "org.tukaani:xz", version.ref = "xz" }
 junrar = { module = "com.github.junrar:junrar", version.ref = "junrar" }
+zip4j = { module = "net.lingala.zip4j:zip4j", version.ref = "zip4j" }
 junit = { module = "junit:junit", version.ref = "junit" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }

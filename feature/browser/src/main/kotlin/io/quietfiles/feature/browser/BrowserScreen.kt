@@ -77,6 +77,7 @@ import io.quietfiles.core.model.ViewMode
 private sealed interface Overlay {
     data class ItemActions(val item: BrowserItem) : Overlay
     data class BatchRename(val items: List<BrowserItem>) : Overlay
+    data class Password(val archivePath: String, val pending: PendingArchive, val wrong: Boolean) : Overlay
     data object Sort : Overlay
     data class Name(val mode: NameMode, val target: List<BrowserItem> = emptyList()) : Overlay
     data class Delete(val items: List<BrowserItem>, val forever: Boolean) : Overlay
@@ -133,6 +134,7 @@ fun BrowserScreen(
                 BrowserEvent.ShowOperations -> onShowOperations()
                 is BrowserEvent.OpenRoute -> Unit
                 is BrowserEvent.ConfirmExtract -> overlay = Overlay.ConfirmExtract(event)
+                is BrowserEvent.AskPassword -> overlay = Overlay.Password(event.archivePath, event.pending, event.wrong)
             }
         }
     }
@@ -259,6 +261,7 @@ fun BrowserScreen(
                     onMore = { overlay = Overlay.ItemActions(it) },
                     onRequestAccess = onRequestAccess,
                     onRetry = viewModel::refresh,
+                    onPassword = { path, wrong -> overlay = Overlay.Password(path, PendingArchive.Open, wrong) },
                 )
             }
         }
@@ -295,6 +298,15 @@ fun BrowserScreen(
                 }
             },
         )
+        is Overlay.Password -> ArchivePasswordDialog(
+            archiveName = FileNames.nameOf(o.archivePath),
+            wrong = o.wrong,
+            onDismiss = { overlay = null },
+            onConfirm = { password ->
+                overlay = null
+                viewModel.submitArchivePassword(o.archivePath, password, o.pending)
+            },
+        )
         is Overlay.BatchRename -> BatchRenameSheet(
             entries = o.items.map { it.entry },
             folderNames = state.items.map { it.entry.name }.toSet(),
@@ -311,7 +323,17 @@ fun BrowserScreen(
             onViewMode = viewModel::setViewMode,
             onDismiss = { overlay = null },
         )
-        is Overlay.Name -> NameDialog(
+        is Overlay.Name -> if (o.mode == NameMode.COMPRESS) {
+            CompressDialog(
+                initial = if (o.target.size == 1) BrowserViewModel.archiveBaseName(o.target.first().entry.name) else stringResource(R.string.dialog_default_archive),
+                validate = viewModel::validationMessage,
+                onDismiss = { overlay = null },
+                onConfirm = { name, password ->
+                    overlay = null
+                    viewModel.compress(o.target, name, password)
+                },
+            )
+        } else NameDialog(
             mode = o.mode,
             initial = when (o.mode) {
                 NameMode.RENAME -> o.target.first().entry.name
@@ -605,8 +627,18 @@ private fun Content(
     onMore: (BrowserItem) -> Unit,
     onRequestAccess: () -> Unit,
     onRetry: () -> Unit,
+    onPassword: (archivePath: String, wrong: Boolean) -> Unit,
 ) {
     when (val load = state.load) {
+        is LoadState.NeedsPassword -> Scrollable {
+            EmptyState(
+                QfIcons.Lock,
+                stringResource(R.string.password_title),
+                message = stringResource(if (load.wrong) R.string.password_wrong else R.string.password_needed),
+                actionLabel = stringResource(R.string.password_enter),
+                onAction = { onPassword(load.archivePath, load.wrong) },
+            )
+        }
         LoadState.Loading -> Box(Modifier.fillMaxSize())
         LoadState.NoAccess -> Scrollable {
             EmptyState(

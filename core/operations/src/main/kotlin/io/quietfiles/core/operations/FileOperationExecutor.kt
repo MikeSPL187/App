@@ -20,6 +20,7 @@ class FileOperationExecutor @Inject constructor(
     private val trash: TrashManager,
     private val archives: ArchiveTools,
     private val content: ContentSource,
+    private val passwords: ArchivePasswords = ArchivePasswords(),
 ) {
 
     suspend fun execute(request: OperationRequest, control: OperationControl): OperationOutcome = when (request) {
@@ -29,12 +30,28 @@ class FileOperationExecutor @Inject constructor(
         is OperationRequest.Trash -> moveToTrash(request.paths, control)
         is OperationRequest.Restore -> restore(request.trashIds, control)
         is OperationRequest.Compress -> {
-            archives.zip(request.sources, request.target, control)
+            // Пароль живёт только в памяти: после перезапуска шифрованное сжатие повторить нельзя.
+            val password = if (request.encrypted) passwords.get(request.target) ?: throw OperationException.ArchiveEncrypted(request.target) else null
+            try {
+                archives.zip(request.sources, request.target, control, password)
+            } finally {
+                password?.fill('\u0000')
+                passwords.remove(request.target)
+            }
             OperationOutcome(changedPaths = listOf(request.target))
         }
         is OperationRequest.Extract -> {
-            val written = archives.extract(request.archive, request.destination, request.entries, control)
-            OperationOutcome(changedPaths = written)
+            val password = passwords.get(request.archive)
+            try {
+                val written = archives.extract(request.archive, request.destination, request.entries, control, password)
+                OperationOutcome(changedPaths = written)
+            } catch (e: OperationException.WrongPassword) {
+                // Неверный пароль забываем, чтобы в следующий раз спросить заново.
+                passwords.remove(request.archive)
+                throw e
+            } finally {
+                password?.fill('\u0000')
+            }
         }
         is OperationRequest.Import -> import(request.items, request.destination, control)
     }

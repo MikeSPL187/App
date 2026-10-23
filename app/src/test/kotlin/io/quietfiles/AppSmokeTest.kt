@@ -367,6 +367,41 @@ class AppSmokeTest {
         waitForText("Квартал 02.pdf")
     }
 
+    @Test
+    fun passwordProtectedArchives() {
+        val root = Environment.getExternalStorageDirectory()
+        copyResource("media/secret.7z", File(root, "Documents/Секреты.7z"))
+        grantAllFilesAccess()
+        scenario = ActivityScenario.launch(MainActivity::class.java)
+        clickText("Обзор")
+        clickText("Внутренняя память")
+        clickText("Documents")
+        clickText("Секреты.7z")
+        // У 7z со скрытыми именами без пароля не видно даже списка файлов.
+        waitForText("Чтобы увидеть содержимое, нужен пароль")
+        clickText("Ввести пароль")
+        waitForText("Пароль")
+        compose.onNode(hasSetTextAction() and hasText("Пароль")).performTextInput("Тихий-2026")
+        snapshot("45_archive_password")
+        clickText("Открыть")
+        waitForText("plan.txt")
+        snapshot("46_archive_unlocked")
+        pressBack()
+
+        // Сжатие с паролем (F5.11): AES-256, пароль дважды.
+        waitForText("План.txt")
+        compose.onAllNodesWithText("План.txt").onFirst().performTouchInput { longClick() }
+        clickText("В архив")
+        clickText("Защитить паролем (AES-256)")
+        compose.onNode(hasSetTextAction() and hasText("Пароль")).performTextInput("кот-учёный")
+        compose.onNode(hasSetTextAction() and hasText("Повторите пароль")).performTextInput("кот-учёный")
+        snapshot("47_compress_password")
+        compose.onAllNodesWithText("В архив").onLast().performClick()
+        waitForImages()
+        snapshot("48_compress_done")
+        compose.waitUntil(TIMEOUT_MS) { File(root, "Documents/План.zip").exists() }
+    }
+
     private fun copyResource(name: String, target: File) {
         target.parentFile!!.mkdirs()
         javaClass.classLoader!!.getResourceAsStream(name)!!.use { input -> target.outputStream().use { input.copyTo(it) } }

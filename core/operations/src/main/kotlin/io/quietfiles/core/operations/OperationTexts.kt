@@ -33,6 +33,7 @@ object ErrorMessages {
         is OperationException.SelfCopy -> context.getString(R.string.op_error_self_copy)
         is OperationException.SameLocation -> context.getString(R.string.op_error_same_location)
         is OperationException.ArchiveEncrypted -> context.getString(R.string.op_error_archive_encrypted)
+        is OperationException.WrongPassword -> context.getString(R.string.op_error_wrong_password)
         is OperationException.ArchiveUnsupported -> context.getString(R.string.op_error_archive_unsupported)
         is OperationException.ArchiveCorrupted -> context.getString(R.string.op_error_archive_corrupted)
         is OperationException.UnsafeArchiveEntry -> context.getString(R.string.op_error_archive_unsafe)

@@ -53,10 +53,11 @@
     <string name="op_error_no_space">Не хватает свободного места</string>
     <string name="op_error_self_copy">Папку нельзя скопировать в саму себя</string>
     <string name="op_error_same_location">Папка назначения совпадает с исходной</string>
-    <string name="op_error_archive_encrypted">Архив защищён паролем. Такие архивы пока не поддерживаются</string>
+    <string name="op_error_archive_encrypted">Архив защищён паролем</string>
     <string name="op_error_archive_unsupported">Этот формат архива не поддерживается</string>
     <string name="op_error_archive_corrupted">Архив повреждён или скачан не полностью</string>
     <string name="op_error_archive_too_large">Архив распаковывается в больше данных, чем есть места. Распаковка остановлена.</string>
     <string name="op_error_archive_unsafe">В архиве есть небезопасные пути, он не распакован</string>
     <string name="op_error_io">Ошибка чтения или записи</string>
+    <string name="op_error_wrong_password">Неверный пароль архива</string>
 </resources>

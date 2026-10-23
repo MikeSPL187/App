@@ -40,9 +40,10 @@ sealed interface OperationRequest {
         override val kind get() = OperationKind.RESTORE
     }
 
+    /** [encrypted] — с паролем (F5.11); сам пароль не сериализуется, он в [ArchivePasswords]. */
     @Serializable
     @SerialName("compress")
-    data class Compress(val sources: List<String>, val target: String) : OperationRequest {
+    data class Compress(val sources: List<String>, val target: String, val encrypted: Boolean = false) : OperationRequest {
         override val kind get() = OperationKind.COMPRESS
     }
 
@@ -106,6 +107,7 @@ sealed class OperationException(message: String) : Exception(message) {
     class NotEnoughSpace(val required: Long, val available: Long) :
         OperationException("Not enough space: need $required, have $available")
     class ArchiveEncrypted(val path: String) : OperationException("Encrypted archive: $path")
+    class WrongPassword(val path: String) : OperationException("Wrong archive password: $path")
     class ArchiveUnsupported(val path: String) : OperationException("Unsupported archive: $path")
     class ArchiveCorrupted(val path: String, cause: Throwable?) : OperationException("Corrupted archive: $path") {
         init { if (cause != null) initCause(cause) }

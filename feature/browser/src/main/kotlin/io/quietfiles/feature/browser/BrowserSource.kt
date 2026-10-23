@@ -6,7 +6,9 @@ import io.quietfiles.core.model.FileEntry
 import io.quietfiles.core.model.FileNames
 import io.quietfiles.core.model.TrashItem
 import io.quietfiles.core.operations.ArchiveEntry
+import io.quietfiles.core.operations.ArchivePasswords
 import io.quietfiles.core.operations.ArchiveTools
+import io.quietfiles.core.operations.OperationException
 import io.quietfiles.core.operations.TrashManager
 import io.quietfiles.core.storage.ApkInfo
 import io.quietfiles.core.storage.ApkInspector
@@ -35,6 +37,7 @@ class BrowserSourceLoader @Inject constructor(
     private val trash: TrashManager,
     private val archives: ArchiveTools,
     private val apkInspector: ApkInspector,
+    private val passwords: ArchivePasswords,
 ) {
     private var archiveCache: Pair<String, List<ArchiveEntry>>? = null
 
@@ -86,9 +89,23 @@ class BrowserSourceLoader @Inject constructor(
 
     private suspend fun library(category: LibraryCategory) = mediaIndex.category(category).map { BrowserItem(it) }
 
+    /** После ввода пароля список архива читается заново. */
+    fun forgetArchive() {
+        archiveCache = null
+    }
+
     private suspend fun archiveEntries(path: String): List<ArchiveEntry> {
         archiveCache?.let { (cached, entries) -> if (cached == path) return entries }
-        return archives.list(path).also { archiveCache = path to it }
+        // У 7z со скрытыми именами без пароля не узнать даже содержимое (F5.11).
+        val password = passwords.get(path)
+        return try {
+            archives.list(path, password).also { archiveCache = path to it }
+        } catch (e: OperationException.WrongPassword) {
+            passwords.remove(path)
+            throw e
+        } finally {
+            password?.fill('\u0000')
+        }
     }
 
     private suspend fun archiveChildren(path: String, inner: String): List<BrowserItem> {

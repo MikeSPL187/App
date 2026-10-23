@@ -232,4 +232,20 @@
         <item quantity="one">%d item renamed</item>
         <item quantity="other">%d items renamed</item>
     </plurals>
+    <string name="password_title">Password-protected archive</string>
+    <string name="password_message">Enter the password for “%1$s”. It is kept only until the app is closed.</string>
+    <string name="password_label">Password</string>
+    <string name="password_repeat">Repeat password</string>
+    <string name="password_open">Open</string>
+    <string name="password_wrong">The password didn\'t work. Try again</string>
+    <string name="password_needed">A password is needed to see the contents</string>
+    <string name="password_enter">Enter password</string>
+    <string name="password_show">Show password</string>
+    <string name="password_hide">Hide password</string>
+    <string name="password_mismatch">Passwords don\'t match</string>
+    <string name="compress_protect">Protect with a password (AES-256)</string>
+    <plurals name="compress_protect_hint">
+        <item quantity="one">At least %d character. The archive can\'t be opened without it, and it can\'t be recovered</item>
+        <item quantity="other">At least %d characters. The archive can\'t be opened without it, and it can\'t be recovered</item>
+    </plurals>
 </resources>

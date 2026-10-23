@@ -252,4 +252,22 @@
         <item quantity="many">Переименовано %d объектов</item>
         <item quantity="other">Переименовано %d объекта</item>
     </plurals>
+    <string name="password_title">Архив защищён паролем</string>
+    <string name="password_message">Введите пароль для «%1$s». Он хранится только до закрытия приложения.</string>
+    <string name="password_label">Пароль</string>
+    <string name="password_repeat">Повторите пароль</string>
+    <string name="password_open">Открыть</string>
+    <string name="password_wrong">Пароль не подошёл. Попробуйте ещё раз</string>
+    <string name="password_needed">Чтобы увидеть содержимое, нужен пароль</string>
+    <string name="password_enter">Ввести пароль</string>
+    <string name="password_show">Показать пароль</string>
+    <string name="password_hide">Скрыть пароль</string>
+    <string name="password_mismatch">Пароли не совпадают</string>
+    <string name="compress_protect">Защитить паролем (AES-256)</string>
+    <plurals name="compress_protect_hint">
+        <item quantity="one">Не короче %d символа. Без пароля архив не открыть — восстановить его нельзя</item>
+        <item quantity="few">Не короче %d символов. Без пароля архив не открыть — восстановить его нельзя</item>
+        <item quantity="many">Не короче %d символов. Без пароля архив не открыть — восстановить его нельзя</item>
+        <item quantity="other">Не короче %d символа. Без пароля архив не открыть — восстановить его нельзя</item>
+    </plurals>
 </resources>

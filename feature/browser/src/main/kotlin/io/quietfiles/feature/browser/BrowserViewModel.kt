@@ -25,7 +25,9 @@ import io.quietfiles.core.operations.ArchiveTools
 import io.quietfiles.core.operations.ClipboardContent
 import io.quietfiles.core.operations.ErrorMessages
 import io.quietfiles.core.operations.FileClipboard
+import io.quietfiles.core.operations.ArchivePasswords
 import io.quietfiles.core.operations.BatchRenamer
+import io.quietfiles.core.operations.OperationException
 import io.quietfiles.core.operations.OperationQueue
 import io.quietfiles.core.operations.OperationRequest
 import io.quietfiles.core.operations.TrashManager
@@ -71,6 +73,18 @@ sealed interface LoadState {
     data object NoAccess : LoadState
     data object NotFound : LoadState
     data class Error(val message: String) : LoadState
+
+    /** Архив защищён паролем (F5.11); [wrong] — введённый пароль не подошёл. */
+    data class NeedsPassword(val archivePath: String, val wrong: Boolean) : LoadState
+}
+
+/** Что сделать с архивом, когда пользователь введёт пароль. */
+sealed interface PendingArchive {
+    data class Extract(val entries: List<String>, val intoNewFolder: Boolean) : PendingArchive
+    data class Preview(val item: BrowserItem) : PendingArchive
+
+    /** Пароль нужен, чтобы вообще увидеть содержимое. */
+    data object Open : PendingArchive
 }
 
 data class BrowserUiState(
@@ -114,6 +128,7 @@ sealed interface BrowserEvent {
     data class OpenRoute(val route: BrowseRoute) : BrowserEvent
 
     /** Архив распаковывается подозрительно сильно: спросить, продолжать ли (F10.3). */
+    data class AskPassword(val archivePath: String, val pending: PendingArchive, val wrong: Boolean = false) : BrowserEvent
     data class ConfirmExtract(
         val archivePath: String,
         val entries: List<String>,
@@ -141,6 +156,7 @@ class BrowserViewModel @Inject constructor(
     private val mediaIndex: MediaIndex,
     private val locationStripper: LocationStripper,
     private val batchRenamer: BatchRenamer,
+    private val passwords: ArchivePasswords,
 ) : ViewModel() {
 
     private val route = savedStateHandle.toRoute<BrowseRoute>()
@@ -227,6 +243,10 @@ class BrowserViewModel @Inject constructor(
             LoadState.Ready(loader.load(loc.kind, loc.path, loc.inner, showHidden))
         } catch (e: StorageException.NotFound) {
             LoadState.NotFound
+        } catch (e: OperationException.ArchiveEncrypted) {
+            LoadState.NeedsPassword(e.path, wrong = false)
+        } catch (e: OperationException.WrongPassword) {
+            LoadState.NeedsPassword(e.path, wrong = true)
         } catch (e: StorageException.AccessDenied) {
             LoadState.NoAccess
         } catch (e: kotlinx.coroutines.CancellationException) {
@@ -407,7 +427,7 @@ class BrowserViewModel @Inject constructor(
         }
     }
 
-    fun compress(items: List<BrowserItem>, archiveName: String) {
+    fun compress(items: List<BrowserItem>, archiveName: String, password: CharArray? = null) {
         val loc = state.value.location
         val dir = if (loc.kind == SourceKind.FOLDER) loc.path else FileNames.parentOf(items.first().entry.path) ?: return
         val name = archiveName.trim().let { if (it.endsWith(".zip", ignoreCase = true)) it else "$it.zip" }
@@ -418,7 +438,11 @@ class BrowserViewModel @Inject constructor(
         viewModelScope.launch {
             val taken = provider.list(dir, includeHidden = true).map { it.name }.toSet()
             val free = FileNames.uniqueName(name, false) { it in taken }
-            queue.enqueue(OperationRequest.Compress(items.map { it.entry.path }, FileNames.child(dir, free)))
+            val target = FileNames.child(dir, free)
+            val encrypted = password != null && password.isNotEmpty()
+            if (encrypted) passwords.put(target, password!!)
+            password?.fill('\u0000')
+            queue.enqueue(OperationRequest.Compress(items.map { it.entry.path }, target, encrypted))
             events.send(BrowserEvent.ShowOperations)
         }
         clearSelection()
@@ -428,10 +452,14 @@ class BrowserViewModel @Inject constructor(
     fun extract(archivePath: String, entries: List<String>, intoNewFolder: Boolean, confirmed: Boolean = false) {
         val parent = FileNames.parentOf(archivePath) ?: return
         viewModelScope.launch {
+            if (passwords.get(archivePath) == null && archives.isEncrypted(archivePath)) {
+                events.send(BrowserEvent.AskPassword(archivePath, PendingArchive.Extract(entries, intoNewFolder)))
+                return@launch
+            }
             if (!confirmed) {
                 val packed = provider.stat(archivePath)?.size ?: 0L
                 val wanted = entries.map { it.trim('/') }
-                val unpacked = runCatching { archives.list(archivePath) }.getOrDefault(emptyList())
+                val unpacked = runCatching { archives.list(archivePath, passwords.get(archivePath)) }.getOrDefault(emptyList())
                     .filter { e -> !e.isDirectory && (wanted.isEmpty() || wanted.any { e.path == it || e.path.startsWith("$it/") }) }
                     .sumOf { it.size.coerceAtLeast(0) }
                 if (ArchiveTools.isSuspiciousRatio(unpacked, packed)) {
@@ -471,6 +499,20 @@ class BrowserViewModel @Inject constructor(
             refresh()
         }
         clearSelection()
+    }
+
+    /** Пароль архива (F5.11) хранится только в памяти и подставляется в отложенное действие. */
+    fun submitArchivePassword(archivePath: String, password: CharArray, pending: PendingArchive) {
+        passwords.put(archivePath, password)
+        password.fill('\u0000')
+        when (pending) {
+            is PendingArchive.Extract -> extract(archivePath, pending.entries, pending.intoNewFolder)
+            is PendingArchive.Preview -> open(pending.item)
+            PendingArchive.Open -> {
+                loader.forgetArchive()
+                refresh()
+            }
+        }
     }
 
     /** Групповое переименование (F5.1) по готовому предпросмотру. */
@@ -589,8 +631,21 @@ class BrowserViewModel @Inject constructor(
                     io.quietfiles.core.model.ConflictDecision(io.quietfiles.core.model.ConflictChoice.REPLACE, true)
                 override fun setTempFile(path: String?) = Unit
             }
+            val password = passwords.get(archivePath)
+            if (password == null && archives.isEncrypted(archivePath)) {
+                events.send(BrowserEvent.AskPassword(archivePath, PendingArchive.Preview(item)))
+                return@launch
+            }
             try {
-                val written = archives.extract(archivePath, dir.path, listOf(inner), control)
+                val written = try {
+                    archives.extract(archivePath, dir.path, listOf(inner), control, password)
+                } catch (e: OperationException.WrongPassword) {
+                    passwords.remove(archivePath)
+                    events.send(BrowserEvent.AskPassword(archivePath, PendingArchive.Preview(item), wrong = true))
+                    return@launch
+                } finally {
+                    password?.fill('\u0000')
+                }
                 val file = written.firstOrNull()?.let(::File) ?: return@launch
                 val entry = FileEntry(file.path, file.name, false, file.length(), file.lastModified())
                 events.send(BrowserEvent.OpenFile(entry, emptyList(), readOnly = true))

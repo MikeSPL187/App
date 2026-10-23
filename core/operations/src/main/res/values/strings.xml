@@ -41,10 +41,11 @@
     <string name="op_error_no_space">Not enough free space</string>
     <string name="op_error_self_copy">A folder can’t be copied into itself</string>
     <string name="op_error_same_location">The destination is the same as the source</string>
-    <string name="op_error_archive_encrypted">The archive is password‑protected. Such archives are not supported yet</string>
+    <string name="op_error_archive_encrypted">The archive is password-protected</string>
     <string name="op_error_archive_unsupported">This archive format is not supported</string>
     <string name="op_error_archive_corrupted">The archive is damaged or incomplete</string>
     <string name="op_error_archive_too_large">The archive expands to more data than there is free space. Extraction stopped.</string>
     <string name="op_error_archive_unsafe">The archive contains unsafe paths and was not extracted</string>
     <string name="op_error_io">Read or write error</string>
+    <string name="op_error_wrong_password">Wrong archive password</string>
 </resources>
