@@ -14,6 +14,7 @@ import io.quietfiles.core.model.FileTypes
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.coroutineContext
@@ -41,6 +42,7 @@ data class StorageBreakdown(val bytesByCategory: Map<FileCategory, Long>) {
 class MediaIndex @Inject constructor(
     @ApplicationContext private val context: Context,
     @IoDispatcher private val io: CoroutineDispatcher,
+    private val volumes: StorageVolumes,
 ) {
     private val uri = MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL)
     private val projection = arrayOf(
@@ -61,9 +63,16 @@ class MediaIndex @Inject constructor(
             else -> null
         }
         val selection = if (mediaType != null) "${FileColumns.MEDIA_TYPE} = $mediaType" else notDirectory
-        query(selection, "${FileColumns.DATE_MODIFIED} DESC") { entry ->
+        val indexed = query(selection, "${FileColumns.DATE_MODIFIED} DESC") { entry ->
             (volumeRoot == null || entry.path.startsWith("$volumeRoot/")) &&
                 (mediaType != null || entry.category in category.categories)
+        }
+        indexed.ifEmpty {
+            // Индекс пуст: сразу после установки прошивки, при выключенном MediaProvider или на старых SD-картах.
+            val roots = (volumeRoot?.let(::listOf) ?: volumes.current().map { it.rootPath }).map(::File)
+            val context = coroutineContext
+            FileSystemScanner.scan(roots, accept = { it.category in category.categories }, checkCancelled = { context.ensureActive() })
+                .sortedByDescending { it.lastModified }
         }
     }
 

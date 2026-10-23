@@ -192,4 +192,12 @@
     <string name="meta_apk_installed">установлено</string>
     <string name="meta_apk_update">обновление</string>
     <string name="meta_apk_older">старее установленной</string>
+
+    <string name="media_all">Все</string>
+    <string name="media_camera">Камера</string>
+    <string name="media_screenshots">Скриншоты</string>
+    <string name="media_messengers">Мессенджеры</string>
+    <string name="media_downloads">Загрузки</string>
+    <string name="media_today">Сегодня</string>
+    <string name="media_yesterday">Вчера</string>
 </resources>

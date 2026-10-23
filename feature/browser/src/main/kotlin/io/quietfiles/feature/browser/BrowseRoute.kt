@@ -24,6 +24,9 @@ enum class SourceKind {
         get() = this != FOLDER && this != ARCHIVE && this != TRASH && this != FAVORITES
 
     val isPhysical: Boolean get() = this == FOLDER
+
+    /** Фото и видео показываются галереей по датам (F7.2). */
+    val isGallery: Boolean get() = this == PHOTOS || this == VIDEOS
 }
 
 /**

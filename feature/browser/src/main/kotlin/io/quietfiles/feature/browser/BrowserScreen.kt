@@ -215,7 +215,8 @@ fun BrowserScreen(
     ) { padding ->
         Column(Modifier.fillMaxSize().padding(padding)) {
             Crumbs(state, viewModel)
-            if (state.load is LoadState.Ready && state.items.isNotEmpty() && state.location.kind != SourceKind.TRASH) {
+            // В галерее фото и видео порядок по датам, поэтому сортировка и вид не нужны.
+            if (state.load is LoadState.Ready && state.items.isNotEmpty() && state.location.kind != SourceKind.TRASH && !state.location.kind.isGallery) {
                 ControlsRow(
                     state = state,
                     onSort = { overlay = Overlay.Sort },
@@ -581,6 +582,8 @@ private fun Content(
         }
         is LoadState.Ready -> if (load.items.isEmpty()) {
             Scrollable { EmptyFor(state.location.kind) }
+        } else if (state.location.kind.isGallery) {
+            MediaGallery(state, onOpen, onLongPress)
         } else if (state.viewMode == ViewMode.GRID) {
             FileGrid(state, onOpen, onLongPress)
         } else {

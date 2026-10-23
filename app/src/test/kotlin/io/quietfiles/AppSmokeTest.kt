@@ -6,6 +6,7 @@ import android.os.Environment
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
@@ -62,6 +63,25 @@ class AppSmokeTest {
         File(root, "Documents/План.txt").writeText("План на неделю")
         File(root, "DCIM/Camera").mkdirs()
         File(root, "Music").mkdirs()
+        val day = 24L * 60 * 60 * 1000
+        val now = System.currentTimeMillis()
+        listOf(
+            "DCIM/Camera/IMG_0001.jpg" to 0L, "DCIM/Camera/IMG_0002.jpg" to 0L, "DCIM/Camera/IMG_0003.jpg" to day,
+            "Pictures/Screenshots/Screenshot_1.png" to day, "Pictures/Telegram/photo_1.jpg" to 40 * day,
+            "DCIM/Camera/IMG_0004.jpg" to 45 * day, "DCIM/Camera/IMG_0005.jpg" to 45 * day,
+        ).forEachIndexed { i, (path, age) -> writeImage(File(root, path), PALETTE[i % PALETTE.size], now - age) }
+    }
+
+    /** Однотонная картинка с полосой: миниатюры в галерее должны быть настоящими изображениями. */
+    private fun writeImage(file: File, color: Int, modified: Long) {
+        file.parentFile!!.mkdirs()
+        val bitmap = Bitmap.createBitmap(160, 160, Bitmap.Config.ARGB_8888)
+        Canvas(bitmap).apply {
+            drawColor(color)
+            drawRect(0f, 100f, 160f, 160f, android.graphics.Paint().apply { this.color = 0x33000000 })
+        }
+        file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.JPEG, 90, it) }
+        file.setLastModified(modified)
     }
 
     private fun grantAllFilesAccess() {
@@ -109,8 +129,15 @@ class AppSmokeTest {
         snapshot("08_trash")
 
         clickText("Главная")
+        // «Фото» есть и в легенде карточки памяти; плитка категории — последняя.
+        waitForText("Фото")
+        compose.onAllNodesWithText("Фото").onLast().performClick()
+        waitForText("Сегодня")
+        snapshot("09_photos")
+        pressBack()
+
         clickText("Поиск файлов")
-        snapshot("09_search")
+        snapshot("10_search")
     }
 
     @Test
@@ -120,12 +147,12 @@ class AppSmokeTest {
         scenario = ActivityScenario.launch(MainActivity::class.java)
         compose.waitForIdle()
         waitForText("Внутренняя память")
-        snapshot("10_home_dark")
+        snapshot("11_home_dark")
         clickText("Обзор")
         clickText("Внутренняя память")
         clickText("Download")
         waitForText("photo_2026.jpg")
-        snapshot("11_folder_dark")
+        snapshot("12_folder_dark")
     }
 
     private fun pressBack() {
@@ -165,5 +192,6 @@ class AppSmokeTest {
 
     private companion object {
         const val TIMEOUT_MS = 5_000L
+        val PALETTE = listOf(0xFF4E8C7A.toInt(), 0xFFE0A458.toInt(), 0xFF5B7DB1.toInt(), 0xFFC1666B.toInt(), 0xFF8E7DBE.toInt())
     }
 }

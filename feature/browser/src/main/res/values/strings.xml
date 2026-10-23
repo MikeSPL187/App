@@ -180,4 +180,12 @@
     <string name="meta_apk_installed">installed</string>
     <string name="meta_apk_update">update</string>
     <string name="meta_apk_older">older than installed</string>
+
+    <string name="media_all">All</string>
+    <string name="media_camera">Camera</string>
+    <string name="media_screenshots">Screenshots</string>
+    <string name="media_messengers">Messengers</string>
+    <string name="media_downloads">Downloads</string>
+    <string name="media_today">Today</string>
+    <string name="media_yesterday">Yesterday</string>
 </resources>
