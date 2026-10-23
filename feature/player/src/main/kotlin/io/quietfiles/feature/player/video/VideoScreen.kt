@@ -131,6 +131,7 @@ private fun VideoContent(onBack: () -> Unit, onOpenFolder: (String) -> Unit, vie
     var scrub by remember { mutableStateOf<Long?>(null) }
 
     val openWithTitle = stringResource(R.string.player_open_with)
+    val networkOpenWith = stringResource(R.string.video_network_open_with)
     val subtitlePicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let(viewModel::addSubtitle)
     }
@@ -337,7 +338,7 @@ private fun VideoContent(onBack: () -> Unit, onOpenFolder: (String) -> Unit, vie
                 onOpenWith = {
                     val file = File(state.path)
                     if (NetworkPaths.isNetwork(state.path)) {
-                        viewModel.messages.tryEmit(context.getString(R.string.video_network_open_with))
+                        viewModel.messages.tryEmit(networkOpenWith)
                     } else try {
                         context.startActivity(
                             FileIntents.chooserForView(context, FileEntry(state.path, file.name, false, file.length(), file.lastModified()), openWithTitle),
@@ -383,7 +384,7 @@ private fun VideoContent(onBack: () -> Unit, onOpenFolder: (String) -> Unit, vie
                 onOpenWith = {
                     val file = File(state.path)
                     if (NetworkPaths.isNetwork(state.path)) {
-                        viewModel.messages.tryEmit(context.getString(R.string.video_network_open_with))
+                        viewModel.messages.tryEmit(networkOpenWith)
                     } else try {
                         context.startActivity(FileIntents.view(context, FileEntry(state.path, file.name, false, file.length(), file.lastModified())))
                     } catch (e: ActivityNotFoundException) {

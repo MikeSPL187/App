@@ -88,6 +88,7 @@ fun PcAccessCard(
         }
     }
     val running = state as? PcAccessState.Running
+    val switchLabel = stringResource(R.string.pc_access_switch)
     Surface(
         shape = RoundedCornerShape(28.dp),
         color = if (running != null) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerLow,
@@ -103,7 +104,7 @@ fun PcAccessCard(
                 Switch(
                     checked = running != null,
                     onCheckedChange = { if (it) start() else onStop() },
-                    modifier = Modifier.semantics { contentDescription = context.getString(R.string.pc_access_switch) },
+                    modifier = Modifier.semantics { contentDescription = switchLabel },
                 )
             }
             if (running != null) {
