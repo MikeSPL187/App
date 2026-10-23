@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cleaner_title">Инструменты</string>
+    <string name="cleaner_history">История очистки</string>
+    <string name="cleaner_history_empty">Здесь появятся прошлые очистки</string>
+    <string name="cleaner_settings">Настройки</string>
+    <string name="cleaner_close">Закрыть</string>
+    <string name="cleaner_back">Назад</string>
+    <string name="cleaner_used">занято</string>
+    <string name="cleaner_used_percent">Занято %1$d%%</string>
+    <string name="cleaner_can_free">Можно освободить</string>
+    <string name="cleaner_safe_hint">Без риска: копии, кэш, старая корзина и установленные APK</string>
+    <string name="cleaner_clean_selected">Очистить выбранное</string>
+    <string name="cleaner_scanning">Ищем, что можно удалить…</string>
+    <string name="cleaner_phase_files">Обходим папки</string>
+    <string name="cleaner_phase_duplicates">Сравниваем похожие файлы</string>
+    <string name="cleaner_phase_apks">Проверяем установочные файлы</string>
+    <string name="cleaner_no_access">Для очистки нужен доступ ко всем файлам</string>
+    <string name="cleaner_grant_access">Дать доступ</string>
+    <string name="cleaner_recommendations">Рекомендации</string>
+    <string name="cleaner_nothing">Лишнего не нашлось — память в порядке</string>
+    <string name="cleaner_more_tools">Ещё инструменты</string>
+    <string name="cleaner_tool_trash">Корзина</string>
+    <string name="cleaner_tool_analysis">Анализ папок</string>
+    <string name="cleaner_tool_recent">Недавние</string>
+    <string name="cleaner_tool_favorites">Избранное</string>
+    <string name="cleaner_duplicates">Дубликаты</string>
+    <string name="cleaner_large">Большие файлы</string>
+    <string name="cleaner_apks">Установленные APK</string>
+    <string name="cleaner_cache">Кэш и миниатюры</string>
+    <string name="cleaner_old_trash">Корзина</string>
+    <string name="cleaner_old_downloads">Старые загрузки</string>
+    <string name="cleaner_originals_stay">оригиналы останутся</string>
+    <string name="cleaner_larger_than">Больше %1$s</string>
+    <string name="cleaner_check_yourself">проверьте вручную</string>
+    <string name="cleaner_apps_installed">Приложения уже стоят</string>
+    <string name="cleaner_cache_hint">Миниатюры и кэш · восстановится сам</string>
+    <string name="cleaner_freed">Освобождено %1$s. Файлы можно вернуть из корзины</string>
+    <string name="cleaner_move_to_trash">В корзину · %1$s</string>
+    <string name="cleaner_delete">Удалить · %1$s</string>
+    <string name="cleaner_original">Оригинал</string>
+    <string name="cleaner_app_cache">Кэш «Тихих файлов»</string>
+    <string name="cleaner_explain_duplicates">Одинаковые по содержимому файлы. Остаётся оригинал — снимок из камеры или самый старый; копии уйдут в корзину.</string>
+    <string name="cleaner_explain_apks">Установочные файлы приложений, которые уже стоят в той же или новой версии.</string>
+    <string name="cleaner_explain_cache">Миниатюры и кэш создаются заново, когда понадобятся. Кэш других приложений после очистки предложит удалить система.</string>
+    <string name="cleaner_explain_trash">Файлы, которые лежат в корзине дольше срока. Удаляются навсегда.</string>
+    <string name="cleaner_explain_large">Самые большие файлы. Проверьте, нужны ли они, — удаление идёт через корзину.</string>
+    <string name="cleaner_explain_downloads">Загрузки, которые не менялись давно. Проверьте перед удалением.</string>
+    <string name="cleaner_counting">Считаем размеры…</string>
+    <string name="cleaner_folder_empty">Папка пуста</string>
+    <string name="cleaner_open_in_browser">Открыть в обзоре</string>
+    <plurals name="cleaner_files">
+        <item quantity="one">%d файл</item>
+        <item quantity="few">%d файла</item>
+        <item quantity="many">%d файлов</item>
+        <item quantity="other">%d файла</item>
+    </plurals>
+    <plurals name="cleaner_copies">
+        <item quantity="one">%d копия</item>
+        <item quantity="few">%d копии</item>
+        <item quantity="many">%d копий</item>
+        <item quantity="other">%d копии</item>
+    </plurals>
+    <plurals name="cleaner_in_groups">
+        <item quantity="one">в %d группе</item>
+        <item quantity="few">в %d группах</item>
+        <item quantity="many">в %d группах</item>
+        <item quantity="other">в %d группах</item>
+    </plurals>
+    <plurals name="cleaner_older_than_days">
+        <item quantity="one">Старше %d дня</item>
+        <item quantity="few">Старше %d дней</item>
+        <item quantity="many">Старше %d дней</item>
+        <item quantity="other">Старше %d дня</item>
+    </plurals>
+    <plurals name="cleaner_unchanged_days">
+        <item quantity="one">Не менялись %d день</item>
+        <item quantity="few">Не менялись %d дня</item>
+        <item quantity="many">Не менялись %d дней</item>
+        <item quantity="other">Не менялись %d дня</item>
+    </plurals>
+</resources>

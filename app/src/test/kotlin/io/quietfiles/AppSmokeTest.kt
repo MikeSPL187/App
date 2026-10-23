@@ -302,6 +302,46 @@ class AppSmokeTest {
         snapshot("34_mini_player")
     }
 
+    @Test
+    fun cleanerFindsDuplicatesAndAnalysesFolders() {
+        val root = Environment.getExternalStorageDirectory()
+        val photo = kotlin.random.Random(7).nextBytes(400_000)
+        File(root, "DCIM/Camera/IMG_2026.jpg").writeBytes(photo)
+        val copy = File(root, "Download/IMG_2026 (1).jpg").apply { writeBytes(photo) }
+        File(root, "Pictures/Telegram").mkdirs()
+        File(root, "Pictures/Telegram/IMG_2026.jpg").writeBytes(photo)
+        File(root, "DCIM/.thumbnails").mkdirs()
+        File(root, "DCIM/.thumbnails/1.jpg").writeBytes(ByteArray(80_000))
+        File(root, "Download/Старый отчёт.pdf").apply {
+            writeBytes(ByteArray(120_000))
+            setLastModified(System.currentTimeMillis() - 200L * 24 * 60 * 60 * 1000)
+        }
+        grantAllFilesAccess()
+        scenario = ActivityScenario.launch(MainActivity::class.java)
+        waitForText("Внутренняя память")
+        // Главная показывает сумму безопасных пунктов, как только поиск закончится (F2.3).
+        compose.waitUntil(TIMEOUT_MS) { compose.onAllNodes(hasText("Можно освободить", substring = true)).fetchSemanticsNodes().isNotEmpty() }
+        snapshot("40_home_can_free")
+
+        clickText("Инструменты")
+        waitForText("Рекомендации")
+        waitForText("Дубликаты")
+        snapshot("41_cleaner")
+
+        clickText("Дубликаты")
+        waitForText("Оригинал")
+        snapshot("42_cleanup_duplicates")
+        compose.onNode(hasText("В корзину", substring = true)).performClick()
+        compose.waitUntil(TIMEOUT_MS) { !copy.exists() }
+        check(File(root, "DCIM/Camera/IMG_2026.jpg").exists()) { "original must stay" }
+        waitForText("Рекомендации")
+
+        clickText("Анализ папок")
+        clickText("Память")
+        waitForText("DCIM")
+        snapshot("43_folder_analysis")
+    }
+
     private fun copyResource(name: String, target: File) {
         target.parentFile!!.mkdirs()
         javaClass.classLoader!!.getResourceAsStream(name)!!.use { input -> target.outputStream().use { input.copyTo(it) } }

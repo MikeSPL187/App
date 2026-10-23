@@ -61,6 +61,7 @@ dependencies {
     implementation(project(":feature:editor"))
     implementation(project(":feature:viewer"))
     implementation(project(":feature:player"))
+    implementation(project(":feature:cleaner"))
     implementation(libs.coil.gif)
 
     implementation(libs.androidx.core.ktx)

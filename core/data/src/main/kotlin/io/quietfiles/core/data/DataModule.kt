@@ -11,6 +11,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import io.quietfiles.core.data.db.CleanupHistoryDao
 import io.quietfiles.core.data.db.FavoriteDao
 import io.quietfiles.core.data.db.FolderPrefDao
 import io.quietfiles.core.data.db.PlaybackPositionDao
@@ -37,4 +38,5 @@ object DataModule {
     @Provides fun folderPrefs(db: QfDatabase): FolderPrefDao = db.folderPrefs()
     @Provides fun trash(db: QfDatabase): TrashDao = db.trash()
     @Provides fun playbackPositions(db: QfDatabase): PlaybackPositionDao = db.playbackPositions()
+    @Provides fun cleanupHistory(db: QfDatabase): CleanupHistoryDao = db.cleanupHistory()
 }

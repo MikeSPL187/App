@@ -15,8 +15,9 @@ fun NavGraphBuilder.homeScreen(
     onSearch: () -> Unit,
     onSettings: () -> Unit,
     onRequestAccess: () -> Unit,
+    onCleanup: () -> Unit,
 ) {
     composable<HomeRoute> {
-        HomeScreen(onOpen, onOpenFile, onSearch, onSettings, onRequestAccess)
+        HomeScreen(onOpen, onOpenFile, onSearch, onSettings, onRequestAccess, onCleanup)
     }
 }

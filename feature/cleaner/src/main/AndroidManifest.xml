@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Системный экран «Очистить кэш приложений» (Android 11+, F13.1): без этого его не найти. -->
+    <queries>
+        <intent>
+            <action android:name="android.os.storage.action.CLEAR_APP_CACHE" />
+        </intent>
+    </queries>
+</manifest>

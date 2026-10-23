@@ -8,7 +8,8 @@
     <string name="home_all">All</string>
     <string name="home_space">%1$s of %2$s · %3$s free</string>
     <string name="home_used_percent">%1$d%% of storage used</string>
-    <string name="home_large_files">Find large files</string>
+    <string name="home_can_free">Free up %1$s</string>
+    <string name="home_cleanup">Clean up storage</string>
     <string name="home_access_title">File access needed</string>
     <string name="home_access_message">Without it the app can’t see folders, recent files or the storage breakdown.</string>
     <string name="home_access_action">Allow access</string>

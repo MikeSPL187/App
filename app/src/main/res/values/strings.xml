@@ -67,15 +67,6 @@
     <string name="onboarding_grant">Grant access</string>
     <string name="onboarding_skip">Not now</string>
 
-    <string name="tools_settings">Settings</string>
-    <string name="tools_trash">Trash</string>
-    <string name="tools_trash_hint">Restore or permanently delete removed files</string>
-    <string name="tools_large">Large files</string>
-    <string name="tools_large_hint">Files over 100 MB that take up the most space</string>
-    <string name="tools_recent">Recent files</string>
-    <string name="tools_recent_hint">Files changed during the last days</string>
-    <string name="tools_favorites">Favorites</string>
-    <string name="tools_favorites_hint">Folders and files you starred</string>
 
     <string name="picker_label">Quiet Files</string>
     <string name="picker_not_shareable">This file can’t be shared with other apps</string>

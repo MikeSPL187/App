@@ -76,6 +76,10 @@ class TrashManager @Inject constructor(
 
     suspend fun emptyTrash() = deleteForever(dao.all().map { it.toItem() })
 
+    /** То, что лежит в корзине дольше [days] дней (F13.1, «Корзина старше срока»). */
+    suspend fun olderThan(days: Int, now: Long = System.currentTimeMillis()): List<TrashItem> =
+        dao.olderThan(now - days * DAY_MS).map { it.toItem() }
+
     /** Удаляет то, что лежит дольше срока. 0 дней — хранить без ограничения. */
     suspend fun purgeExpired(retentionDays: Int, now: Long = System.currentTimeMillis()): Int {
         if (retentionDays <= 0) return 0

@@ -42,9 +42,6 @@ import io.quietfiles.feature.browser.BrowseRoute
 import io.quietfiles.feature.browser.SourceKind
 import kotlinx.serialization.Serializable
 
-@Serializable
-data object ToolsRoute
-
 /**
  * Первый запуск: объясняем, зачем нужен доступ ко всем файлам, до системного экрана (раздел 7 ТЗ).
  * Можно продолжить без доступа — тогда главная покажет напоминание.
@@ -88,54 +85,5 @@ private fun Point(icon: ImageVector, text: String) {
     Row(horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.Top) {
         Icon(icon, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(22.dp))
         Text(text, style = MaterialTheme.typography.bodyMedium)
-    }
-}
-
-/** Раздел «Инструменты» версии 1.0: корзина, большие файлы, недавние, избранное. Очистка появится в 1.1. */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ToolsScreen(onOpen: (BrowseRoute) -> Unit, onSettings: () -> Unit) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.nav_tools), style = MaterialTheme.typography.headlineMedium) },
-                actions = {
-                    IconButton(onClick = onSettings) { Icon(QfIcons.Settings, contentDescription = stringResource(R.string.tools_settings)) }
-                },
-            )
-        },
-    ) { padding ->
-        Column(
-            Modifier.padding(padding).padding(horizontal = 16.dp).clip(MaterialTheme.shapes.large),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-        ) {
-            ToolRow(QfIcons.Trash, stringResource(R.string.tools_trash), stringResource(R.string.tools_trash_hint)) { onOpen(BrowseRoute(SourceKind.TRASH)) }
-            ToolRow(QfIcons.Sparkle, stringResource(R.string.tools_large), stringResource(R.string.tools_large_hint)) { onOpen(BrowseRoute(SourceKind.LARGE_FILES)) }
-            ToolRow(QfIcons.Clock, stringResource(R.string.tools_recent), stringResource(R.string.tools_recent_hint)) { onOpen(BrowseRoute(SourceKind.RECENT)) }
-            ToolRow(QfIcons.Star, stringResource(R.string.tools_favorites), stringResource(R.string.tools_favorites_hint)) { onOpen(BrowseRoute(SourceKind.FAVORITES)) }
-        }
-    }
-}
-
-@Composable
-private fun ToolRow(icon: ImageVector, title: String, subtitle: String, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-            .clickable(role = Role.Button, onClick = onClick)
-            .heightIn(min = 68.dp)
-            .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
-    ) {
-        Box(Modifier.size(40.dp).clip(RoundedCornerShape(12.dp)).background(MaterialTheme.colorScheme.secondaryContainer), contentAlignment = Alignment.Center) {
-            Icon(icon, null, tint = MaterialTheme.colorScheme.onSecondaryContainer)
-        }
-        Column(Modifier.weight(1f)) {
-            Text(title, style = MaterialTheme.typography.bodyLarge)
-            Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-        Icon(QfIcons.ChevronRight, null, tint = MaterialTheme.colorScheme.outline)
     }
 }

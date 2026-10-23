@@ -75,6 +75,27 @@ interface PlaybackPositionDao {
     suspend fun count(): Int
 }
 
+/** «История очистки» (F13): когда и сколько освободили. */
+@Entity(tableName = "cleanup_history")
+data class CleanupHistoryEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val at: Long,
+    val bytes: Long,
+    val files: Int,
+)
+
+@Dao
+interface CleanupHistoryDao {
+    @Query("SELECT * FROM cleanup_history ORDER BY at DESC LIMIT :limit")
+    fun observeRecent(limit: Int): Flow<List<CleanupHistoryEntity>>
+
+    @Insert
+    suspend fun insert(entity: CleanupHistoryEntity)
+
+    @Query("DELETE FROM cleanup_history WHERE id NOT IN (SELECT id FROM cleanup_history ORDER BY at DESC LIMIT :keep)")
+    suspend fun trim(keep: Int)
+}
+
 @Dao
 interface FavoriteDao {
     @Query("SELECT * FROM favorites ORDER BY addedAt DESC")
@@ -144,11 +165,11 @@ interface TrashDao {
 @Database(
     entities = [
         FavoriteEntity::class, SearchHistoryEntity::class, FolderPrefEntity::class, TrashEntity::class,
-        PlaybackPositionEntity::class,
+        PlaybackPositionEntity::class, CleanupHistoryEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = true,
-    autoMigrations = [AutoMigration(from = 1, to = 2)],
+    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3)],
 )
 abstract class QfDatabase : RoomDatabase() {
     abstract fun favorites(): FavoriteDao
@@ -156,4 +177,5 @@ abstract class QfDatabase : RoomDatabase() {
     abstract fun folderPrefs(): FolderPrefDao
     abstract fun trash(): TrashDao
     abstract fun playbackPositions(): PlaybackPositionDao
+    abstract fun cleanupHistory(): CleanupHistoryDao
 }

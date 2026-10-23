@@ -73,15 +73,6 @@
     <string name="onboarding_grant">Разрешить доступ</string>
     <string name="onboarding_skip">Не сейчас</string>
 
-    <string name="tools_settings">Настройки</string>
-    <string name="tools_trash">Корзина</string>
-    <string name="tools_trash_hint">Восстановить или удалить навсегда</string>
-    <string name="tools_large">Большие файлы</string>
-    <string name="tools_large_hint">Файлы больше 100 МБ, которые занимают больше всего места</string>
-    <string name="tools_recent">Недавние</string>
-    <string name="tools_recent_hint">Файлы, изменённые за последние дни</string>
-    <string name="tools_favorites">Избранное</string>
-    <string name="tools_favorites_hint">Папки и файлы, отмеченные звёздочкой</string>
 
     <string name="picker_label">Тихие файлы</string>
     <string name="picker_not_shareable">Этот файл нельзя передать другому приложению</string>

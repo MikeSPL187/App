@@ -84,6 +84,10 @@ import io.quietfiles.feature.browser.BrowseRoute
 import io.quietfiles.feature.browser.SourceKind
 import io.quietfiles.feature.browser.StorageRootRoute
 import io.quietfiles.feature.browser.browserScreens
+import io.quietfiles.feature.cleaner.CleanerRoute
+import io.quietfiles.feature.cleaner.FolderAnalysisRoute
+import io.quietfiles.feature.cleaner.ToolLink
+import io.quietfiles.feature.cleaner.cleanerScreens
 import io.quietfiles.feature.home.HomeRoute
 import io.quietfiles.feature.home.homeScreen
 import io.quietfiles.feature.search.SearchRoute
@@ -98,7 +102,7 @@ private data class TopLevel(val route: Any, val routeClass: KClass<*>, val label
 private val TopLevels = listOf(
     TopLevel(HomeRoute, HomeRoute::class, R.string.nav_home, QfIcons.Home),
     TopLevel(StorageRootRoute, StorageRootRoute::class, R.string.nav_browse, QfIcons.Folder),
-    TopLevel(ToolsRoute, ToolsRoute::class, R.string.nav_tools, QfIcons.Tools),
+    TopLevel(CleanerRoute, CleanerRoute::class, R.string.nav_tools, QfIcons.Tools),
 )
 
 /**
@@ -324,6 +328,7 @@ private fun AppNavHost(
             onSearch = { nav.navigate(SearchRoute()) },
             onSettings = { nav.navigate(SettingsRoute) },
             onRequestAccess = onRequestAccess,
+            onCleanup = { nav.navigateTopLevel(CleanerRoute) },
         )
         browserScreens(
             onOpen = { nav.navigate(it) },
@@ -361,9 +366,23 @@ private fun AppNavHost(
                 }
             },
         )
-        composable<ToolsRoute> {
-            ToolsScreen(onOpen = { nav.navigate(it) }, onSettings = { nav.navigate(SettingsRoute) })
-        }
+        cleanerScreens(
+            onNavigate = { nav.navigate(it) },
+            onBack = { nav.popBackStack() },
+            onTool = { tool ->
+                nav.navigate(
+                    when (tool) {
+                        ToolLink.TRASH -> BrowseRoute(SourceKind.TRASH)
+                        ToolLink.RECENT -> BrowseRoute(SourceKind.RECENT)
+                        ToolLink.FAVORITES -> BrowseRoute(SourceKind.FAVORITES)
+                        ToolLink.ANALYSIS -> FolderAnalysisRoute()
+                    },
+                )
+            },
+            onSettings = { nav.navigate(SettingsRoute) },
+            onRequestAccess = onRequestAccess,
+            onShowInBrowser = { nav.navigate(BrowseRoute(SourceKind.FOLDER, it)) },
+        )
     }
 }
 

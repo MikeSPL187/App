@@ -120,6 +120,11 @@ object QfIcons {
     val HeartFilled by lazy { filled("HeartFilled", "M12 19.5s-7.5-4.4-7.5-10A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 7.5 2.5c0 5.6-7.5 10-7.5 10z") }
     val Playing by lazy { filled("Playing", "M6.5 9h0a1.5 1.5 0 0 1 1.5 1.5v7A1.5 1.5 0 0 1 6.5 19h0A1.5 1.5 0 0 1 5 17.5v-7A1.5 1.5 0 0 1 6.5 9z M12 5h0a1.5 1.5 0 0 1 1.5 1.5v11A1.5 1.5 0 0 1 12 19h0a1.5 1.5 0 0 1-1.5-1.5v-11A1.5 1.5 0 0 1 12 5z M17.5 11h0a1.5 1.5 0 0 1 1.5 1.5v5a1.5 1.5 0 0 1-1.5 1.5h0a1.5 1.5 0 0 1-1.5-1.5v-5a1.5 1.5 0 0 1 1.5-1.5z") }
 
+    // Очистка (макет 07)
+    val BarChart by lazy { stroke("BarChart", "M4 20h16 M7 16V9 M12 16V4 M17 16v-5") }
+    val Database by lazy { stroke("Database", "M12 4c4.4 0 8 1.3 8 3s-3.6 3-8 3-8-1.3-8-3 3.6-3 8-3z M4 7v10c0 1.7 3.6 3 8 3s8-1.3 8-3V7 M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3") }
+    val PieChart by lazy { stroke("PieChart", "M12 3v9h9 M20.5 15A9 9 0 1 1 9 3.5") }
+
     // Категории файлов
     val Image by lazy { stroke("Image", "M5 4h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z M4 16l4.5-4.5 4 4 2.5-2.5 5 5 M15.5 8.5h.01") }
     val Video by lazy { stroke("Video", "M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z M10 9.2v5.6l4.6-2.8z") }

@@ -8,6 +8,7 @@ import io.quietfiles.core.model.FileEntry
 import io.quietfiles.core.model.StorageSpace
 import io.quietfiles.core.model.StorageVolumeInfo
 import io.quietfiles.core.operations.OperationQueue
+import io.quietfiles.core.operations.cleanup.CleanupScanner
 import io.quietfiles.core.storage.MediaIndex
 import io.quietfiles.core.storage.StorageAccess
 import io.quietfiles.core.storage.StorageBreakdown
@@ -47,6 +48,8 @@ data class HomeUiState(
     val volumes: List<VolumeCardState> = emptyList(),
     val recent: List<FileEntry> = emptyList(),
     val loading: Boolean = true,
+    /** «Можно освободить N» (F2.3); null — поиск ещё идёт. */
+    val freeable: Long? = null,
 )
 
 @HiltViewModel
@@ -55,6 +58,7 @@ class HomeViewModel @Inject constructor(
     private val provider: StorageProvider,
     private val mediaIndex: MediaIndex,
     queue: OperationQueue,
+    private val cleanup: CleanupScanner,
 ) : ViewModel() {
 
     private val refresh = MutableStateFlow(0)
@@ -64,6 +68,7 @@ class HomeViewModel @Inject constructor(
         merge(refresh.map { }, queue.finished.map { }).onStart { emit(Unit) },
     ) { vols, _ -> vols }
         .mapLatest { vols -> load(vols) }
+        .combine(cleanup.state) { home, scan -> home.copy(freeable = scan.takeIf { it.scannedAt != null && !it.scanning }?.safeBytes) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), HomeUiState())
 
     /** Вызывается при возвращении на экран: пользователь мог выдать доступ в настройках или удалить файлы. */
@@ -71,6 +76,8 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun load(vols: List<StorageVolumeInfo>): HomeUiState {
         val access = StorageAccess.hasAllFilesAccess()
+        // Поиск того, что можно удалить, идёт в фоне один раз за запуск: итог видят главная и «Инструменты».
+        if (access) cleanup.scan()
         val cards = vols.map { volume ->
             val space = provider.space(volume.rootPath)
             val usage = if (access && space != null) {

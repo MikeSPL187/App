@@ -54,12 +54,12 @@ class PlaybackPositionsTest {
     }
 
     @Test
-    fun migratesFromVersion1() {
+    fun migratesFromVersion1ToLatest() {
         migrations.createDatabase(DB, 1).apply {
             execSQL("INSERT INTO favorites (path, name, isDirectory, addedAt) VALUES ('/a', 'a', 0, 1)")
             close()
         }
-        val migrated = migrations.runMigrationsAndValidate(DB, 2, true)
+        val migrated = migrations.runMigrationsAndValidate(DB, 3, true)
         migrated.query("SELECT COUNT(*) FROM favorites").use {
             it.moveToFirst()
             assertThat(it.getInt(0)).isEqualTo(1)

@@ -8,7 +8,8 @@
     <string name="home_all">Все</string>
     <string name="home_space">%1$s из %2$s · свободно %3$s</string>
     <string name="home_used_percent">Занято %1$d%% памяти</string>
-    <string name="home_large_files">Найти большие файлы</string>
+    <string name="home_can_free">Можно освободить %1$s</string>
+    <string name="home_cleanup">Очистка памяти</string>
     <string name="home_access_title">Нужен доступ к файлам</string>
     <string name="home_access_message">Без него приложение не увидит папки, недавние файлы и разбивку памяти.</string>
     <string name="home_access_action">Разрешить доступ</string>

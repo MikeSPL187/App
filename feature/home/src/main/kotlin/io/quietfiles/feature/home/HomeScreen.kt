@@ -70,6 +70,7 @@ fun HomeScreen(
     onSearch: () -> Unit,
     onSettings: () -> Unit,
     onRequestAccess: () -> Unit,
+    onCleanup: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -98,7 +99,7 @@ fun HomeScreen(
             if (!state.hasAccess) item { AccessCard(onRequestAccess) }
             items(state.volumes, key = { it.volume.id }) { card ->
                 if (card.volume.isPrimary) {
-                    PrimaryStorageCard(card, formatters, onOpen = { onOpen(BrowseRoute(SourceKind.FOLDER, card.volume.rootPath)) }, onLargeFiles = { onOpen(BrowseRoute(SourceKind.LARGE_FILES)) })
+                    PrimaryStorageCard(card, formatters, state.freeable, onOpen = { onOpen(BrowseRoute(SourceKind.FOLDER, card.volume.rootPath)) }, onCleanup = onCleanup)
                 } else {
                     SecondaryStorageCard(card, formatters) { onOpen(BrowseRoute(SourceKind.FOLDER, card.volume.rootPath)) }
                 }
@@ -184,7 +185,7 @@ private fun usageLabel(group: UsageGroup) = stringResource(
 )
 
 @Composable
-private fun PrimaryStorageCard(card: VolumeCardState, formatters: Formatters, onOpen: () -> Unit, onLargeFiles: () -> Unit) {
+private fun PrimaryStorageCard(card: VolumeCardState, formatters: Formatters, freeable: Long?, onOpen: () -> Unit, onCleanup: () -> Unit) {
     val space = card.space
     Surface(
         shape = MaterialTheme.shapes.extraLarge,
@@ -226,10 +227,17 @@ private fun PrimaryStorageCard(card: VolumeCardState, formatters: Formatters, on
                 SegmentedBar(segments, modifier = Modifier.semantics { contentDescription = description })
                 if (usage != null) Legend(usage, formatters)
             }
-            FilledTonalButton(onClick = onLargeFiles, modifier = Modifier.fillMaxWidth()) {
+            // F2.3: сумма безопасных пунктов очистки, пока её считают — просто «Очистка памяти».
+            FilledTonalButton(onClick = onCleanup, modifier = Modifier.fillMaxWidth()) {
                 Icon(QfIcons.Sparkle, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(8.dp))
-                Text(stringResource(R.string.home_large_files))
+                Text(
+                    if (freeable != null && freeable > 0) {
+                        stringResource(R.string.home_can_free, formatters.size.format(freeable))
+                    } else {
+                        stringResource(R.string.home_cleanup)
+                    },
+                )
             }
         }
     }
